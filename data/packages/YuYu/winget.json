@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2024-12-21T22:45:36.040-00:00",
+	"CreationDate" : "2024-12-31T21:25:28.570-00:00",
 	"Sources" : 
 	[
 		{
@@ -8,11 +8,15 @@
 			[
 				{
 					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.30.2563"
+					"Version" : "5.40.2651"
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
 					"Version" : "2.47.1"
+				},
+				{
+					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
+					"Version" : "0.7.5.3"
 				},
 				{
 					"PackageIdentifier" : "Sonosaurus.SonoBus",
@@ -23,8 +27,8 @@
 					"Version" : "2.0.2.0"
 				},
 				{
-					"PackageIdentifier" : "Neovim.Neovim",
-					"Version" : "0.10.2"
+					"PackageIdentifier" : "Zoom.Zoom",
+					"Version" : "6.3.53598"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x64",
@@ -63,10 +67,6 @@
 					"Version" : "1.85.655119"
 				},
 				{
-					"PackageIdentifier" : "Zoom.Zoom",
-					"Version" : "6.3.52884"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.PowerShell",
 					"Version" : "7.4.6.0"
 				},
@@ -93,6 +93,10 @@
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
 					"Version" : "8.0.432.6"
+				},
+				{
+					"PackageIdentifier" : "Neovim.Neovim",
+					"Version" : "0.10.3"
 				},
 				{
 					"PackageIdentifier" : "MichaelTippach.ASIO4ALL",
@@ -232,7 +236,7 @@
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.32.1"
+					"Version" : "2.33.0"
 				},
 				{
 					"PackageIdentifier" : "GNU.Nano",
@@ -269,10 +273,6 @@
 				{
 					"PackageIdentifier" : "Rclone.Rclone",
 					"Version" : "1.68.2"
-				},
-				{
-					"PackageIdentifier" : "SagerNet.sing-box",
-					"Version" : "1.10.3"
 				},
 				{
 					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
@@ -319,8 +319,16 @@
 					"Version" : "1.39"
 				},
 				{
+					"PackageIdentifier" : "LocalSend.LocalSend",
+					"Version" : "1.16.1"
+				},
+				{
 					"PackageIdentifier" : "kapitainsky.RcloneBrowser",
 					"Version" : "1.8.0"
+				},
+				{
+					"PackageIdentifier" : "Python.Python.3.13",
+					"Version" : "3.13.1"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.PowerToys",
@@ -332,7 +340,7 @@
 				},
 				{
 					"PackageIdentifier" : "Python.Python.3.12",
-					"Version" : "3.12.7"
+					"Version" : "3.12.8"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip",
@@ -340,7 +348,7 @@
 				},
 				{
 					"PackageIdentifier" : "ImageMagick.Q16",
-					"Version" : "7.1.1.41"
+					"Version" : "7.1.1.43"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.AppInstaller",

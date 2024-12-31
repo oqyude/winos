@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2024-12-20T19:58:41.562-00:00",
+	"CreationDate" : "2024-12-31T21:36:17.817-00:00",
 	"Sources" : 
 	[
 		{
@@ -13,6 +13,10 @@
 				{
 					"PackageIdentifier" : "Git.Git",
 					"Version" : "2.47.1"
+				},
+				{
+					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
+					"Version" : "0.7.5.3"
 				},
 				{
 					"PackageIdentifier" : "alesimula.wsa_pacman",
@@ -35,10 +39,6 @@
 					"Version" : "4.0.6"
 				},
 				{
-					"PackageIdentifier" : "PDFsam.PDFsam",
-					"Version" : "5.2.9.0"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.PowerShell",
 					"Version" : "7.4.6.0"
 				},
@@ -49,6 +49,10 @@
 				{
 					"PackageIdentifier" : "Nvidia.PhysX",
 					"Version" : "9.21.0713"
+				},
+				{
+					"PackageIdentifier" : "PDFArranger.PDFArranger",
+					"Version" : "1.11.1"
 				},
 				{
 					"PackageIdentifier" : "glzr-io.glazewm",
@@ -87,16 +91,16 @@
 					"Version" : "8.0.11"
 				},
 				{
+					"PackageIdentifier" : "Python.Launcher",
+					"Version" : "> 3.12.0"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
 					"Version" : "3.1.32"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
 					"Version" : "14.42.34433.0"
-				},
-				{
-					"PackageIdentifier" : "Python.Launcher",
-					"Version" : "> 3.12.0"
 				},
 				{
 					"PackageIdentifier" : "LesFerch.WinSetView",
@@ -128,7 +132,7 @@
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.32.1"
+					"Version" : "2.33.0"
 				},
 				{
 					"PackageIdentifier" : "Gramps.Gramps",
@@ -180,7 +184,19 @@
 				},
 				{
 					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "0.4.1"
+					"Version" : "0.4.2"
+				},
+				{
+					"PackageIdentifier" : "LocalSend.LocalSend",
+					"Version" : "1.16.1"
+				},
+				{
+					"PackageIdentifier" : "Python.Python.3.13",
+					"Version" : "3.13.1"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.PowerToys",
+					"Version" : "0.87.1"
 				},
 				{
 					"PackageIdentifier" : "64Gram.64Gram",
