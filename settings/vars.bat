@@ -3,6 +3,8 @@
 :: Package Managers
 set "chocolatey=%~dp0chocolatey.ps1"
 set "scoop=%~dp0scoop.ps1"
+set "winget=%~dp0winget.ps1"
+set "pin-list=%~dp0pin-list.bat"
 
 :: Local Root
 set "data=%root%\data"
