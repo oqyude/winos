@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2024-12-31T21:25:28.570-00:00",
+	"CreationDate" : "2025-01-20T17:56:59.281-00:00",
 	"Sources" : 
 	[
 		{
@@ -8,7 +8,7 @@
 			[
 				{
 					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.40.2651"
+					"Version" : "5.40.2653"
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
@@ -27,12 +27,12 @@
 					"Version" : "2.0.2.0"
 				},
 				{
-					"PackageIdentifier" : "Zoom.Zoom",
-					"Version" : "6.3.53598"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x64",
 					"Version" : "10.0.40219"
+				},
+				{
+					"PackageIdentifier" : "Zoom.Zoom",
+					"Version" : "6.3.56144"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
@@ -52,15 +52,11 @@
 				},
 				{
 					"PackageIdentifier" : "joncampbell123.DOSBox-X",
-					"Version" : "2024.10.01"
+					"Version" : "2025.01.01"
 				},
 				{
 					"PackageIdentifier" : "Transmission.Transmission",
 					"Version" : "4.0.6"
-				},
-				{
-					"PackageIdentifier" : "calibre.calibre",
-					"Version" : "7.23.0"
 				},
 				{
 					"PackageIdentifier" : "Logitech.OptionsPlus",
@@ -87,16 +83,20 @@
 					"Version" : "3.7.0"
 				},
 				{
-					"PackageIdentifier" : "Starship.Starship",
-					"Version" : "1.21.1"
-				},
-				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
 					"Version" : "8.0.432.6"
 				},
 				{
 					"PackageIdentifier" : "Neovim.Neovim",
 					"Version" : "0.10.3"
+				},
+				{
+					"PackageIdentifier" : "calibre.calibre",
+					"Version" : "7.24.0"
+				},
+				{
+					"PackageIdentifier" : "Starship.Starship",
+					"Version" : "1.22.1"
 				},
 				{
 					"PackageIdentifier" : "MichaelTippach.ASIO4ALL",
@@ -107,12 +107,8 @@
 					"Version" : "4.6.5"
 				},
 				{
-					"PackageIdentifier" : "VentisMedia.MediaMonkey.5",
-					"Version" : "5"
-				},
-				{
 					"PackageIdentifier" : "LocktimeSoftware.NetLimiter",
-					"Version" : "5.3.18.0"
+					"Version" : "5.3.19.0"
 				},
 				{
 					"PackageIdentifier" : "Guru3D.RTSS",
@@ -131,12 +127,16 @@
 					"Version" : "12.0.40664.0"
 				},
 				{
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9",
+					"Version" : "9.0.1"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.7",
 					"Version" : "7.0.20"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9",
-					"Version" : "9.0.0"
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"Version" : "8.0.12"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
@@ -157,6 +157,10 @@
 				{
 					"PackageIdentifier" : "Python.Launcher",
 					"Version" : "> 3.12.0"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
+					"Version" : "8.0.12"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
@@ -192,23 +196,15 @@
 				},
 				{
 					"PackageIdentifier" : "LesFerch.WinSetView",
-					"Version" : "3.0.1"
+					"Version" : "3.0.3"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86",
 					"Version" : "10.0.40219"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.11"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
 					"Version" : "11.0.61030.0"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.11"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
@@ -224,7 +220,7 @@
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "131.1.73.104"
+					"Version" : "132.1.74.48"
 				},
 				{
 					"PackageIdentifier" : "Codeusa.SteamCleaner",
@@ -236,7 +232,7 @@
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.33.0"
+					"Version" : "2.34.1"
 				},
 				{
 					"PackageIdentifier" : "GNU.Nano",
@@ -248,19 +244,15 @@
 				},
 				{
 					"PackageIdentifier" : "Gramps.Gramps",
-					"Version" : "5.2.3"
+					"Version" : "5.2.4"
 				},
 				{
 					"PackageIdentifier" : "JesseDuffield.lazygit",
-					"Version" : "0.44.1"
-				},
-				{
-					"PackageIdentifier" : "KDE.KDEConnect",
-					"Version" : "24.02.0"
+					"Version" : "0.45.2"
 				},
 				{
 					"PackageIdentifier" : "MatsuriDayo.NekoRay",
-					"Version" : "3.26"
+					"Version" : "4.0.1"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.Sysinternals.RegJump",
@@ -272,7 +264,7 @@
 				},
 				{
 					"PackageIdentifier" : "Rclone.Rclone",
-					"Version" : "1.68.2"
+					"Version" : "1.69.0"
 				},
 				{
 					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
@@ -280,7 +272,7 @@
 				},
 				{
 					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.28.1"
+					"Version" : "1.29.2"
 				},
 				{
 					"PackageIdentifier" : "Ventoy.Ventoy",
@@ -308,7 +300,7 @@
 				},
 				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
-					"Version" : "0.27.0"
+					"Version" : "0.28.0"
 				},
 				{
 					"PackageIdentifier" : "sxyazi.yazi",
@@ -336,7 +328,7 @@
 				},
 				{
 					"PackageIdentifier" : "64Gram.64Gram",
-					"Version" : "1.1.52"
+					"Version" : "1.1.58"
 				},
 				{
 					"PackageIdentifier" : "Python.Python.3.12",
