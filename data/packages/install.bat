@@ -11,6 +11,7 @@ winget import -i "%packages-user-lists%\winget.json" --accept-package-agreements
 
 :Pin-lists
 call %pin-list%
+call %packages-user-lists-other%
 
 for %%i in (%winget-pin-list%) do (
     echo Pinning %%i...
@@ -19,6 +20,15 @@ for %%i in (%winget-pin-list%) do (
 for %%i in (%choco-pin-list%) do (
     echo Pinning %%i...
     cmd /c choco pin add --name="'%%i'"
+)
+
+for %%i in (%winget-other-list%) do (
+    echo Installing %%i...
+    cmd /c winget install "'%%i'"
+)
+for %%i in (%choco-other-list%) do (
+    echo Installing %%i...
+    cmd /c choco install "'%%i'"
 )
 
 endlocal

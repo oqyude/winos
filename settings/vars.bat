@@ -14,6 +14,7 @@ set "packages=%data%\packages"
 set "packages-installer=%packages%\install.bat"
 set "packages-all-lists=%packages%\[all]"
 set "packages-user-lists=%packages%\%computername%"
+set "packages-user-lists-other=%packages-user-lists%\other.bat"
 
 :: Configurations
 set "configurations=%data%\configurations"
