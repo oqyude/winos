@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-01-20T17:56:59.281-00:00",
+	"CreationDate" : "2025-01-30T17:56:16.986-00:00",
 	"Sources" : 
 	[
 		{
@@ -12,7 +12,7 @@
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
-					"Version" : "2.47.1"
+					"Version" : "2.47.1.2"
 				},
 				{
 					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
@@ -27,16 +27,16 @@
 					"Version" : "2.0.2.0"
 				},
 				{
+					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
+					"Version" : "17.0.14.7"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x64",
 					"Version" : "10.0.40219"
 				},
 				{
 					"PackageIdentifier" : "Zoom.Zoom",
 					"Version" : "6.3.56144"
-				},
-				{
-					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
-					"Version" : "17.0.13.11"
 				},
 				{
 					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
@@ -59,16 +59,16 @@
 					"Version" : "4.0.6"
 				},
 				{
-					"PackageIdentifier" : "Logitech.OptionsPlus",
-					"Version" : "1.85.655119"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.PowerShell",
-					"Version" : "7.4.6.0"
+					"PackageIdentifier" : "glzr-io.glazewm",
+					"Version" : "3.8.1"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.21.JRE",
-					"Version" : "21.0.5.11"
+					"Version" : "21.0.6.7"
+				},
+				{
+					"PackageIdentifier" : "Logitech.OptionsPlus",
+					"Version" : "1.85.655119"
 				},
 				{
 					"PackageIdentifier" : "Nvidia.PhysX",
@@ -79,16 +79,16 @@
 					"Version" : "1.11.1"
 				},
 				{
-					"PackageIdentifier" : "glzr-io.glazewm",
-					"Version" : "3.7.0"
+					"PackageIdentifier" : "Neovim.Neovim",
+					"Version" : "0.10.4"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.PowerShell",
+					"Version" : "7.5.0.0"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
 					"Version" : "8.0.432.6"
-				},
-				{
-					"PackageIdentifier" : "Neovim.Neovim",
-					"Version" : "0.10.3"
 				},
 				{
 					"PackageIdentifier" : "calibre.calibre",
@@ -123,8 +123,16 @@
 					"Version" : "1.5.1"
 				},
 				{
+					"PackageIdentifier" : "KDE.digikam",
+					"Version" : "8.5.0"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2013.x64",
 					"Version" : "12.0.40664.0"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"Version" : "8.0.12"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9",
@@ -135,7 +143,7 @@
 					"Version" : "7.0.20"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
 					"Version" : "8.0.12"
 				},
 				{
@@ -157,10 +165,6 @@
 				{
 					"PackageIdentifier" : "Python.Launcher",
 					"Version" : "> 3.12.0"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.12"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
@@ -196,7 +200,7 @@
 				},
 				{
 					"PackageIdentifier" : "LesFerch.WinSetView",
-					"Version" : "3.0.3"
+					"Version" : "3.1.2"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86",
@@ -215,12 +219,16 @@
 					"Version" : "1.2.0"
 				},
 				{
+					"PackageIdentifier" : "Stretchly.Stretchly",
+					"Version" : "1.17.1"
+				},
+				{
 					"PackageIdentifier" : "AcoustID.Chromaprint",
 					"Version" : "1.5.1"
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "132.1.74.48"
+					"Version" : "132.1.74.51"
 				},
 				{
 					"PackageIdentifier" : "Codeusa.SteamCleaner",
@@ -231,8 +239,16 @@
 					"Version" : "1.0.9169"
 				},
 				{
+					"PackageIdentifier" : "OliverBetz.ExifTool",
+					"Version" : "13.10"
+				},
+				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.34.1"
+					"Version" : "2.35.0"
+				},
+				{
+					"PackageIdentifier" : "FrankBijnen.ExifToolGUI",
+					"Version" : "6.3.0"
 				},
 				{
 					"PackageIdentifier" : "GNU.Nano",
@@ -260,7 +276,7 @@
 				},
 				{
 					"PackageIdentifier" : "Playnite.Playnite",
-					"Version" : "10.34"
+					"Version" : "10.35"
 				},
 				{
 					"PackageIdentifier" : "Rclone.Rclone",
@@ -276,7 +292,7 @@
 				},
 				{
 					"PackageIdentifier" : "Ventoy.Ventoy",
-					"Version" : "1.0.99"
+					"Version" : "1.1.00"
 				},
 				{
 					"PackageIdentifier" : "Yandex.Disk",
@@ -296,7 +312,7 @@
 				},
 				{
 					"PackageIdentifier" : "junegunn.fzf",
-					"Version" : "0.57.0"
+					"Version" : "0.58.0"
 				},
 				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
@@ -323,16 +339,16 @@
 					"Version" : "3.13.1"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.87.1"
-				},
-				{
 					"PackageIdentifier" : "64Gram.64Gram",
 					"Version" : "1.1.58"
 				},
 				{
 					"PackageIdentifier" : "Python.Python.3.12",
 					"Version" : "3.12.8"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.PowerToys",
+					"Version" : "0.88.0"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip",
@@ -361,10 +377,6 @@
 				{
 					"PackageIdentifier" : "Microsoft.WindowsTerminal",
 					"Version" : "1.21.3231.0"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.WSL",
-					"Version" : "2.3.26.0"
 				}
 			],
 			"SourceDetails" : 
