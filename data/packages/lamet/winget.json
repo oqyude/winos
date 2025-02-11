@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2024-12-31T21:36:17.817-00:00",
+	"CreationDate" : "2025-02-11T22:18:02.499-00:00",
 	"Sources" : 
 	[
 		{
@@ -8,43 +8,43 @@
 			[
 				{
 					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.30.2563"
+					"Version" : "5.40.2655"
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
-					"Version" : "2.47.1"
+					"Version" : "2.47.1.2"
 				},
 				{
 					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
 					"Version" : "0.7.5.3"
 				},
 				{
-					"PackageIdentifier" : "alesimula.wsa_pacman",
-					"Version" : "1.5.0"
+					"PackageIdentifier" : "Audient.iD",
+					"Version" : "4.4.0.0"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
-					"Version" : "17.0.13.11"
+					"Version" : "17.0.14.7"
+				},
+				{
+					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
+					"Version" : "8.0.442.6"
 				},
 				{
 					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
 					"Version" : "2.7.9"
 				},
 				{
-					"PackageIdentifier" : "joncampbell123.DOSBox-X",
-					"Version" : "2024.10.01"
-				},
-				{
 					"PackageIdentifier" : "Transmission.Transmission",
 					"Version" : "4.0.6"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerShell",
-					"Version" : "7.4.6.0"
+					"PackageIdentifier" : "glzr-io.glazewm",
+					"Version" : "3.8.1"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.21.JRE",
-					"Version" : "21.0.5.11"
+					"Version" : "21.0.6.7"
 				},
 				{
 					"PackageIdentifier" : "Nvidia.PhysX",
@@ -55,16 +55,12 @@
 					"Version" : "1.11.1"
 				},
 				{
-					"PackageIdentifier" : "glzr-io.glazewm",
-					"Version" : "3.7.0"
+					"PackageIdentifier" : "Microsoft.PowerShell",
+					"Version" : "7.5.0.0"
 				},
 				{
 					"PackageIdentifier" : "Starship.Starship",
-					"Version" : "1.21.1"
-				},
-				{
-					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
-					"Version" : "8.0.432.6"
+					"Version" : "1.22.1"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2005.x86",
@@ -79,20 +75,16 @@
 					"Version" : "1.5.1"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
-					"Version" : "11.0.61030.0"
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"Version" : "8.0.12"
 				},
 				{
 					"PackageIdentifier" : "tailscale.tailscale",
-					"Version" : "1.78.1"
+					"Version" : "1.80.0"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.11"
-				},
-				{
-					"PackageIdentifier" : "Python.Launcher",
-					"Version" : "> 3.12.0"
+					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
+					"Version" : "11.0.61030.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
@@ -103,8 +95,12 @@
 					"Version" : "14.42.34433.0"
 				},
 				{
+					"PackageIdentifier" : "Python.Launcher",
+					"Version" : "> 3.12.0"
+				},
+				{
 					"PackageIdentifier" : "LesFerch.WinSetView",
-					"Version" : "3.0.1"
+					"Version" : "3.1.2"
 				},
 				{
 					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
@@ -116,7 +112,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.11"
+					"Version" : "8.0.12"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
@@ -128,27 +124,23 @@
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "131.1.73.104"
+					"Version" : "133.1.75.175"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.33.0"
+					"Version" : "2.36.1"
 				},
 				{
 					"PackageIdentifier" : "Gramps.Gramps",
-					"Version" : "5.2.3"
+					"Version" : "5.2.4"
 				},
 				{
 					"PackageIdentifier" : "JesseDuffield.lazygit",
-					"Version" : "0.44.1"
-				},
-				{
-					"PackageIdentifier" : "KDE.KDEConnect",
-					"Version" : "24.02.0"
+					"Version" : "0.45.2"
 				},
 				{
 					"PackageIdentifier" : "MatsuriDayo.NekoRay",
-					"Version" : "3.26"
+					"Version" : "4.0.1"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.Sysinternals.Autoruns",
@@ -160,7 +152,7 @@
 				},
 				{
 					"PackageIdentifier" : "Playnite.Playnite",
-					"Version" : "10.34"
+					"Version" : "10.35"
 				},
 				{
 					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
@@ -168,47 +160,43 @@
 				},
 				{
 					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.28.1"
+					"Version" : "1.29.2"
 				},
 				{
 					"PackageIdentifier" : "Ventoy.Ventoy",
-					"Version" : "1.0.99"
+					"Version" : "1.1.00"
 				},
 				{
 					"PackageIdentifier" : "Obsidian.Obsidian",
-					"Version" : "1.7.7"
+					"Version" : "1.8.4"
 				},
 				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
-					"Version" : "0.27.0"
+					"Version" : "0.28.0"
 				},
 				{
 					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "0.4.2"
+					"Version" : "25.2.7"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",
 					"Version" : "1.16.1"
 				},
 				{
-					"PackageIdentifier" : "Python.Python.3.13",
-					"Version" : "3.13.1"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.87.1"
+					"PackageIdentifier" : "Python.Python.3.12",
+					"Version" : "3.12.9"
 				},
 				{
 					"PackageIdentifier" : "64Gram.64Gram",
-					"Version" : "1.1.52"
+					"Version" : "1.1.58"
 				},
 				{
-					"PackageIdentifier" : "Python.Python.3.12",
-					"Version" : "3.12.8"
+					"PackageIdentifier" : "Microsoft.PowerToys",
+					"Version" : "0.88.0"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip",
-					"Version" : "3.1.1080.0"
+					"Version" : "5.0.1252.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.AppInstaller",
@@ -220,7 +208,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.UI.Xaml.2.8",
-					"Version" : "8.2310.30001.0"
+					"Version" : "8.2501.31001.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCLibs.Desktop.14",
@@ -228,7 +216,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.WindowsTerminal",
-					"Version" : "1.21.3231.0"
+					"Version" : "1.21.10351.0"
 				}
 			],
 			"SourceDetails" : 

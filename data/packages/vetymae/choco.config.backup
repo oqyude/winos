@@ -3,7 +3,7 @@
   <package id="aimp" version="5.40.2653" />
   <package id="amd-ryzen-chipset" version="2024.10.21" />
   <package id="autohotkey.portable" version="2.0.19" />
-  <package id="chocolatey" version="2.4.1" />
+  <package id="chocolatey" version="2.4.2" />
   <package id="chocolatey-compatibility.extension" version="1.0.0" />
   <package id="chocolatey-core.extension" version="1.4.0" />
   <package id="chocolatey-dotnetfx.extension" version="1.0.1" />
@@ -17,7 +17,8 @@
   <package id="dotnetfx" version="4.8.0.20220524" />
   <package id="equalizerapo" version="1.4.1" />
   <package id="ffmpeg" version="7.1.0" />
-  <package id="glazewm" version="3.7.0" />
+  <package id="Ghostscript.app" version="10.4.0" />
+  <package id="glazewm" version="3.8.1" />
   <package id="KB2919355" version="1.0.20160915" />
   <package id="KB2919442" version="1.0.20160915" />
   <package id="KB2999226" version="1.0.20181019" />
