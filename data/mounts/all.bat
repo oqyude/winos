@@ -16,6 +16,22 @@ rd /s /q "%to_1%"
 mklink /D "%to_1%" "%from_1%"
 endlocal
 
+:: Gallery
+setlocal
+set "from_1=%gallery-folder%"
+set "to_1=%USERPROFILE%\Pictures\Gallery"
+rd /s /q "%to_1%"
+mklink /J "%to_1%" "%from_1%"
+endlocal
+
+:: Vaults
+setlocal
+set "from_1=%vaults-folder%"
+set "to_1=%USERPROFILE%\Vaults"
+rd /s /q "%to_1%"
+mklink /D "%to_1%" "%from_1%"
+endlocal
+
 :: DaVinci Resolve Project Media
 setlocal
 set "from_1=%storage-programs%\Davinci Resolve"

@@ -41,5 +41,7 @@ set "storage-daws-plugins=%storage-daws%\Plugins"
 
 
 :: User Folders
-set "user-folder=%structure%\User"
-set "music-folder=%user-folder%\Music"
+set "user-folder=D:\User"
+set "music-folder=%user-folder%\Music\My"
+set "gallery-folder=%user-folder%\Gallery"
+set "vaults-folder=%user-folder%\Vaults"
