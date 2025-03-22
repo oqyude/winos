@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-02-11T22:18:02.499-00:00",
+	"CreationDate" : "2025-02-17T23:39:36.625-00:00",
 	"Sources" : 
 	[
 		{
@@ -75,16 +75,16 @@
 					"Version" : "1.5.1"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.12"
-				},
-				{
 					"PackageIdentifier" : "tailscale.tailscale",
 					"Version" : "1.80.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
 					"Version" : "11.0.61030.0"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"Version" : "8.0.13"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
@@ -99,10 +99,6 @@
 					"Version" : "> 3.12.0"
 				},
 				{
-					"PackageIdentifier" : "LesFerch.WinSetView",
-					"Version" : "3.1.2"
-				},
-				{
 					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
 					"Version" : "24.6.49.8"
 				},
@@ -111,20 +107,20 @@
 					"Version" : "9.13.0604"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.12"
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
+					"Version" : "14.42.34438.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
 					"Version" : "11.0.61030.0"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
-					"Version" : "14.42.34433.0"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
+					"Version" : "8.0.13"
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "133.1.75.175"
+					"Version" : "133.1.75.178"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
@@ -176,7 +172,7 @@
 				},
 				{
 					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "25.2.7"
+					"Version" : "25.2.11"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",

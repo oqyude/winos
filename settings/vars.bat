@@ -28,20 +28,10 @@ set "mounts=%data%\mounts"
 set "disk-label=D:"
 
 :: Main Folder
-set "structure=%disk-label%\Structure"
 set "games=%disk-label%\Games"
-
-:: Storage
-set "storage=%structure%\Shared\Storage"
-set "storage-programs=%storage%\Programs"
-set "storage-games=%storage%\Games"
-set "storage-settings=%storage%\Settings"
-set "storage-daws=%storage%\DAWs"
-set "storage-daws-plugins=%storage-daws%\Plugins"
-
+set "storage=%disk-label%\Storage"
 
 :: User Folders
 set "user-folder=D:\User"
 set "music-folder=%user-folder%\Music\My"
 set "gallery-folder=%user-folder%\Gallery"
-set "vaults-folder=%user-folder%\Vaults"

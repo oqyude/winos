@@ -1,4 +1,3 @@
-@echo off
 setlocal
 
 set "init=%~dp0\..\settings\init.bat"
@@ -8,7 +7,7 @@ for %%f in ("%configurations-all%\*.bat") do (
     echo Running %%f
     call "%%f"
 )
-for %%f in ("%configurations-user%\%computername%\*.bat") do (
+for %%f in ("%configurations-user%\*.bat") do (
     echo Running %%f
     call "%%f"
 )

@@ -3,7 +3,7 @@ setlocal
 
 set "app=RivaTuner Statistics Server"
 
-set "from_1=%storage-programs%\%app%\Profiles"
+set "from_1=%storage%\%app%\Profiles"
 set "to_1=%ProgramFiles(x86)%\%app%\Profiles"
 
 rd /s /q "%to_1%"

@@ -3,7 +3,7 @@ setlocal
 
 set "app=Playnite"
 
-set "from_1=%storage-programs%\%app%"
+set "from_1=%storage%\%app%"
 set "to_1=%appdata%\%app%"
 
 rd /s /q "%to_1%"

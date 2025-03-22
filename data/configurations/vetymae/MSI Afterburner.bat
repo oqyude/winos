@@ -3,10 +3,10 @@ setlocal
 
 set "app=MSI Afterburner"
 
-set "from_1=%storage-programs%\%app%\Profiles"
+set "from_1=%storage%\%app%\Profiles"
 set "to_1=%ProgramFiles(x86)%\%app%\Profiles"
 
-set "from_2=%storage-programs%\%app%\MSIAfterburner.cfg"
+set "from_2=%storage%\%app%\MSIAfterburner.cfg"
 set "to_2=%ProgramFiles(x86)%\%app%\MSIAfterburner.cfg"
 
 rd /s /q "%to_1%"
