@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-02-11T22:15:22.265-00:00",
+	"CreationDate" : "2025-03-31T18:24:40.598-00:00",
 	"Sources" : 
 	[
 		{
@@ -8,15 +8,23 @@
 			[
 				{
 					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.40.2655"
+					"Version" : "5.40.2669"
+				},
+				{
+					"PackageIdentifier" : "CrystalDewWorld.CrystalDiskInfo",
+					"Version" : "9.6.3"
+				},
+				{
+					"PackageIdentifier" : "CrystalDewWorld.CrystalDiskMark",
+					"Version" : "8.0.6"
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
-					"Version" : "2.47.1.2"
+					"Version" : "2.49.0"
 				},
 				{
 					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
-					"Version" : "0.7.5.3"
+					"Version" : "0.8.0.0"
 				},
 				{
 					"PackageIdentifier" : "Sonosaurus.SonoBus",
@@ -27,12 +35,12 @@
 					"Version" : "4.4.0.0"
 				},
 				{
-					"PackageIdentifier" : "geeksoftwareGmbH.PDF24Creator",
-					"Version" : "11.23.0"
-				},
-				{
 					"PackageIdentifier" : "Apple.BonjourPrintServices",
 					"Version" : "2.0.2.0"
+				},
+				{
+					"PackageIdentifier" : "geeksoftwareGmbH.PDF24Creator",
+					"Version" : "11.24.0"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
@@ -43,16 +51,12 @@
 					"Version" : "10.0.40219"
 				},
 				{
-					"PackageIdentifier" : "Zoom.Zoom",
-					"Version" : "6.3.56144"
-				},
-				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
 					"Version" : "8.0.442.6"
 				},
 				{
-					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
-					"Version" : "2.7.9"
+					"PackageIdentifier" : "Zoom.Zoom",
+					"Version" : "6.4.62735"
 				},
 				{
 					"PackageIdentifier" : "Apple.Bonjour",
@@ -61,6 +65,10 @@
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2008.x64",
 					"Version" : "9.0.30729.6161"
+				},
+				{
+					"PackageIdentifier" : "calibre.calibre",
+					"Version" : "8.1.1"
 				},
 				{
 					"PackageIdentifier" : "Transmission.Transmission",
@@ -76,7 +84,11 @@
 				},
 				{
 					"PackageIdentifier" : "Logitech.OptionsPlus",
-					"Version" : "1.86.675082"
+					"Version" : "1.87.684086"
+				},
+				{
+					"PackageIdentifier" : "OwlPlug.OwlPlug",
+					"Version" : "1.28.1"
 				},
 				{
 					"PackageIdentifier" : "Nvidia.PhysX",
@@ -87,16 +99,12 @@
 					"Version" : "1.11.1"
 				},
 				{
-					"PackageIdentifier" : "calibre.calibre",
-					"Version" : "7.25.0"
-				},
-				{
-					"PackageIdentifier" : "Neovim.Neovim",
-					"Version" : "0.10.4"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.PowerShell",
 					"Version" : "7.5.0.0"
+				},
+				{
+					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
+					"Version" : "2.7.10"
 				},
 				{
 					"PackageIdentifier" : "Starship.Starship",
@@ -112,7 +120,7 @@
 				},
 				{
 					"PackageIdentifier" : "LocktimeSoftware.NetLimiter",
-					"Version" : "5.3.19.0"
+					"Version" : "5.3.23.0"
 				},
 				{
 					"PackageIdentifier" : "Guru3D.RTSS",
@@ -132,11 +140,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.12"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9",
-					"Version" : "9.0.1"
+					"Version" : "8.0.14"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.7",
@@ -144,11 +148,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.12"
-				},
-				{
-					"PackageIdentifier" : "tailscale.tailscale",
-					"Version" : "1.80.0"
+					"Version" : "8.0.14"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
@@ -159,16 +159,20 @@
 					"Version" : "7.0.20"
 				},
 				{
+					"PackageIdentifier" : "Famatech.RadminVPN",
+					"Version" : "2.0.4895.5"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.7",
 					"Version" : "7.0.20"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
-					"Version" : "3.1.32"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9",
+					"Version" : "9.0.3"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
-					"Version" : "14.42.34433.0"
+					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
+					"Version" : "3.1.32"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2008.x86",
@@ -187,10 +191,6 @@
 					"Version" : "2.7.0.3"
 				},
 				{
-					"PackageIdentifier" : "Famatech.RadminVPN",
-					"Version" : "2.0.4894.4"
-				},
-				{
 					"PackageIdentifier" : "ClockworkMod.UniversalADBDriver",
 					"Version" : "1.0.4"
 				},
@@ -199,36 +199,32 @@
 					"Version" : "> 3.12.0"
 				},
 				{
-					"PackageIdentifier" : "LesFerch.WinSetView",
-					"Version" : "3.1.2"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86",
 					"Version" : "10.0.40219"
+				},
+				{
+					"PackageIdentifier" : "Tailscale.Tailscale",
+					"Version" : "1.82.0"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
+					"Version" : "14.42.34438.0"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
+					"Version" : "14.42.34438.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
 					"Version" : "11.0.61030.0"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
-					"Version" : "14.42.34433.0"
-				},
-				{
 					"PackageIdentifier" : "Stretchly.Stretchly",
 					"Version" : "1.17.2"
 				},
 				{
-					"PackageIdentifier" : "AcoustID.Chromaprint",
-					"Version" : "1.5.1"
-				},
-				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "133.1.75.175"
-				},
-				{
-					"PackageIdentifier" : "Codeusa.SteamCleaner",
-					"Version" : "2.4"
+					"Version" : "134.1.76.82"
 				},
 				{
 					"PackageIdentifier" : "Discord.Discord",
@@ -236,11 +232,11 @@
 				},
 				{
 					"PackageIdentifier" : "OliverBetz.ExifTool",
-					"Version" : "13.10"
+					"Version" : "13.19"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.36.1"
+					"Version" : "2.39.1"
 				},
 				{
 					"PackageIdentifier" : "GNU.Nano",
@@ -252,11 +248,11 @@
 				},
 				{
 					"PackageIdentifier" : "Gramps.Gramps",
-					"Version" : "5.2.4"
+					"Version" : "6.0.0"
 				},
 				{
 					"PackageIdentifier" : "JesseDuffield.lazygit",
-					"Version" : "0.45.2"
+					"Version" : "0.48.0"
 				},
 				{
 					"PackageIdentifier" : "MatsuriDayo.NekoRay",
@@ -272,7 +268,7 @@
 				},
 				{
 					"PackageIdentifier" : "Rclone.Rclone",
-					"Version" : "1.69.0"
+					"Version" : "1.69.1"
 				},
 				{
 					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
@@ -280,23 +276,23 @@
 				},
 				{
 					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.29.2"
+					"Version" : "1.29.3"
 				},
 				{
 					"PackageIdentifier" : "Ventoy.Ventoy",
-					"Version" : "1.1.00"
+					"Version" : "1.1.05"
 				},
 				{
 					"PackageIdentifier" : "Yandex.Disk",
-					"Version" : "3.2.43.5081"
+					"Version" : "3.2.43.5089"
 				},
 				{
 					"PackageIdentifier" : "ebkr.r2modman",
-					"Version" : "3.1.55"
+					"Version" : "3.1.57"
 				},
 				{
 					"PackageIdentifier" : "Obsidian.Obsidian",
-					"Version" : "1.8.4"
+					"Version" : "1.8.9"
 				},
 				{
 					"PackageIdentifier" : "ItchIo.Itch",
@@ -304,7 +300,7 @@
 				},
 				{
 					"PackageIdentifier" : "junegunn.fzf",
-					"Version" : "0.59.0"
+					"Version" : "0.61.0"
 				},
 				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
@@ -312,11 +308,11 @@
 				},
 				{
 					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "25.2.7"
+					"Version" : "25.3.2"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",
-					"Version" : "1.16.1"
+					"Version" : "1.17.0"
 				},
 				{
 					"PackageIdentifier" : "kapitainsky.RcloneBrowser",
@@ -331,24 +327,20 @@
 					"Version" : "1.1.58"
 				},
 				{
-					"PackageIdentifier" : "Python.Python.3.12",
-					"Version" : "3.12.8"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.88.0"
+					"Version" : "0.89.0"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip",
-					"Version" : "5.0.1252.0"
+					"Version" : "5.0.1263.0"
 				},
 				{
 					"PackageIdentifier" : "ImageMagick.Q16",
-					"Version" : "7.1.1.43"
+					"Version" : "7.1.1.47"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.AppInstaller",
-					"Version" : "1.24.25200.0"
+					"Version" : "1.25.340.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.UI.Xaml.2.7",
@@ -364,7 +356,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.WindowsTerminal",
-					"Version" : "1.21.10351.0"
+					"Version" : "1.22.10731.0"
 				}
 			],
 			"SourceDetails" : 
@@ -376,5 +368,5 @@
 			}
 		}
 	],
-	"WinGetVersion" : "1.9.25200"
+	"WinGetVersion" : "1.10.340"
 }

@@ -25,13 +25,8 @@ set "mounts=%data%\mounts"
 
 
 :: GLOBAL ::
-set "disk-label=D:"
+set "disk-label=S:"
 
 :: Main Folder
 set "games=%disk-label%\Games"
-set "storage=%disk-label%\Storage"
-
-:: User Folders
-set "user-folder=D:\User"
-set "music-folder=%user-folder%\Music\My"
-set "gallery-folder=%user-folder%\Gallery"
+set "storage=%userprofile%\Storage"

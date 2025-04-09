@@ -17,7 +17,6 @@
   <package id="dotnetfx" version="4.8.0.20220524" />
   <package id="equalizerapo" version="1.4.1" />
   <package id="ffmpeg" version="7.1.0" />
-  <package id="Ghostscript.app" version="10.4.0" />
   <package id="glazewm" version="3.8.1" />
   <package id="KB2919355" version="1.0.20160915" />
   <package id="KB2919442" version="1.0.20160915" />

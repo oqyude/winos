@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-02-17T23:39:36.625-00:00",
+	"CreationDate" : "2025-03-31T15:24:10.608-00:00",
 	"Sources" : 
 	[
 		{
@@ -12,11 +12,11 @@
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
-					"Version" : "2.47.1.2"
+					"Version" : "2.49.0"
 				},
 				{
 					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
-					"Version" : "0.7.5.3"
+					"Version" : "0.8.0.0"
 				},
 				{
 					"PackageIdentifier" : "Audient.iD",
@@ -29,10 +29,6 @@
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
 					"Version" : "8.0.442.6"
-				},
-				{
-					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
-					"Version" : "2.7.9"
 				},
 				{
 					"PackageIdentifier" : "Transmission.Transmission",
@@ -59,6 +55,10 @@
 					"Version" : "7.5.0.0"
 				},
 				{
+					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
+					"Version" : "2.7.10"
+				},
+				{
 					"PackageIdentifier" : "Starship.Starship",
 					"Version" : "1.22.1"
 				},
@@ -75,36 +75,36 @@
 					"Version" : "1.5.1"
 				},
 				{
-					"PackageIdentifier" : "tailscale.tailscale",
-					"Version" : "1.80.0"
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"Version" : "8.0.14"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
 					"Version" : "11.0.61030.0"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.13"
+					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
+					"Version" : "25.1.9.6"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
 					"Version" : "3.1.32"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
-					"Version" : "14.42.34433.0"
-				},
-				{
 					"PackageIdentifier" : "Python.Launcher",
 					"Version" : "> 3.12.0"
 				},
 				{
-					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
-					"Version" : "24.6.49.8"
-				},
-				{
 					"PackageIdentifier" : "Nvidia.PhysXLegacy",
 					"Version" : "9.13.0604"
+				},
+				{
+					"PackageIdentifier" : "Tailscale.Tailscale",
+					"Version" : "1.82.0"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
+					"Version" : "14.42.34438.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
@@ -116,23 +116,23 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.13"
+					"Version" : "8.0.14"
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "133.1.75.178"
+					"Version" : "134.1.76.82"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.36.1"
+					"Version" : "2.39.1"
 				},
 				{
 					"PackageIdentifier" : "Gramps.Gramps",
-					"Version" : "5.2.4"
+					"Version" : "6.0.0"
 				},
 				{
 					"PackageIdentifier" : "JesseDuffield.lazygit",
-					"Version" : "0.45.2"
+					"Version" : "0.48.0"
 				},
 				{
 					"PackageIdentifier" : "MatsuriDayo.NekoRay",
@@ -156,15 +156,15 @@
 				},
 				{
 					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.29.2"
+					"Version" : "1.29.3"
 				},
 				{
 					"PackageIdentifier" : "Ventoy.Ventoy",
-					"Version" : "1.1.00"
+					"Version" : "1.1.05"
 				},
 				{
 					"PackageIdentifier" : "Obsidian.Obsidian",
-					"Version" : "1.8.4"
+					"Version" : "1.8.9"
 				},
 				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
@@ -172,15 +172,15 @@
 				},
 				{
 					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "25.2.11"
+					"Version" : "25.3.2"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",
-					"Version" : "1.16.1"
+					"Version" : "1.17.0"
 				},
 				{
-					"PackageIdentifier" : "Python.Python.3.12",
-					"Version" : "3.12.9"
+					"PackageIdentifier" : "Python.Python.3.13",
+					"Version" : "3.13.2"
 				},
 				{
 					"PackageIdentifier" : "64Gram.64Gram",
@@ -188,15 +188,15 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.88.0"
+					"Version" : "0.89.0"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip",
-					"Version" : "5.0.1252.0"
+					"Version" : "5.0.1263.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.AppInstaller",
-					"Version" : "1.24.25200.0"
+					"Version" : "1.25.340.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.UI.Xaml.2.7",
@@ -212,7 +212,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.WindowsTerminal",
-					"Version" : "1.21.10351.0"
+					"Version" : "1.22.10731.0"
 				}
 			],
 			"SourceDetails" : 
@@ -224,5 +224,5 @@
 			}
 		}
 	],
-	"WinGetVersion" : "1.9.25200"
+	"WinGetVersion" : "1.10.340"
 }
