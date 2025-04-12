@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-03-31T15:24:10.608-00:00",
+	"CreationDate" : "2025-04-12T10:08:53.154-00:00",
 	"Sources" : 
 	[
 		{
@@ -23,6 +23,10 @@
 					"Version" : "4.4.0.0"
 				},
 				{
+					"PackageIdentifier" : "Apple.BonjourPrintServices",
+					"Version" : "2.0.2.0"
+				},
+				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
 					"Version" : "17.0.14.7"
 				},
@@ -31,12 +35,12 @@
 					"Version" : "8.0.442.6"
 				},
 				{
-					"PackageIdentifier" : "Transmission.Transmission",
-					"Version" : "4.0.6"
+					"PackageIdentifier" : "Apple.Bonjour",
+					"Version" : "3.1.0.1"
 				},
 				{
-					"PackageIdentifier" : "glzr-io.glazewm",
-					"Version" : "3.8.1"
+					"PackageIdentifier" : "Transmission.Transmission",
+					"Version" : "4.0.6"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.21.JRE",
@@ -79,16 +83,20 @@
 					"Version" : "8.0.14"
 				},
 				{
+					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
+					"Version" : "25.2.15.9"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
 					"Version" : "11.0.61030.0"
 				},
 				{
-					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
-					"Version" : "25.1.9.6"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
 					"Version" : "3.1.32"
+				},
+				{
+					"PackageIdentifier" : "Apple.AppleSoftwareUpdate",
+					"Version" : "2.7.0.3"
 				},
 				{
 					"PackageIdentifier" : "Python.Launcher",
@@ -119,8 +127,8 @@
 					"Version" : "8.0.14"
 				},
 				{
-					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "134.1.76.82"
+					"PackageIdentifier" : "Brave.Brave.Nightly",
+					"Version" : "135.1.79.28"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",

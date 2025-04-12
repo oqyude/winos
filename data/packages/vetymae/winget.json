@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-03-31T18:24:40.598-00:00",
+	"CreationDate" : "2025-04-12T10:03:35.168-00:00",
 	"Sources" : 
 	[
 		{
@@ -23,6 +23,10 @@
 					"Version" : "2.49.0"
 				},
 				{
+					"PackageIdentifier" : "Resplendence.LatencyMon",
+					"Version" : "7.31"
+				},
+				{
 					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
 					"Version" : "0.8.0.0"
 				},
@@ -32,15 +36,11 @@
 				},
 				{
 					"PackageIdentifier" : "Audient.iD",
-					"Version" : "4.4.0.0"
+					"Version" : "4.4.2.0"
 				},
 				{
 					"PackageIdentifier" : "Apple.BonjourPrintServices",
 					"Version" : "2.0.2.0"
-				},
-				{
-					"PackageIdentifier" : "geeksoftwareGmbH.PDF24Creator",
-					"Version" : "11.24.0"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
@@ -55,10 +55,6 @@
 					"Version" : "8.0.442.6"
 				},
 				{
-					"PackageIdentifier" : "Zoom.Zoom",
-					"Version" : "6.4.62735"
-				},
-				{
 					"PackageIdentifier" : "Apple.Bonjour",
 					"Version" : "3.1.0.1"
 				},
@@ -68,15 +64,15 @@
 				},
 				{
 					"PackageIdentifier" : "calibre.calibre",
-					"Version" : "8.1.1"
+					"Version" : "8.2.100"
 				},
 				{
 					"PackageIdentifier" : "Transmission.Transmission",
 					"Version" : "4.0.6"
 				},
 				{
-					"PackageIdentifier" : "glzr-io.glazewm",
-					"Version" : "3.8.1"
+					"PackageIdentifier" : "geeksoftwareGmbH.PDF24Creator",
+					"Version" : "11.25.0"
 				},
 				{
 					"PackageIdentifier" : "EclipseAdoptium.Temurin.21.JRE",
@@ -84,7 +80,11 @@
 				},
 				{
 					"PackageIdentifier" : "Logitech.OptionsPlus",
-					"Version" : "1.87.684086"
+					"Version" : "1.88.697541"
+				},
+				{
+					"PackageIdentifier" : "Zoom.Zoom",
+					"Version" : "6.4.63669"
 				},
 				{
 					"PackageIdentifier" : "OwlPlug.OwlPlug",
@@ -139,16 +139,12 @@
 					"Version" : "12.0.40664.0"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.14"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.7",
 					"Version" : "7.0.20"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.14"
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"Version" : "8.0.15"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
@@ -163,12 +159,20 @@
 					"Version" : "2.0.4895.5"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.7",
-					"Version" : "7.0.20"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
+					"Version" : "8.0.15"
+				},
+				{
+					"PackageIdentifier" : "Python.Launcher",
+					"Version" : "> 3.12.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9",
-					"Version" : "9.0.3"
+					"Version" : "9.0.4"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.7",
+					"Version" : "7.0.20"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
@@ -195,10 +199,6 @@
 					"Version" : "1.0.4"
 				},
 				{
-					"PackageIdentifier" : "Python.Launcher",
-					"Version" : "> 3.12.0"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86",
 					"Version" : "10.0.40219"
 				},
@@ -223,8 +223,8 @@
 					"Version" : "1.17.2"
 				},
 				{
-					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "134.1.76.82"
+					"PackageIdentifier" : "Brave.Brave.Nightly",
+					"Version" : "135.1.79.44"
 				},
 				{
 					"PackageIdentifier" : "Discord.Discord",
@@ -232,11 +232,11 @@
 				},
 				{
 					"PackageIdentifier" : "OliverBetz.ExifTool",
-					"Version" : "13.19"
+					"Version" : "13.26"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.39.1"
+					"Version" : "2.40.4"
 				},
 				{
 					"PackageIdentifier" : "GNU.Nano",
@@ -259,6 +259,10 @@
 					"Version" : "4.0.1"
 				},
 				{
+					"PackageIdentifier" : "Microsoft.Sysinternals.ProcessExplorer",
+					"Version" : "17.06"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.Sysinternals.RegJump",
 					"Version" : "1.11"
 				},
@@ -267,24 +271,16 @@
 					"Version" : "10.35"
 				},
 				{
-					"PackageIdentifier" : "Rclone.Rclone",
-					"Version" : "1.69.1"
-				},
-				{
 					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
 					"Version" : "3.5.2"
 				},
 				{
 					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.29.3"
+					"Version" : "1.29.4"
 				},
 				{
 					"PackageIdentifier" : "Ventoy.Ventoy",
 					"Version" : "1.1.05"
-				},
-				{
-					"PackageIdentifier" : "Yandex.Disk",
-					"Version" : "3.2.43.5089"
 				},
 				{
 					"PackageIdentifier" : "ebkr.r2modman",
@@ -299,28 +295,16 @@
 					"Version" : "26.1.9"
 				},
 				{
-					"PackageIdentifier" : "junegunn.fzf",
-					"Version" : "0.61.0"
-				},
-				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
-					"Version" : "0.28.0"
-				},
-				{
-					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "25.3.2"
+					"Version" : "0.29.0"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",
 					"Version" : "1.17.0"
 				},
 				{
-					"PackageIdentifier" : "kapitainsky.RcloneBrowser",
-					"Version" : "1.8.0"
-				},
-				{
 					"PackageIdentifier" : "Python.Python.3.13",
-					"Version" : "3.13.2"
+					"Version" : "3.13.3"
 				},
 				{
 					"PackageIdentifier" : "64Gram.64Gram",
@@ -328,7 +312,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.89.0"
+					"Version" : "0.90.1"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip",
