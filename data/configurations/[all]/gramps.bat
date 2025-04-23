@@ -4,7 +4,7 @@ setlocal
 set "app=gramps"
 
 set "from_1=%storage%\%app%"
-set "to_1=%localappdata%\%app%"
+set "to_1=%appdata%\%app%"
 
 rd /s /q "%to_1%"
 
