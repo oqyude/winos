@@ -26,6 +26,7 @@ set "mounts=%data%\mounts"
 
 :: GLOBAL ::
 set "disk-label=S:"
+set "user-name=oqyude"
 
 :: Main Folder
 set "games=%disk-label%\Games"

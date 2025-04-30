@@ -2,9 +2,9 @@
 
 :: .ssh
 setlocal
-set "from_1=%storage%\SSH\%computername%"
+set "from_1=%storage%\SSH\%user-name%"
 set "to_1=%USERPROFILE%\.ssh"
-rd /s /q "%to_1%"
+rd /q "%to_1%"
 mklink /D "%to_1%" "%from_1%"
 endlocal
 
