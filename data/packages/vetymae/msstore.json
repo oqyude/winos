@@ -1,0 +1,72 @@
+{
+	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
+	"CreationDate" : "2025-05-16T11:44:03.537-00:00",
+	"Sources" : 
+	[
+		{
+			"Packages" : 
+			[
+				{
+					"PackageIdentifier" : "9PCLLLH15SMT",
+					"Version" : "5.40.2675"
+				},
+				{
+					"PackageIdentifier" : "XPFFTQ037JWMHS",
+					"Version" : "136.0.3240.76"
+				},
+				{
+					"PackageIdentifier" : "XP8C9QZMS2PC1T",
+					"Version" : "136.1.78.102"
+				},
+				{
+					"PackageIdentifier" : "XP89DCGQ3K6VLD",
+					"Version" : "0.91.0"
+				},
+				{
+					"PackageIdentifier" : "9N7R5S6B0ZZH",
+					"Version" : "4.0.36.0"
+				},
+				{
+					"PackageIdentifier" : "9WZDNCRFJBH4",
+					"Version" : "2025.11040.23001.0"
+				},
+				{
+					"PackageIdentifier" : "9WZDNCRFJ3PR",
+					"Version" : "11.2503.4.0"
+				},
+				{
+					"PackageIdentifier" : "9WZDNCRFJBBG",
+					"Version" : "2025.2502.17.0"
+				},
+				{
+					"PackageIdentifier" : "9N0DX20HK701",
+					"Version" : "1.22.11141.0"
+				},
+				{
+					"PackageIdentifier" : "9NMPJ99VJBWV",
+					"Version" : "1.25032.82.0"
+				},
+				{
+					"PackageIdentifier" : "9WZDNCRFJ3P2",
+					"Version" : "10.25031.10021.0"
+				},
+				{
+					"PackageIdentifier" : "9NF8H0H7WMLT",
+					"Version" : "8.1.967.0"
+				},
+				{
+					"PackageIdentifier" : "9P2B8MCSVPLN",
+					"Version" : "1.1.137.0"
+				}
+			],
+			"SourceDetails" : 
+			{
+				"Argument" : "https://storeedgefd.dsx.mp.microsoft.com/v9.0",
+				"Identifier" : "StoreEdgeFD",
+				"Name" : "msstore",
+				"Type" : "Microsoft.Rest"
+			}
+		}
+	],
+	"WinGetVersion" : "1.10.390"
+}
