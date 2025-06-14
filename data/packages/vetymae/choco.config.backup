@@ -11,9 +11,9 @@
   <package id="chocolatey-misc-helpers.extension" version="0.0.4" />
   <package id="chocolatey-windowsupdate.extension" version="1.0.5" />
   <package id="DotNet4.6.1" version="4.6.01055.20170308" />
-  <package id="dotnet-8.0-desktopruntime" version="8.0.15" />
-  <package id="dotnet-9.0-desktopruntime" version="9.0.4" />
-  <package id="dotnet-desktopruntime" version="9.0.4" />
+  <package id="dotnet-8.0-desktopruntime" version="8.0.16" />
+  <package id="dotnet-9.0-desktopruntime" version="9.0.5" />
+  <package id="dotnet-desktopruntime" version="9.0.5" />
   <package id="dotnetfx" version="4.8.0.20220524" />
   <package id="equalizerapo" version="1.4.2" />
   <package id="ffmpeg" version="7.1.1" />
@@ -26,11 +26,11 @@
   <package id="nano" version="7.2.36.20230412" />
   <package id="nano-win" version="7.2.36.20230412" />
   <package id="notepadreplacer" version="1.6.0.20230113" />
-  <package id="nvidia-display-driver" version="576.28.0" />
+  <package id="nvidia-display-driver" version="576.40.0" />
   <package id="python313" version="3.13.3" />
   <package id="realtek-hd-audio-driver" version="2.82.0020200601" />
   <package id="sublimetext4" version="4.0.0.419200" />
-  <package id="vcredist140" version="14.42.34438.20250221" />
+  <package id="vcredist140" version="14.44.35112.1" />
   <package id="vcredist2015" version="14.0.24215.20170201" />
   <package id="vkme" version="6.0.52.608" />
 </packages>

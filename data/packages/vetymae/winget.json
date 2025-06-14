@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-05-16T11:44:20.031-00:00",
+	"CreationDate" : "2025-06-09T15:18:30.812-00:00",
 	"Sources" : 
 	[
 		{
@@ -37,6 +37,14 @@
 				{
 					"PackageIdentifier" : "Sonosaurus.SonoBus",
 					"Version" : "1.7.2"
+				},
+				{
+					"PackageIdentifier" : "OBSProject.OBSStudio",
+					"Version" : "Unknown"
+				},
+				{
+					"PackageIdentifier" : "SublimeHQ.SublimeText.4",
+					"Version" : "Unknown"
 				},
 				{
 					"PackageIdentifier" : "Audient.iD",
@@ -77,6 +85,10 @@
 				{
 					"PackageIdentifier" : "WinDirStat.WinDirStat",
 					"Version" : "2.2.2"
+				},
+				{
+					"PackageIdentifier" : "OpenJS.NodeJS",
+					"Version" : "24.1.0"
 				},
 				{
 					"PackageIdentifier" : "Nvidia.PhysX",
@@ -175,6 +187,10 @@
 					"Version" : "9.0.30729.6161"
 				},
 				{
+					"PackageIdentifier" : "Yarn.Yarn",
+					"Version" : "1.22.22"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.6",
 					"Version" : "6.0.36"
 				},
@@ -189,6 +205,10 @@
 				{
 					"PackageIdentifier" : "ClockworkMod.UniversalADBDriver",
 					"Version" : "1.0.4"
+				},
+				{
+					"PackageIdentifier" : "Cloudflare.cloudflared",
+					"Version" : "2025.5.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86",
@@ -208,7 +228,7 @@
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "136.1.78.102"
+					"Version" : "137.1.79.119"
 				},
 				{
 					"PackageIdentifier" : "Discord.Discord",
@@ -281,6 +301,10 @@
 				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
 					"Version" : "0.29.1"
+				},
+				{
+					"PackageIdentifier" : "simulot.immich-go",
+					"Version" : "0.26.3"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",

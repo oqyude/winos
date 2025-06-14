@@ -5,7 +5,7 @@ set "app=EqualizerAPO"
 
 set "from_1=%storage%\%app%"
 set "to_1=%ProgramFiles%\%app%"
-set "FabFilter Pro-Q 3=%ProgramFiles%\Steinberg\VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll"
+set "FabFilter Pro-Q 3=%ProgramFiles%\VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll"
 
 for /f "delims=" %%i in ('dir /aL /b %to_1%\config') do del "%%i"
 del /q /s "%to_1%\config\*"

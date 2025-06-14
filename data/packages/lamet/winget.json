@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-04-23T16:58:47.660-00:00",
+	"CreationDate" : "2025-06-14T23:10:51.941-00:00",
 	"Sources" : 
 	[
 		{
@@ -8,7 +8,7 @@
 			[
 				{
 					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.40.2655"
+					"Version" : "5.40.2683"
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
@@ -19,20 +19,16 @@
 					"Version" : "0.8.0.0"
 				},
 				{
+					"PackageIdentifier" : "SublimeHQ.SublimeText.4",
+					"Version" : "Unknown"
+				},
+				{
 					"PackageIdentifier" : "Audient.iD",
 					"Version" : "4.4.0.0"
 				},
 				{
 					"PackageIdentifier" : "Apple.BonjourPrintServices",
 					"Version" : "2.0.2.0"
-				},
-				{
-					"PackageIdentifier" : "EclipseAdoptium.Temurin.17.JRE",
-					"Version" : "17.0.14.7"
-				},
-				{
-					"PackageIdentifier" : "EclipseAdoptium.Temurin.8.JRE",
-					"Version" : "8.0.442.6"
 				},
 				{
 					"PackageIdentifier" : "Apple.Bonjour",
@@ -43,28 +39,28 @@
 					"Version" : "4.0.6"
 				},
 				{
-					"PackageIdentifier" : "EclipseAdoptium.Temurin.21.JRE",
-					"Version" : "21.0.6.7"
+					"PackageIdentifier" : "Logitech.OptionsPlus",
+					"Version" : "1.91.722586"
+				},
+				{
+					"PackageIdentifier" : "PDFArranger.PDFArranger",
+					"Version" : "1.12.1"
 				},
 				{
 					"PackageIdentifier" : "Nvidia.PhysX",
 					"Version" : "9.21.0713"
 				},
 				{
-					"PackageIdentifier" : "PDFArranger.PDFArranger",
-					"Version" : "1.11.1"
+					"PackageIdentifier" : "Starship.Starship",
+					"Version" : "1.23.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.PowerShell",
-					"Version" : "7.5.0.0"
+					"Version" : "7.5.1.0"
 				},
 				{
 					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
 					"Version" : "2.7.10"
-				},
-				{
-					"PackageIdentifier" : "Starship.Starship",
-					"Version" : "1.22.1"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2005.x86",
@@ -75,16 +71,8 @@
 					"Version" : "2.10.91.91"
 				},
 				{
-					"PackageIdentifier" : "RamenSoftware.Windhawk",
-					"Version" : "1.5.1"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.15"
-				},
-				{
-					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
-					"Version" : "25.2.15.9"
+					"PackageIdentifier" : "Tailscale.Tailscale",
+					"Version" : "1.84.2"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
@@ -92,35 +80,43 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.15"
+					"Version" : "8.0.17"
 				},
 				{
 					"PackageIdentifier" : "Python.Launcher",
 					"Version" : "> 3.12.0"
 				},
 				{
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
+					"Version" : "8.0.17"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
 					"Version" : "3.1.32"
 				},
 				{
-					"PackageIdentifier" : "Tailscale.Tailscale",
-					"Version" : "1.82.5"
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
+					"Version" : "14.44.35208.0"
 				},
 				{
 					"PackageIdentifier" : "Apple.AppleSoftwareUpdate",
 					"Version" : "2.7.0.3"
 				},
 				{
+					"PackageIdentifier" : "ClockworkMod.UniversalADBDriver",
+					"Version" : "1.0.4"
+				},
+				{
+					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
+					"Version" : "25.3.24.7"
+				},
+				{
 					"PackageIdentifier" : "Nvidia.PhysXLegacy",
 					"Version" : "9.13.0604"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
-					"Version" : "14.42.34438.0"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
-					"Version" : "14.42.34438.0"
+					"Version" : "14.44.35208.0"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
@@ -128,19 +124,31 @@
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "135.1.77.100"
+					"Version" : "137.1.79.123"
+				},
+				{
+					"PackageIdentifier" : "Discord.Discord",
+					"Version" : "1.0.9195"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.41.0"
+					"Version" : "2.45.0"
+				},
+				{
+					"PackageIdentifier" : "Google.PlatformTools",
+					"Version" : "36.0.0"
 				},
 				{
 					"PackageIdentifier" : "Gramps.Gramps",
 					"Version" : "6.0.0"
 				},
 				{
+					"PackageIdentifier" : "Gyan.FFmpeg",
+					"Version" : "7.1.1"
+				},
+				{
 					"PackageIdentifier" : "JesseDuffield.lazygit",
-					"Version" : "0.49.0"
+					"Version" : "0.52.0"
 				},
 				{
 					"PackageIdentifier" : "MatsuriDayo.NekoRay",
@@ -156,7 +164,7 @@
 				},
 				{
 					"PackageIdentifier" : "Playnite.Playnite",
-					"Version" : "10.35"
+					"Version" : "10.36"
 				},
 				{
 					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
@@ -164,7 +172,7 @@
 				},
 				{
 					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.29.5"
+					"Version" : "1.29.7"
 				},
 				{
 					"PackageIdentifier" : "Ventoy.Ventoy",
@@ -180,23 +188,23 @@
 				},
 				{
 					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "25.4.8"
+					"Version" : "25.5.31"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",
 					"Version" : "1.17.0"
 				},
 				{
+					"PackageIdentifier" : "Microsoft.PowerToys",
+					"Version" : "0.91.1"
+				},
+				{
 					"PackageIdentifier" : "Python.Python.3.13",
-					"Version" : "3.13.3"
+					"Version" : "3.13.5"
 				},
 				{
 					"PackageIdentifier" : "64Gram.64Gram",
 					"Version" : "1.1.58"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.90.1"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip",
@@ -220,7 +228,7 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.WindowsTerminal",
-					"Version" : "1.22.10731.0"
+					"Version" : "1.22.11141.0"
 				}
 			],
 			"SourceDetails" : 
