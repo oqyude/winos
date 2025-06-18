@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-06-14T23:10:51.941-00:00",
+	"CreationDate" : "2025-06-18T18:13:40.530-00:00",
 	"Sources" : 
 	[
 		{
@@ -8,11 +8,11 @@
 			[
 				{
 					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.40.2683"
+					"Version" : "5.40.2682"
 				},
 				{
 					"PackageIdentifier" : "Git.Git",
-					"Version" : "2.49.0"
+					"Version" : "2.50.0"
 				},
 				{
 					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
@@ -55,8 +55,16 @@
 					"Version" : "1.23.0"
 				},
 				{
+					"PackageIdentifier" : "GNU.MidnightCommander",
+					"Version" : "4.8.33"
+				},
+				{
 					"PackageIdentifier" : "Microsoft.PowerShell",
 					"Version" : "7.5.1.0"
+				},
+				{
+					"PackageIdentifier" : "TheDocumentFoundation.LibreOffice",
+					"Version" : "25.2.4.3"
 				},
 				{
 					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
@@ -69,6 +77,10 @@
 				{
 					"PackageIdentifier" : "Valve.Steam",
 					"Version" : "2.10.91.91"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
+					"Version" : "14.44.35211.0"
 				},
 				{
 					"PackageIdentifier" : "Tailscale.Tailscale",
@@ -115,10 +127,6 @@
 					"Version" : "9.13.0604"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
-					"Version" : "14.44.35208.0"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
 					"Version" : "11.0.61030.0"
 				},
@@ -163,8 +171,12 @@
 					"Version" : "1.11"
 				},
 				{
+					"PackageIdentifier" : "Anaconda.Miniconda3",
+					"Version" : "py313_25.3.1-1"
+				},
+				{
 					"PackageIdentifier" : "Playnite.Playnite",
-					"Version" : "10.36"
+					"Version" : "10.37"
 				},
 				{
 					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
@@ -185,10 +197,6 @@
 				{
 					"PackageIdentifier" : "mtkennerly.ludusavi",
 					"Version" : "0.29.1"
-				},
-				{
-					"PackageIdentifier" : "sxyazi.yazi",
-					"Version" : "25.5.31"
 				},
 				{
 					"PackageIdentifier" : "LocalSend.LocalSend",
