@@ -1,62 +1,34 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-06-09T15:18:32.648-00:00",
+	"CreationDate" : "2025-07-02T17:35:19.340-00:00",
 	"Sources" : 
 	[
 		{
 			"Packages" : 
 			[
 				{
-					"PackageIdentifier" : "9PCLLLH15SMT",
-					"Version" : "5.40.2675"
+					"PackageIdentifier" : "XPFFTQ037JWMHS"
 				},
 				{
-					"PackageIdentifier" : "XPFFTQ037JWMHS",
-					"Version" : "137.0.3296.68"
+					"PackageIdentifier" : "XP89DCGQ3K6VLD"
 				},
 				{
-					"PackageIdentifier" : "XP8C9QZMS2PC1T",
-					"Version" : "137.1.79.119"
+					"PackageIdentifier" : "9WZDNCRFJBH4"
 				},
 				{
-					"PackageIdentifier" : "XP89DCGQ3K6VLD",
-					"Version" : "0.91.0"
+					"PackageIdentifier" : "9WZDNCRFJ3PR"
 				},
 				{
-					"PackageIdentifier" : "9N7R5S6B0ZZH",
-					"Version" : "4.0.36.0"
+					"PackageIdentifier" : "9WZDNCRFJBBG"
 				},
 				{
-					"PackageIdentifier" : "9WZDNCRFJBH4",
-					"Version" : "2025.11040.23001.0"
+					"PackageIdentifier" : "9NMPJ99VJBWV"
 				},
 				{
-					"PackageIdentifier" : "9WZDNCRFJ3PR",
-					"Version" : "11.2503.4.0"
+					"PackageIdentifier" : "9WZDNCRFJ3PT"
 				},
 				{
-					"PackageIdentifier" : "9WZDNCRFJBBG",
-					"Version" : "2025.2502.17.0"
-				},
-				{
-					"PackageIdentifier" : "9N0DX20HK701",
-					"Version" : "1.22.11141.0"
-				},
-				{
-					"PackageIdentifier" : "9NMPJ99VJBWV",
-					"Version" : "1.25042.85.0"
-				},
-				{
-					"PackageIdentifier" : "9WZDNCRFJ3P2",
-					"Version" : "10.25041.10021.0"
-				},
-				{
-					"PackageIdentifier" : "9NF8H0H7WMLT",
-					"Version" : "8.1.967.0"
-				},
-				{
-					"PackageIdentifier" : "9P2B8MCSVPLN",
-					"Version" : "1.1.137.0"
+					"PackageIdentifier" : "9WZDNCRFJ3P2"
 				}
 			],
 			"SourceDetails" : 
@@ -68,5 +40,5 @@
 			}
 		}
 	],
-	"WinGetVersion" : "1.10.390"
+	"WinGetVersion" : "1.11.400"
 }

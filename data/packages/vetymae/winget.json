@@ -1,358 +1,277 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-06-09T15:18:30.812-00:00",
+	"CreationDate" : "2025-07-02T17:35:20.374-00:00",
 	"Sources" : 
 	[
 		{
 			"Packages" : 
 			[
 				{
-					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.40.2675"
+					"PackageIdentifier" : "AIMP.AIMP"
 				},
 				{
-					"PackageIdentifier" : "CrystalDewWorld.CrystalDiskInfo",
-					"Version" : "9.6.3"
+					"PackageIdentifier" : "CrystalDewWorld.CrystalDiskInfo"
 				},
 				{
-					"PackageIdentifier" : "CrystalDewWorld.CrystalDiskMark",
-					"Version" : "8.0.6"
+					"PackageIdentifier" : "CrystalDewWorld.CrystalDiskMark"
 				},
 				{
-					"PackageIdentifier" : "dechamps.FlexASIO",
-					"Version" : "1.10b"
+					"PackageIdentifier" : "dechamps.FlexASIO"
 				},
 				{
-					"PackageIdentifier" : "Git.Git",
-					"Version" : "2.49.0"
+					"PackageIdentifier" : "Git.Git"
 				},
 				{
-					"PackageIdentifier" : "Resplendence.LatencyMon",
-					"Version" : "7.31"
+					"PackageIdentifier" : "Resplendence.LatencyMon"
 				},
 				{
-					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
-					"Version" : "0.8.0.0"
+					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect"
 				},
 				{
-					"PackageIdentifier" : "Sonosaurus.SonoBus",
-					"Version" : "1.7.2"
+					"PackageIdentifier" : "Sonosaurus.SonoBus"
 				},
 				{
-					"PackageIdentifier" : "OBSProject.OBSStudio",
-					"Version" : "Unknown"
+					"PackageIdentifier" : "SublimeHQ.SublimeText.4"
 				},
 				{
-					"PackageIdentifier" : "SublimeHQ.SublimeText.4",
-					"Version" : "Unknown"
+					"PackageIdentifier" : "VideoLAN.VLC"
 				},
 				{
-					"PackageIdentifier" : "Audient.iD",
-					"Version" : "4.4.2.0"
+					"PackageIdentifier" : "Audient.iD"
 				},
 				{
-					"PackageIdentifier" : "Apple.BonjourPrintServices",
-					"Version" : "2.0.2.0"
+					"PackageIdentifier" : "Apple.BonjourPrintServices"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2010.x64",
-					"Version" : "10.0.40219"
+					"PackageIdentifier" : "Microsoft.VCRedist.2010.x64"
 				},
 				{
-					"PackageIdentifier" : "Zoom.Zoom",
-					"Version" : "6.4.64360"
+					"PackageIdentifier" : "Geeks3D.FurMark.2"
 				},
 				{
-					"PackageIdentifier" : "OwlPlug.OwlPlug",
-					"Version" : "1.29.1"
+					"PackageIdentifier" : "Zoom.Zoom"
 				},
 				{
-					"PackageIdentifier" : "Apple.Bonjour",
-					"Version" : "3.1.0.1"
+					"PackageIdentifier" : "OwlPlug.OwlPlug"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2008.x64",
-					"Version" : "9.0.30729.6161"
+					"PackageIdentifier" : "JamesCJ60.Universalx86TuningUtility"
 				},
 				{
-					"PackageIdentifier" : "Transmission.Transmission",
-					"Version" : "4.0.6"
+					"PackageIdentifier" : "OpenJS.NodeJS"
 				},
 				{
-					"PackageIdentifier" : "Logitech.OptionsPlus",
-					"Version" : "1.89.705126"
+					"PackageIdentifier" : "Apple.Bonjour"
 				},
 				{
-					"PackageIdentifier" : "WinDirStat.WinDirStat",
-					"Version" : "2.2.2"
+					"PackageIdentifier" : "Microsoft.VCRedist.2008.x64"
 				},
 				{
-					"PackageIdentifier" : "OpenJS.NodeJS",
-					"Version" : "24.1.0"
+					"PackageIdentifier" : "Transmission.Transmission"
 				},
 				{
-					"PackageIdentifier" : "Nvidia.PhysX",
-					"Version" : "9.23.1019"
+					"PackageIdentifier" : "Logitech.OptionsPlus"
 				},
 				{
-					"PackageIdentifier" : "PDFArranger.PDFArranger",
-					"Version" : "1.11.1"
+					"PackageIdentifier" : "WinDirStat.WinDirStat"
 				},
 				{
-					"PackageIdentifier" : "Starship.Starship",
-					"Version" : "1.23.0"
+					"PackageIdentifier" : "PDFArranger.PDFArranger"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerShell",
-					"Version" : "7.5.1.0"
+					"PackageIdentifier" : "Nvidia.PhysX"
 				},
 				{
-					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
-					"Version" : "2.7.10"
+					"PackageIdentifier" : "Starship.Starship"
 				},
 				{
-					"PackageIdentifier" : "MichaelTippach.ASIO4ALL",
-					"Version" : "2.16"
+					"PackageIdentifier" : "KeePassXCTeam.KeePassXC"
 				},
 				{
-					"PackageIdentifier" : "Guru3D.Afterburner",
-					"Version" : "4.6.5"
+					"PackageIdentifier" : "Microsoft.PowerShell"
 				},
 				{
-					"PackageIdentifier" : "Guru3D.RTSS",
-					"Version" : "7.3.4"
+					"PackageIdentifier" : "Microsoft.VCRedist.2005.x86"
 				},
 				{
-					"PackageIdentifier" : "Valve.Steam",
-					"Version" : "2.10.91.91"
+					"PackageIdentifier" : "MichaelTippach.ASIO4ALL"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2013.x64",
-					"Version" : "12.0.40664.0"
+					"PackageIdentifier" : "Guru3D.Afterburner"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.6",
-					"Version" : "6.0.36"
+					"PackageIdentifier" : "HandBrake.HandBrake"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9",
-					"Version" : "9.0.5"
+					"PackageIdentifier" : "Microsoft.Edge"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.Runtime.7",
-					"Version" : "7.0.20"
+					"PackageIdentifier" : "OBSProject.OBSStudio"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
-					"Version" : "11.0.61030.0"
+					"PackageIdentifier" : "Guru3D.RTSS"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.7",
-					"Version" : "7.0.20"
+					"PackageIdentifier" : "Valve.Steam"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
-					"Version" : "14.44.35112.1"
+					"PackageIdentifier" : "Chocolatey.Chocolatey"
 				},
 				{
-					"PackageIdentifier" : "Python.Launcher",
-					"Version" : "> 3.12.0"
+					"PackageIdentifier" : "Microsoft.VCRedist.2013.x64"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.7",
-					"Version" : "7.0.20"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.6"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.16"
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
-					"Version" : "3.1.32"
+					"PackageIdentifier" : "Microsoft.DotNet.Runtime.7"
 				},
 				{
-					"PackageIdentifier" : "Tailscale.Tailscale",
-					"Version" : "1.82.5"
+					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.16"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.7"
 				},
 				{
-					"PackageIdentifier" : "Famatech.RadminVPN",
-					"Version" : "2.0.4896.6"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2008.x86",
-					"Version" : "9.0.30729.6161"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8"
 				},
 				{
-					"PackageIdentifier" : "Yarn.Yarn",
-					"Version" : "1.22.22"
+					"PackageIdentifier" : "Python.Launcher"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.Runtime.6",
-					"Version" : "6.0.36"
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.7"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2013.x86",
-					"Version" : "12.0.40664.0"
+					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1"
 				},
 				{
-					"PackageIdentifier" : "Apple.AppleSoftwareUpdate",
-					"Version" : "2.7.0.3"
+					"PackageIdentifier" : "TechPowerUp.GPU-Z"
 				},
 				{
-					"PackageIdentifier" : "ClockworkMod.UniversalADBDriver",
-					"Version" : "1.0.4"
+					"PackageIdentifier" : "Microsoft.VCRedist.2008.x86"
 				},
 				{
-					"PackageIdentifier" : "Cloudflare.cloudflared",
-					"Version" : "2025.5.0"
+					"PackageIdentifier" : "Yarn.Yarn"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86",
-					"Version" : "10.0.40219"
+					"PackageIdentifier" : "Microsoft.DotNet.Runtime.6"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
-					"Version" : "14.44.35112.1"
+					"PackageIdentifier" : "Microsoft.VCRedist.2013.x86"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
-					"Version" : "11.0.61030.0"
+					"PackageIdentifier" : "Apple.AppleSoftwareUpdate"
 				},
 				{
-					"PackageIdentifier" : "Stretchly.Stretchly",
-					"Version" : "1.17.2"
+					"PackageIdentifier" : "ClockworkMod.UniversalADBDriver"
 				},
 				{
-					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "137.1.79.119"
+					"PackageIdentifier" : "LesFerch.WinSetView"
 				},
 				{
-					"PackageIdentifier" : "Discord.Discord",
-					"Version" : "1.0.9169"
+					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86"
 				},
 				{
-					"PackageIdentifier" : "OliverBetz.ExifTool",
-					"Version" : "13.27"
+					"PackageIdentifier" : "Nvidia.PhysXLegacy"
 				},
 				{
-					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.43.0"
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8"
 				},
 				{
-					"PackageIdentifier" : "GNU.Nano",
-					"Version" : "2.7.5"
+					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64"
 				},
 				{
-					"PackageIdentifier" : "Google.PlatformTools",
-					"Version" : "36.0.0"
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64"
 				},
 				{
-					"PackageIdentifier" : "Gramps.Gramps",
-					"Version" : "6.0.0"
+					"PackageIdentifier" : "Stretchly.Stretchly"
 				},
 				{
-					"PackageIdentifier" : "JesseDuffield.lazygit",
-					"Version" : "0.50.0"
+					"PackageIdentifier" : "Brave.Brave"
 				},
 				{
-					"PackageIdentifier" : "MatsuriDayo.NekoRay",
-					"Version" : "4.0.1"
+					"PackageIdentifier" : "Discord.Discord"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.Sysinternals.ProcessExplorer",
-					"Version" : "17.06"
+					"PackageIdentifier" : "OliverBetz.ExifTool"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.Sysinternals.RegJump",
-					"Version" : "1.11"
+					"PackageIdentifier" : "Fastfetch-cli.Fastfetch"
 				},
 				{
-					"PackageIdentifier" : "Playnite.Playnite",
-					"Version" : "10.35"
+					"PackageIdentifier" : "GNU.Nano"
 				},
 				{
-					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
-					"Version" : "3.5.2"
+					"PackageIdentifier" : "Google.PlatformTools"
 				},
 				{
-					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.29.6"
+					"PackageIdentifier" : "Gramps.Gramps"
 				},
 				{
-					"PackageIdentifier" : "Ventoy.Ventoy",
-					"Version" : "1.1.05"
+					"PackageIdentifier" : "JesseDuffield.lazygit"
 				},
 				{
-					"PackageIdentifier" : "ebkr.r2modman",
-					"Version" : "3.1.58"
+					"PackageIdentifier" : "MatsuriDayo.NekoRay"
 				},
 				{
-					"PackageIdentifier" : "Obsidian.Obsidian",
-					"Version" : "1.8.10"
+					"PackageIdentifier" : "Microsoft.Sysinternals.ProcessExplorer"
 				},
 				{
-					"PackageIdentifier" : "ItchIo.Itch",
-					"Version" : "26.1.9"
+					"PackageIdentifier" : "Microsoft.Sysinternals.RegJump"
 				},
 				{
-					"PackageIdentifier" : "mtkennerly.ludusavi",
-					"Version" : "0.29.1"
+					"PackageIdentifier" : "Playnite.Playnite"
 				},
 				{
-					"PackageIdentifier" : "simulot.immich-go",
-					"Version" : "0.26.3"
+					"PackageIdentifier" : "RadolynLabs.AyuGramDesktop"
 				},
 				{
-					"PackageIdentifier" : "LocalSend.LocalSend",
-					"Version" : "1.17.0"
+					"PackageIdentifier" : "SumatraPDF.SumatraPDF"
 				},
 				{
-					"PackageIdentifier" : "Python.Python.3.13",
-					"Version" : "3.13.3"
+					"PackageIdentifier" : "Syncthing.Syncthing"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.91.0"
+					"PackageIdentifier" : "Ventoy.Ventoy"
 				},
 				{
-					"PackageIdentifier" : "64Gram.64Gram",
-					"Version" : "1.1.58"
+					"PackageIdentifier" : "ebkr.r2modman"
 				},
 				{
-					"PackageIdentifier" : "M2Team.NanaZip",
-					"Version" : "5.0.1263.0"
+					"PackageIdentifier" : "Obsidian.Obsidian"
 				},
 				{
-					"PackageIdentifier" : "ImageMagick.Q16",
-					"Version" : "7.1.1.47"
+					"PackageIdentifier" : "mtkennerly.ludusavi"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.AppInstaller",
-					"Version" : "1.25.390.0"
+					"PackageIdentifier" : "LocalSend.LocalSend"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.UI.Xaml.2.7",
-					"Version" : "7.2409.9001.0"
+					"PackageIdentifier" : "Python.Python.3.13"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.UI.Xaml.2.8",
-					"Version" : "8.2501.31001.0"
+					"PackageIdentifier" : "Microsoft.PowerToys"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCLibs.Desktop.14",
-					"Version" : "14.0.33728.0"
+					"PackageIdentifier" : "M2Team.NanaZip"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.WindowsTerminal",
-					"Version" : "1.22.11141.0"
+					"PackageIdentifier" : "Microsoft.AppInstaller"
 				},
 				{
-					"PackageIdentifier" : "zadjii.ObsidianNotesExtension",
-					"Version" : "0.0.5.0"
+					"PackageIdentifier" : "Microsoft.UI.Xaml.2.8"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.VCLibs.Desktop.14"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.WindowsTerminal"
 				}
 			],
 			"SourceDetails" : 
@@ -364,5 +283,5 @@
 			}
 		}
 	],
-	"WinGetVersion" : "1.10.390"
+	"WinGetVersion" : "1.11.400"
 }

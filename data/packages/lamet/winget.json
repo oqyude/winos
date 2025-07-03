@@ -1,242 +1,181 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-06-18T18:13:40.530-00:00",
+	"CreationDate" : "2025-06-19T16:07:16.339-00:00",
 	"Sources" : 
 	[
 		{
 			"Packages" : 
 			[
 				{
-					"PackageIdentifier" : "AIMP.AIMP",
-					"Version" : "5.40.2682"
+					"PackageIdentifier" : "AIMP.AIMP"
 				},
 				{
-					"PackageIdentifier" : "Git.Git",
-					"Version" : "2.50.0"
+					"PackageIdentifier" : "Git.Git"
 				},
 				{
-					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect",
-					"Version" : "0.8.0.0"
+					"PackageIdentifier" : "rcmaehl.MSEdgeRedirect"
 				},
 				{
-					"PackageIdentifier" : "SublimeHQ.SublimeText.4",
-					"Version" : "Unknown"
+					"PackageIdentifier" : "SublimeHQ.SublimeText.4"
 				},
 				{
-					"PackageIdentifier" : "Audient.iD",
-					"Version" : "4.4.0.0"
+					"PackageIdentifier" : "Audient.iD"
 				},
 				{
-					"PackageIdentifier" : "Apple.BonjourPrintServices",
-					"Version" : "2.0.2.0"
+					"PackageIdentifier" : "Apple.Bonjour"
 				},
 				{
-					"PackageIdentifier" : "Apple.Bonjour",
-					"Version" : "3.1.0.1"
+					"PackageIdentifier" : "Transmission.Transmission"
 				},
 				{
-					"PackageIdentifier" : "Transmission.Transmission",
-					"Version" : "4.0.6"
+					"PackageIdentifier" : "Logitech.OptionsPlus"
 				},
 				{
-					"PackageIdentifier" : "Logitech.OptionsPlus",
-					"Version" : "1.91.722586"
+					"PackageIdentifier" : "PDFArranger.PDFArranger"
 				},
 				{
-					"PackageIdentifier" : "PDFArranger.PDFArranger",
-					"Version" : "1.12.1"
+					"PackageIdentifier" : "Starship.Starship"
 				},
 				{
-					"PackageIdentifier" : "Nvidia.PhysX",
-					"Version" : "9.21.0713"
+					"PackageIdentifier" : "GNU.MidnightCommander"
 				},
 				{
-					"PackageIdentifier" : "Starship.Starship",
-					"Version" : "1.23.0"
+					"PackageIdentifier" : "valinet.ExplorerPatcher"
 				},
 				{
-					"PackageIdentifier" : "GNU.MidnightCommander",
-					"Version" : "4.8.33"
+					"PackageIdentifier" : "Microsoft.PowerShell"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerShell",
-					"Version" : "7.5.1.0"
+					"PackageIdentifier" : "TheDocumentFoundation.LibreOffice"
 				},
 				{
-					"PackageIdentifier" : "TheDocumentFoundation.LibreOffice",
-					"Version" : "25.2.4.3"
+					"PackageIdentifier" : "KeePassXCTeam.KeePassXC"
 				},
 				{
-					"PackageIdentifier" : "KeePassXCTeam.KeePassXC",
-					"Version" : "2.7.10"
+					"PackageIdentifier" : "Microsoft.Edge"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2005.x86",
-					"Version" : "8.0.61001"
+					"PackageIdentifier" : "Valve.Steam"
 				},
 				{
-					"PackageIdentifier" : "Valve.Steam",
-					"Version" : "2.10.91.91"
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86",
-					"Version" : "14.44.35211.0"
+					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86"
 				},
 				{
-					"PackageIdentifier" : "Tailscale.Tailscale",
-					"Version" : "1.84.2"
+					"PackageIdentifier" : "Microsoft.DotNet.Runtime.8"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86",
-					"Version" : "11.0.61030.0"
+					"PackageIdentifier" : "Python.Launcher"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8",
-					"Version" : "8.0.17"
+					"PackageIdentifier" : "Microsoft.VCRedist.2005.x86"
 				},
 				{
-					"PackageIdentifier" : "Python.Launcher",
-					"Version" : "> 3.12.0"
+					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8",
-					"Version" : "8.0.17"
+					"PackageIdentifier" : "Microsoft.DotNet.AspNetCore.8"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1",
-					"Version" : "3.1.32"
+					"PackageIdentifier" : "Apple.AppleSoftwareUpdate"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64",
-					"Version" : "14.44.35208.0"
+					"PackageIdentifier" : "ClockworkMod.UniversalADBDriver"
 				},
 				{
-					"PackageIdentifier" : "Apple.AppleSoftwareUpdate",
-					"Version" : "2.7.0.3"
+					"PackageIdentifier" : "LesFerch.WinSetView"
 				},
 				{
-					"PackageIdentifier" : "ClockworkMod.UniversalADBDriver",
-					"Version" : "1.0.4"
+					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant"
 				},
 				{
-					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant",
-					"Version" : "25.3.24.7"
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8"
 				},
 				{
-					"PackageIdentifier" : "Nvidia.PhysXLegacy",
-					"Version" : "9.13.0604"
+					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64",
-					"Version" : "11.0.61030.0"
+					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64"
 				},
 				{
-					"PackageIdentifier" : "Brave.Brave",
-					"Version" : "137.1.79.123"
+					"PackageIdentifier" : "Brave.Brave"
 				},
 				{
-					"PackageIdentifier" : "Discord.Discord",
-					"Version" : "1.0.9195"
+					"PackageIdentifier" : "Fastfetch-cli.Fastfetch"
 				},
 				{
-					"PackageIdentifier" : "Fastfetch-cli.Fastfetch",
-					"Version" : "2.45.0"
+					"PackageIdentifier" : "Google.PlatformTools"
 				},
 				{
-					"PackageIdentifier" : "Google.PlatformTools",
-					"Version" : "36.0.0"
+					"PackageIdentifier" : "Gramps.Gramps"
 				},
 				{
-					"PackageIdentifier" : "Gramps.Gramps",
-					"Version" : "6.0.0"
+					"PackageIdentifier" : "Gyan.FFmpeg"
 				},
 				{
-					"PackageIdentifier" : "Gyan.FFmpeg",
-					"Version" : "7.1.1"
+					"PackageIdentifier" : "JesseDuffield.lazygit"
 				},
 				{
-					"PackageIdentifier" : "JesseDuffield.lazygit",
-					"Version" : "0.52.0"
+					"PackageIdentifier" : "MatsuriDayo.NekoRay"
 				},
 				{
-					"PackageIdentifier" : "MatsuriDayo.NekoRay",
-					"Version" : "4.0.1"
+					"PackageIdentifier" : "Microsoft.Sysinternals.Autoruns"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.Sysinternals.Autoruns",
-					"Version" : "14.10"
+					"PackageIdentifier" : "Microsoft.Sysinternals.RegJump"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.Sysinternals.RegJump",
-					"Version" : "1.11"
+					"PackageIdentifier" : "Playnite.Playnite"
 				},
 				{
-					"PackageIdentifier" : "Anaconda.Miniconda3",
-					"Version" : "py313_25.3.1-1"
+					"PackageIdentifier" : "RadolynLabs.AyuGramDesktop"
 				},
 				{
-					"PackageIdentifier" : "Playnite.Playnite",
-					"Version" : "10.37"
+					"PackageIdentifier" : "SumatraPDF.SumatraPDF"
 				},
 				{
-					"PackageIdentifier" : "SumatraPDF.SumatraPDF",
-					"Version" : "3.5.2"
+					"PackageIdentifier" : "Syncthing.Syncthing"
 				},
 				{
-					"PackageIdentifier" : "Syncthing.Syncthing",
-					"Version" : "1.29.7"
+					"PackageIdentifier" : "ToastyX.CustomResolutionUtility"
 				},
 				{
-					"PackageIdentifier" : "Ventoy.Ventoy",
-					"Version" : "1.1.05"
+					"PackageIdentifier" : "Ventoy.Ventoy"
 				},
 				{
-					"PackageIdentifier" : "Obsidian.Obsidian",
-					"Version" : "1.8.10"
+					"PackageIdentifier" : "Obsidian.Obsidian"
 				},
 				{
-					"PackageIdentifier" : "mtkennerly.ludusavi",
-					"Version" : "0.29.1"
+					"PackageIdentifier" : "mtkennerly.ludusavi"
 				},
 				{
-					"PackageIdentifier" : "LocalSend.LocalSend",
-					"Version" : "1.17.0"
+					"PackageIdentifier" : "LocalSend.LocalSend"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerToys",
-					"Version" : "0.91.1"
+					"PackageIdentifier" : "Microsoft.PowerToys"
 				},
 				{
-					"PackageIdentifier" : "Python.Python.3.13",
-					"Version" : "3.13.5"
+					"PackageIdentifier" : "Python.Python.3.13"
 				},
 				{
-					"PackageIdentifier" : "64Gram.64Gram",
-					"Version" : "1.1.58"
+					"PackageIdentifier" : "M2Team.NanaZip"
 				},
 				{
-					"PackageIdentifier" : "M2Team.NanaZip",
-					"Version" : "5.0.1263.0"
+					"PackageIdentifier" : "Microsoft.AppInstaller"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.AppInstaller",
-					"Version" : "1.25.390.0"
+					"PackageIdentifier" : "Microsoft.UI.Xaml.2.7"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.UI.Xaml.2.7",
-					"Version" : "7.2409.9001.0"
+					"PackageIdentifier" : "Microsoft.UI.Xaml.2.8"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.UI.Xaml.2.8",
-					"Version" : "8.2501.31001.0"
+					"PackageIdentifier" : "Microsoft.VCLibs.Desktop.14"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.VCLibs.Desktop.14",
-					"Version" : "14.0.33728.0"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.WindowsTerminal",
-					"Version" : "1.22.11141.0"
+					"PackageIdentifier" : "Microsoft.WindowsTerminal"
 				}
 			],
 			"SourceDetails" : 

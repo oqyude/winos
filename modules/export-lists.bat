@@ -12,10 +12,12 @@ if not exist "%packages-user-lists%" (
 start cmd /c choco export "%packages-user-lists%\choco.config" --include-version-numbers
 
 :msstore-list
-start cmd /c winget export -o "%packages-user-lists%\msstore.json" -s "msstore" --include-versions
+start cmd /c winget export -o "%packages-user-lists%\msstore.json" -s "msstore"
+:: --include-versions
 
 :winget-list
-start cmd /c winget export -o "%packages-user-lists%\winget.json" -s "winget" --include-versions
+start cmd /c winget export -o "%packages-user-lists%\winget.json" -s "winget"
+:: --include-versions
 
 endlocal
 exit /B

@@ -4,7 +4,7 @@ setlocal
 set "app=AIMP"
 
 set "from_1=%storage%\%app%"
-set "to_1=%appdata%\AIMP"
+set "to_1=%appdata%\%app%"
 
 rd /s /q "%to_1%"
 
