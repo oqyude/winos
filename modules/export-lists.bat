@@ -9,7 +9,8 @@ if not exist "%packages-user-lists%" (
 )
 
 :choco-list
-start cmd /c choco export "%packages-user-lists%\choco.config" --include-version-numbers
+start cmd /c choco export "%packages-user-lists%\choco.config"
+::--include-version-numbers
 
 :msstore-list
 start cmd /c winget export -o "%packages-user-lists%\msstore.json" -s "msstore"

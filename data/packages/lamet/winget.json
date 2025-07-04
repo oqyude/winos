@@ -1,6 +1,6 @@
 {
 	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2025-06-19T16:07:16.339-00:00",
+	"CreationDate" : "2025-07-04T15:51:59.656-00:00",
 	"Sources" : 
 	[
 		{
@@ -43,13 +43,13 @@
 					"PackageIdentifier" : "valinet.ExplorerPatcher"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerShell"
-				},
-				{
 					"PackageIdentifier" : "TheDocumentFoundation.LibreOffice"
 				},
 				{
 					"PackageIdentifier" : "KeePassXCTeam.KeePassXC"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.PowerShell"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.Edge"
@@ -67,10 +67,16 @@
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.8"
 				},
 				{
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8"
+				},
+				{
 					"PackageIdentifier" : "Python.Launcher"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2005.x86"
+				},
+				{
+					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9"
 				},
 				{
 					"PackageIdentifier" : "Microsoft.DotNet.Runtime.3_1"
@@ -91,9 +97,6 @@
 					"PackageIdentifier" : "Intel.IntelDriverAndSupportAssistant"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8"
-				},
-				{
 					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64"
 				},
 				{
@@ -101,6 +104,9 @@
 				},
 				{
 					"PackageIdentifier" : "Brave.Brave"
+				},
+				{
+					"PackageIdentifier" : "Discord.Discord"
 				},
 				{
 					"PackageIdentifier" : "Fastfetch-cli.Fastfetch"
@@ -145,6 +151,9 @@
 					"PackageIdentifier" : "Ventoy.Ventoy"
 				},
 				{
+					"PackageIdentifier" : "WsSolInfor.CrystalDiskInfo"
+				},
+				{
 					"PackageIdentifier" : "Obsidian.Obsidian"
 				},
 				{
@@ -154,10 +163,10 @@
 					"PackageIdentifier" : "LocalSend.LocalSend"
 				},
 				{
-					"PackageIdentifier" : "Microsoft.PowerToys"
+					"PackageIdentifier" : "Python.Python.3.13"
 				},
 				{
-					"PackageIdentifier" : "Python.Python.3.13"
+					"PackageIdentifier" : "Microsoft.PowerToys"
 				},
 				{
 					"PackageIdentifier" : "M2Team.NanaZip"
@@ -187,5 +196,5 @@
 			}
 		}
 	],
-	"WinGetVersion" : "1.10.390"
+	"WinGetVersion" : "1.11.400"
 }
