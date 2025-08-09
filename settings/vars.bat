@@ -31,4 +31,4 @@ set "user-name=oqyude"
 :: Main Folder
 set "games=%disk-label%\Games"
 set "storage=%userprofile%\Storage"
-set "storage-games=C:\Games"
+set "storage-games=N:\Games\.storage"
