@@ -6,7 +6,7 @@ set "app=AIMP"
 set "from_1=%storage%\%app%"
 set "to_1=%appdata%\%app%"
 
-rd /q "%to_1%"
+rd /S /Q "%to_1%"
 
 mklink /D "%to_1%" "%from_1%"
 
