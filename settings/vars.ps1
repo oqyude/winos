@@ -6,18 +6,11 @@ $winget = "$PSScriptRoot\winget.ps1"
 # Local Root
 $data = "$root\data"
 
-# Packages
-$packages = "$data\packages"
-$packagesInstaller = "$packages\install.bat"
-$packagesAllLists = "$packages\[all]"
-$packagesUserLists = "$packages\$env:COMPUTERNAME"
-$packagesUserListsOther = "$packagesUserLists\other.bat"
-
 # Apps
 $apps = "$data\apps"
-$appsAll = "$apps\all.csv"
-$appsLegacy = "$apps\legacy"
+$appsAll = "$data\all.csv"
 $appsUser = "$apps\$env:COMPUTERNAME"
+$appsLegacy = "$apps\legacy"
 
 # Mounts
 $mounts = "$data\mounts"
