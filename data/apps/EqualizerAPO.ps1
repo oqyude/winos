@@ -5,89 +5,83 @@ param(
     [string]$To
 )
 
-Write-Host "Isolate script for $AppName : $Action | From: $From | To: $To"  # Дебаг входа
+# Валидация входа (fallback для кривых путей)
+if (-not $From) {
+    Write-Error "No From path – aborting"
+    Exit 1
+}
+if (-not [System.IO.Path]::IsPathRooted($To)) {
+    $To = Join-Path $env:ProgramFiles $AppName
+    Write-Host "Fixed To: $To"
+}
 
-$FabFilterTarget = "$env:ProgramFiles\VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll"
-$FabFilterLink = Join-Path $To "VSTPlugins\FabFilter Pro-Q 3.dll"
+# Константы (уютно в одном месте)
 $configDir = Join-Path $To "config"
 $regPath = "HKLM:\SOFTWARE\EqualizerAPO"
 $regKey = "ConfigPath"
+$vstDir = Join-Path $To "VSTPlugins"
+$FabFilterLink = Join-Path $vstDir "FabFilter Pro-Q 3.dll"
+$globalDLL = "$env:ProgramFiles\VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll"
 
-if (-not $From) {
-    Write-Warning "Missing From path: $From – skipping, idiot"
-    return
-}
-if (-not $To -or -not [System.IO.Path]::IsPathRooted($To)) {
-    Write-Warning "Invalid To path: $To – fixing to default ProgramFiles"
-    $To = Join-Path $env:ProgramFiles $AppName  # Fallback, если apps-manager всё равно сломан
+Write-Host "Isolate: $AppName ($Action) | From: $From | To: $To"
+
+# Функции для чистоты (disconnect/connect как модули)
+function Disconnect-App {
+    Write-Host "  Disconnecting..."
+    
+    # Чисти config (как в BAT)
+    if (Test-Path $configDir) {
+        Remove-Item $configDir -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "    Config wiped"
+    }
+    
+    # Удаляй линк (не оригинал)
+    if (Test-Path $FabFilterLink) {
+        Remove-Item $FabFilterLink -Force -ErrorAction SilentlyContinue
+        Write-Host "    VST link removed"
+    }
+    
+    # Чисти реестр
+    if (Test-Path $regPath) {
+        Remove-ItemProperty -Path $regPath -Name $regKey -ErrorAction SilentlyContinue
+        Write-Host "    Registry cleaned"
+    }
 }
 
+function Connect-App {
+    Write-Host "  Connecting..."
+    
+    # Реестр на storage
+    if (-not (Test-Path $regPath)) {
+        New-Item -Path $regPath -Force | Out-Null
+    }
+    Set-ItemProperty -Path $regPath -Name $regKey -Value $From -Type String -Force
+    Write-Host "    ConfigPath -> $From"
+    
+    # Линк VST: в APO на системный (как в BAT)
+    if (-not (Test-Path $vstDir)) {
+        New-Item -ItemType Directory -Path $vstDir -Force | Out-Null
+    }
+    if (Test-Path $FabFilterLink) {
+        Remove-Item $FabFilterLink -Force
+    }
+    if (Test-Path $globalDLL) {
+        New-Item -ItemType SymbolicLink -Path $FabFilterLink -Value $globalDLL -Force | Out-Null
+        Write-Host "    VST linked: $FabFilterLink -> $globalDLL"
+    } else {
+        Write-Warning "  No system VST: $globalDLL (install it?)"
+    }
+}
+
+# Основная логика
 switch ($Action.ToLower()) {
-    "disconnect" {
-        Write-Host "  Disconnecting $AppName – cleaning up"
-        
-        # Чисти config (как в BAT)
-        $configDir = Join-Path $To "config"
-        if (Test-Path $configDir) {
-            Write-Host "    Wiping config: $configDir"
-            Remove-Item $configDir\* -Recurse -Force -ErrorAction SilentlyContinue
-        }
-        
-        # Удаляй только линк в APO, не системный DLL
-        $FabFilterLink = Join-Path $To "VSTPlugins\FabFilter Pro-Q 3.dll"
-        if (Test-Path $FabFilterLink) {
-            Write-Host "    Removing link: $FabFilterLink"
-            Remove-Item $FabFilterLink -Force -ErrorAction SilentlyContinue
-        }
-        
-        # Чисти реестр (BAT этого не делает, но логично для disconnect)
-        $regPath = "HKLM:\SOFTWARE\EqualizerAPO"
-        $regKey = "ConfigPath"
-        if (Test-Path $regPath) {
-            Remove-ItemProperty -Path $regPath -Name $regKey -ErrorAction SilentlyContinue
-            Write-Host "    Registry cleaned"
-        }
+    "disconnect" { Disconnect-App }
+    "connect" { Connect-App }
+    "reconnect" { 
+        Disconnect-App 
+        Connect-App 
     }
-    
-    "connect" {
-        Write-Host "  Connecting $AppName – linking system VST to APO"
-        
-        # Реестр: ConfigPath на storage (как в BAT)
-        $regPath = "HKLM:\SOFTWARE\EqualizerAPO"
-        if (-not (Test-Path $regPath)) {
-            New-Item -Path $regPath -Force | Out-Null
-        }
-        Set-ItemProperty -Path $regPath -Name "ConfigPath" -Value $From -Type String -Force
-        Write-Host "    Registry set: ConfigPath -> $From"
-        
-        # Линк: в APO на системный VST (как в BAT)
-        $globalDLL = $FabFilterTarget
-        $FabFilterLink = Join-Path $To "VSTPlugins\FabFilter Pro-Q 3.dll"
-        $vstDir = Split-Path $FabFilterLink -Parent
-        if (-not (Test-Path $vstDir)) {
-            New-Item -ItemType Directory -Path $vstDir -Force | Out-Null
-            Write-Host "    Created VST dir in APO: $vstDir"
-        }
-        if (Test-Path $FabFilterLink) {
-            Remove-Item $FabFilterLink -Force
-        }
-        if (Test-Path $globalDLL) {
-            New-Item -ItemType SymbolicLink -Path $FabFilterLink -Value $globalDLL -Force | Out-Null
-            Write-Host "    Link created: $FabFilterLink -> $globalDLL (system VST)"
-        } else {
-            Write-Warning "  System DLL missing: $globalDLL – no link (install FabFilter?)"
-        }
-    }
-    
-    "reconnect" {
-        Write-Host "  Reconnecting: disconnect then connect"
-        & $MyInvocation.MyCommand.Path -Action "disconnect" -AppName $AppName -From $From -To $To
-        & $MyInvocation.MyCommand.Path -Action "connect" -AppName $AppName -From $From -To $To
-    }
-    
-    default {
-        Write-Warning "Unknown: $Action – nothing happens"
-    }
+    default { Write-Warning "Unknown action: $Action" }
 }
 
-Write-Host "Isolate script for $AppName finished"  # Дебаг выхода
+Write-Host "Done with $AppName"
