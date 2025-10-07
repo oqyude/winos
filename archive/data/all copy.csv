@@ -1,0 +1,5 @@
+App,From,To,Type,Enabled,Extra-Variables,Extra-Connect,Extra-Disconnect
+AIMP,%storage%\%app%,%appdata%\%app%,default,0,,,
+KeePassXC,%storage%\%app%,%appdata%\%app%,default,0,,,
+gramps,%storage%\%app%,%appdata%\%app%,default,0,,,
+EqualizerAPO,%storage%\%app%,%ProgramFiles%\%app%,isolate,1,,,

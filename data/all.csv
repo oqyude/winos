@@ -1,5 +1,14 @@
 App,From,To,Type,Enabled,Extra-Variables,Extra-Connect,Extra-Disconnect
-AIMP,%storage%\%app%,%appdata%\%app%,default,0,,,
-KeePassXC,%storage%\%app%,%appdata%\%app%,default,0,,,
-gramps,%storage%\%app%,%appdata%\%app%,default,0,,,
-EqualizerAPO,%storage%\%app%,%ProgramFiles%\%app%,isolate,1,,,
+AIMP,$storage\$AppName,$env:APPDATA\$AppName,default,0,,,
+gramps,$storage\$AppName,$env:APPDATA\$AppName,default,0,,,
+KeePassXC,$storage\$AppName,$env:APPDATA\$AppName,default,0,,,
+ludusavi,$storage\$AppName,$env:APPDATA\$AppName,default,0
+Playnite,$storage\$AppName,$env:APPDATA\$AppName,default,0
+Powertoys,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\Microsoft\PowerToys,default,0
+Sublime Text,$storage\$AppName\Config,$env:APPDATA\$AppName,default,0,,,
+SumatraPDF,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,0
+Syncthing,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,0,,,
+transmission,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,0,,,
+v2rayN,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,0,,,
+VSCodium,$storage\$AppName,$env:APPDATA\$AppName,default,0,,,
+EqualizerAPO,$storage\$AppName,$ProgramFiles\$AppName,isolate,0,$from_1 = Join-Path $storage $AppName; $to_1 = Join-Path $ProgramFiles $AppName; $FabQ3 = Join-Path $ProgramFiles 'VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll',reg add 'HKLM:\SOFTWARE\EqualizerAPO' -Name 'ConfigPath' -Value '$storage\$AppName' -Type String -Force; New-Item -ItemType SymbolicLink -Path $to_1\VSTPlugins\FabFilter Pro-Q 3.dll -Target $FabQ3,Remove-Item -Recurse -Force $to_1\config\*; Remove-Item -Force $to_1\VSTPlugins\FabFilter Pro-Q 3.dll

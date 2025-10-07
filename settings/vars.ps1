@@ -13,13 +13,12 @@ $appsUser = "$apps\$env:COMPUTERNAME"
 $appsLegacy = "$apps\legacy"
 
 # Mounts
-$mounts = "$data\mounts"
+# $mounts = "$data\mounts"
 
 # GLOBAL
-$diskLabel = "S:"
-$userName = "oqyude"
-
-# Main Folder
-$games = "$diskLabel\Games"
 $storage = "$env:USERPROFILE\Storage"
-$storageGames = "N:\Games\.storage"
+
+# $userName = "oqyude"
+# $diskLabel = "S:"
+# $games = "$diskLabel\Games"
+# $storageGames = "N:\Games\.storage"

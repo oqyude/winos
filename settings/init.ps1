@@ -1,4 +1,3 @@
-# --- init.ps1 ---
 # Переходим в папку скрипта
 Set-Location -Path $PSScriptRoot
 
