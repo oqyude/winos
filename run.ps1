@@ -14,7 +14,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 Write-Host "Запуск от имени администратора подтвержден."
 
 # Аргумент действия
-$action = if ($args.Count -ge 1) { $args[0] } else { "reconnect" }
+$action = if ($args.Count -ge 1) { $args[0] } else { "connect" }
 
 # Вызов apps-manager.ps1 с передачей аргумента
 $appsManager = Join-Path $PSScriptRoot "apps-manager.ps1"

@@ -8,9 +8,9 @@ Write-Host "Apps Manager запущен с действием: $action"
 $config = $appsAll
 
 # Импорт CSV
-$apps = Import-Csv -Path $config
+$csv = Import-Csv -Path $config
 
-foreach ($app in $apps) {
+foreach ($app in $csv) {
     # Пропускаем отключённые
     if ($app.Enabled -ne "1") { continue }
 
@@ -36,9 +36,33 @@ foreach ($app in $apps) {
     Write-Host "  Expanded From: $from"
     Write-Host "  Expanded To  : $to"
 
-    if ($app.Type -ieq "isolate") {
-        Write-Host "  [isolate] — пропускаем действия"
-        continue
+    # Обработка isolate: выполняем подскрипт вместо симлинков
+    if ($app.Type -eq "isolate") {
+        if ($app.Script) {
+            # Шагово: сначала подставляем $AppName
+            $scriptRaw = $app.Script -replace '\$AppName', $AppName
+            # Потом заменяем $Apps на путь $apps (если опечатка в CSV)
+            $scriptRaw = $scriptRaw -replace '\$apps', $apps
+            # Теперь расширяем оставшиеся vars (env и т.д.)
+            $scriptPath = $ExecutionContext.InvokeCommand.ExpandString($scriptRaw)
+        } else {
+            # Fallback без Script
+            $safeName = $AppName -replace ' ', '_'
+            $scriptPath = Join-Path $apps "$safeName.ps1"
+        }
+        
+        Write-Host "    Isolate mode: Executing script $scriptPath"
+        if (Test-Path $scriptPath) {
+            try {
+                # Передаём action и app-контекст в подскрипт
+                & $scriptPath -Action $action -AppName $AppName -From $from -To $to
+            } catch {
+                Write-Error "Script failed for $AppName`: $($_.Exception.Message)"
+            }
+        } else {
+            Write-Warning "Isolate script not found: $scriptPath"
+        }
+        continue  # Пропускаем симлинки
     }
 
     switch ($action.ToLower()) {
