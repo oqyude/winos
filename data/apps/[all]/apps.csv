@@ -1,0 +1,5 @@
+App,From,To,Type,Enabled,Extra-Variables,Extra-Connect,Extra-Disconnect
+AIMP,%storage%\%app%,%appdata%\%app%,default,0,,,
+KeePassXC,%storage%\%app%,%appdata%\%app%,default,0,,,
+gramps,%storage%\%app%,%appdata%\%app%,default,0,,,
+EqualizerAPO,%storage%\%app%,%ProgramFiles%\%app%,isolate,1,"set ""from_1=%storage%\%app%"" && set ""to_1=%ProgramFiles%\%app%"" && set ""FabFilter_Pro-Q_3=%ProgramFiles%\VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll""","reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\EqualizerAPO"" /v ""ConfigPath"" /t REG_SZ /d ""%storage%\%app%"" /f && mklink ""%to_1%\VSTPlugins\FabFilter Pro-Q 3.dll"" ""%FabFilter_Pro-Q_3%""","for /f ""delims="" %%i in ('dir /aL /b %to_1%\config') do del ""%%i"" && del /q ""%to_1%\config\*"" && del /q ""%to_1%\VSTPlugins\FabFilter Pro-Q 3.dll"""

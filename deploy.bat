@@ -27,6 +27,5 @@ if '%errorlevel%' NEQ '0' (
 cd /d "%~dp0\modules"
 
 call init.bat
-start call packages.bat
-start call configurations.bat
-start call mounts.bat
+start call storage-connect.bat
+start call mounts-connect.bat
