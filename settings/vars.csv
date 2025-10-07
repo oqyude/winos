@@ -1,0 +1,13 @@
+Key,Value,Type
+winget,%root%\winget.ps1,Package Manager
+data,%root%\data,Local Root
+packages,%data%\packages,Packages
+apps,%data%\apps,Apps
+apps-all,%apps%\all.csv,Apps
+apps-legacy,%apps%\legacy,Apps
+mounts,%data%\mounts,Mounts
+disk-label,S:,Global
+user-name,oqyude,Global
+games,%disk-label%\Games,Main Folder
+storage,%userprofile%\Storage,Main Folder
+storage-games,N:\Games\.storage,Main Folder

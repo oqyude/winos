@@ -1,7 +1,7 @@
 :: LOCAL ::
 
 :: Package Managers
-set "winget=%~dp0winget.ps1"
+set "winget=%root%\winget.ps1"
 
 :: Local Root
 set "data=%root%\data"
@@ -15,8 +15,7 @@ set "packages-user-lists-other=%packages-user-lists%\other.bat"
 
 :: Apps
 set "apps=%data%\apps"
-set "csv=%data%\apps.csv"
-set "apps-all=%apps%\[all]"
+set "apps-all=%apps%\all.csv"
 set "apps-legacy=%apps%\legacy"
 set "apps-user=%apps%\%computername%"
 :: Mounts

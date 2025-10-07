@@ -2,21 +2,21 @@
 :: ==========================================
 :: Проверка прав администратора
 :: ==========================================
->nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
-if '%errorlevel%' NEQ '0' (
-    echo Требуются права администратора. Перезапуск...
-    powershell -Command "Start-Process -FilePath '%~f0' -ArgumentList '%*' -Verb RunAs"
-    exit /b
-)
+@REM >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+@REM if '%errorlevel%' NEQ '0' (
+@REM     echo Требуются права администратора. Перезапуск...
+@REM     powershell -Command "Start-Process -FilePath '%~f0' -ArgumentList '%*' -Verb RunAs "
+@REM     exit /b
+@REM )
 
 :: ==========================================
 :: Инициализация
 :: ==========================================
 setlocal EnableDelayedExpansion
-set "init=%~dp0\..\settings\init.bat"
+set "init=%~dp0\settings\init.bat"
 call "%init%"
 
-set "config=%csv%"
+set "config=%apps-all%"
 
 :: ==========================================
 :: Аргумент действия
@@ -33,20 +33,20 @@ for /f "skip=1 tokens=1-8 delims=," %%A in (%config%) do (
     set "To=%%C"
     set "Type=%%D"
     set "Enabled=%%E"
-    set "ExtraVariables=%%F"
-    set "ExtraConnect=%%G"
-    set "ExtraDisconnect=%%H"
+    set "ExtraVariables=%%~F"
+    set "ExtraConnect=%%~G"
+    set "ExtraDisconnect=%%~H"
 
     if "!Enabled!"=="1" (
         :: Разворачиваем стандартные переменные окружения
         call set "From=!From!"
         call set "To=!To!"
-        if not "!ExtraConnect!"=="" call set "ExtraConnect=!ExtraConnect!"
-        if not "!ExtraDisconnect!"=="" call set "ExtraDisconnect=!ExtraDisconnect!"
+        call set "ExtraConnect=!ExtraConnect!"
+        call set "ExtraDisconnect=!ExtraDisconnect!"
 
         :: Выполняем Extra-Variables как команду
         if not "!ExtraVariables!"=="" (
-            call !ExtraVariables!
+            echo !ExtraVariables!
         )
 
         echo ==============================
@@ -84,7 +84,7 @@ exit /b
 :: ==========================================
 :disconnect
 echo Removing "!To!"...
-rd /S /Q "!To!" 2>nul
+rd /Q "!To!" 2>nul
 if not "!ExtraDisconnect!"=="" call !ExtraDisconnect!
 goto :eof
 

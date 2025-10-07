@@ -8,4 +8,5 @@ if '%errorlevel%' NEQ '0' (
 )
 
 call "%~dp0apps-manager.bat" connect
+
 endlocal
