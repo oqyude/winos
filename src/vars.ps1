@@ -11,7 +11,7 @@ $data = "$root\data"
 
 # Setup Data Folder
 $apps = "$data\isolate"
-$appsAll = "$data\apps-data.csv"
+$appsAll = "$data\apps.csv"
 # $appsUser = "$apps\$env:COMPUTERNAME"
 # $appsLegacy = "$apps\legacy"
 
