@@ -1,14 +1,14 @@
-App,From,To,Type,Enabled,Script
-AIMP,$storage\$AppName,$env:APPDATA\$AppName,default,1,
-gramps,$storage\$AppName,$env:APPDATA\$AppName,default,1,
-KeePassXC,$storage\$AppName,$env:APPDATA\$AppName,default,1,
-ludusavi,$storage\$AppName,$env:APPDATA\$AppName,default,1,
-Playnite,$storage\$AppName,$env:APPDATA\$AppName,default,1,
-Powertoys,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\Microsoft\PowerToys,default,1,
-Sublime Text,$storage\$AppName\Config,$env:APPDATA\$AppName,default,1,
-SumatraPDF,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,1,
-Syncthing,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,1,
-transmission,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,1,
-v2rayN,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,1,
-VSCodium,$storage\$AppName,$env:APPDATA\$AppName,default,1,
-EqualizerAPO,$storage\$AppName,$env:ProgramFiles\$AppName,isolate,1,
+App,From,To,Type,Enabled
+AIMP,$storage\$AppName,$env:APPDATA\$AppName,default,1
+gramps,$storage\$AppName,$env:APPDATA\$AppName,default,1
+KeePassXC,$storage\$AppName,$env:APPDATA\$AppName,default,1
+ludusavi,$storage\$AppName,$env:APPDATA\$AppName,default,1
+Playnite,$storage\$AppName,$env:APPDATA\$AppName,default,1
+Powertoys,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\Microsoft\PowerToys,default,1
+Sublime Text,$storage\$AppName\Config,$env:APPDATA\$AppName,default,1
+SumatraPDF,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,1
+Syncthing,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,1
+transmission,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,1
+v2rayN,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,1
+VSCodium,$storage\$AppName,$env:APPDATA\$AppName,default,1
+EqualizerAPO,$storage\$AppName,$env:ProgramFiles\$AppName,isolate,1
