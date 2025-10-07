@@ -1,30 +1,31 @@
+# Manage symlink state. Reconnect = disconnect && connect
 param(
     [string]$action = "reconnect"  # connect | disconnect | reconnect
 )
 
-Write-Host "Apps Manager запущен с действием: $action"
+Write-Host "Apps Manager started with action: $action"
 
-# CSV-файл с приложениями
+# CSV file with applications
 $config = $appsAll
 
-# Импорт CSV
+# Import CSV
 $csv = Import-Csv -Path $config
 
 foreach ($app in $csv) {
-    # Пропускаем отключённые
+    # Skip disabled entries
     if ($app.Enabled -ne "1") { continue }
 
     $AppName = $app.App
 
-    # Разворачиваем строки From и To с подстановкой $AppName
+    # Expand From and To strings with $AppName substitution
     $rawFrom = $app.From -replace '\$AppName', $AppName
     $rawTo   = $app.To   -replace '\$AppName', $AppName
 
-    # Разворачиваем переменные окружения
+    # Expand environment variables
     $from = $ExecutionContext.InvokeCommand.ExpandString($rawFrom)
     $to   = $ExecutionContext.InvokeCommand.ExpandString($rawTo)
 
-    # Если путь To относительный, делаем его абсолютным относительно пользователя
+    # If To path is relative, make it absolute relative to the user
     if (-not [System.IO.Path]::IsPathRooted($to)) {
         $to = Join-Path $env:USERPROFILE $to
     }
@@ -36,17 +37,17 @@ foreach ($app in $csv) {
     Write-Host "  Expanded From: $from"
     Write-Host "  Expanded To  : $to"
 
-    # Обработка isolate: выполняем подскрипт вместо симлинков
+    # Handle isolate type: execute a script instead of symlinks
     if ($app.Type -eq "isolate") {
         if ($app.Script) {
-            # Шагово: сначала подставляем $AppName
+            # Step 1: replace $AppName
             $scriptRaw = $app.Script -replace '\$AppName', $AppName
-            # Потом заменяем $Apps на путь $apps (если опечатка в CSV)
+            # Step 2: replace $Apps with $apps path (in case of typo in CSV)
             $scriptRaw = $scriptRaw -replace '\$apps', $apps
-            # Теперь расширяем оставшиеся vars (env и т.д.)
+            # Step 3: expand remaining variables (env etc.)
             $scriptPath = $ExecutionContext.InvokeCommand.ExpandString($scriptRaw)
         } else {
-            # Fallback без Script
+            # Fallback if Script is not defined
             $safeName = $AppName -replace ' ', '_'
             $scriptPath = Join-Path $apps "$safeName.ps1"
         }
@@ -54,7 +55,7 @@ foreach ($app in $csv) {
         Write-Host "    Isolate mode: Executing script $scriptPath"
         if (Test-Path $scriptPath) {
             try {
-                # Передаём action и app-контекст в подскрипт
+                # Pass action and app context to the script
                 & $scriptPath -Action $action -AppName $AppName -From $from -To $to
             } catch {
                 Write-Error "Script failed for $AppName`: $($_.Exception.Message)"
@@ -62,7 +63,7 @@ foreach ($app in $csv) {
         } else {
             Write-Warning "Isolate script not found: $scriptPath"
         }
-        continue  # Пропускаем симлинки
+        continue  # Skip symlink handling
     }
 
     switch ($action.ToLower()) {
@@ -85,7 +86,7 @@ foreach ($app in $csv) {
             }
         }
         default {
-            Write-Warning "Неизвестное действие: $action"
+            Write-Warning "Unknown action: $action"
         }
     }
 }

@@ -1,8 +1,8 @@
+# Undone
 param(
     [string]$csvPath = $appsAll
 )
 
-# Импорт CSV
 $apps = Import-Csv -Path $csvPath
 
 foreach ($app in $apps) {
@@ -10,7 +10,6 @@ foreach ($app in $apps) {
 
     $AppName = $app.App
 
-    # Разворачиваем пути
     $rawFrom = $app.From -replace '\$AppName', $AppName
     $rawTo   = $app.To   -replace '\$AppName', $AppName
 
