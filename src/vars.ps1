@@ -2,6 +2,7 @@
 
 # Modules
 $appsDataManager = "$PSScriptRoot\modules\apps-data-manager.ps1"
+$autostartManager = "$PSScriptRoot\modules\autostart-manager.ps1"
 
 # Package Manager Installers
 $winget = "$PSScriptRoot\winget.ps1"
@@ -20,6 +21,7 @@ $appsAll = "$data\apps.csv"
 
 # GLOBAL
 $storage = "$env:USERPROFILE\Storage"
+$autostartDir = "C:\Winos\Scenaries\Autorun"
 
 # $userName = "oqyude"
 # $diskLabel = "S:"

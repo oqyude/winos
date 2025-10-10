@@ -12,35 +12,14 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 
 Write-Host "Administrator privileges confirmed."
 
-# Define available modules with their respective actions
-$modules = @{
-    "appsDataManager" = @("reconnect", "connect", "disconnect")
-    "autostartManager" = @("update", "remove")
-}
-
-# Interactive module selection
-Write-Host "Select a module:"
-$moduleNames = $modules.Keys | Sort-Object
-for ($i = 0; $i -lt $moduleNames.Count; $i++) {
-    Write-Host "[$($i+1)] $($moduleNames[$i])"
-}
-
-do {
-    $moduleSelection = Read-Host "Enter the number of your choice"
-    $validModule = ($moduleSelection -as [int]) -and ($moduleSelection -ge 1) -and ($moduleSelection -le $moduleNames.Count)
-    if (-not $validModule) { Write-Host "Invalid module selection. Try again." }
-} until ($validModule)
-
-$selectedModule = $moduleNames[$moduleSelection - 1]
-$actions = $modules[$selectedModule]
-
-Write-Host "Selected module: $selectedModule"
+# Define available actions
+$actions = @("reconnect", "connect", "disconnect")
 
 # Determine action: from argument or interactive menu
 if ($args.Count -ge 1) {
     $action = $args[0]
 } else {
-    Write-Host "Select an action for $selectedModule :"
+    Write-Host "Select an action:"
     for ($i = 0; $i -lt $actions.Count; $i++) {
         Write-Host "[$($i+1)] $($actions[$i])"
     }
@@ -56,5 +35,5 @@ if ($args.Count -ge 1) {
 
 Write-Host "Selected action: $action"
 
-# Call the selected module with the chosen action
-. (Get-Variable $selectedModule).Value $action
+# Call with the chosen action
+. $appsDataManager $action
