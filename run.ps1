@@ -12,14 +12,6 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 
 Write-Host "Administrator privileges confirmed."
 
-# Define available modules with their respective actions
-$modules = @{
-    "appsDataManagerModule" = @("reconnect", "connect", "disconnect")
-    "autostartManagerModule" = @("update", "remove")
-    "mountsManagerModule" = @("reconnect", "connect", "disconnect")
-    "deployModule" = @("apply", "clean")
-}
-
 # Interactive module selection
 Clear-Host
 Write-Host "Select a module:"

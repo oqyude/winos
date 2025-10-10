@@ -6,6 +6,14 @@ $autostartManagerModule = "$PSScriptRoot\modules\autostart-manager.ps1"
 $mountsManagerModule = "$PSScriptRoot\modules\mounts-manager.ps1"
 $deployModule = "$PSScriptRoot\modules\deploy.ps1"
 
+# Define available modules with their respective actions
+$modules = @{
+    "appsDataManagerModule" = @("reconnect", "connect", "disconnect")
+    "autostartManagerModule" = @("update", "remove")
+    "mountsManagerModule" = @("reconnect", "connect", "disconnect")
+    "deployModule" = @("apply", "clean")
+}
+
 # Package Manager Installers
 $winget = "$PSScriptRoot\winget.ps1"
 
