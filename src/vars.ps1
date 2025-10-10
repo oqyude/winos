@@ -10,8 +10,8 @@ $deployModule = "$PSScriptRoot\modules\deploy.ps1"
 $modules = @{
     "appsDataManagerModule" = @("reconnect", "connect", "disconnect")
     "autostartManagerModule" = @("update", "remove")
-    "mountsManagerModule" = @("reconnect", "connect", "disconnect")
     "deployModule" = @("apply", "clean")
+    "mountsManagerModule" = @("reconnect", "connect", "disconnect")
 }
 
 # Package Manager Installers
