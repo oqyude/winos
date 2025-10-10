@@ -1,8 +1,9 @@
 # LOCAL
 
 # Modules
-$appsDataManager = "$PSScriptRoot\modules\apps-data-manager.ps1"
+$appsDataManager = "$PSScriptRoot\modules\appdata-manager.ps1"
 $autostartManager = "$PSScriptRoot\modules\autostart-manager.ps1"
+$mountsManager = "$PSScriptRoot\modules\mounts-manager.ps1"
 
 # Package Manager Installers
 $winget = "$PSScriptRoot\winget.ps1"
@@ -13,6 +14,7 @@ $data = "$root\data"
 # Setup Data Folder
 $apps = "$data\isolate"
 $appsAll = "$data\apps.csv"
+$mountsAll = "$data\mounts.csv"
 # $appsUser = "$apps\$env:COMPUTERNAME"
 # $appsLegacy = "$apps\legacy"
 

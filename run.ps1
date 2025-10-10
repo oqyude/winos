@@ -16,6 +16,7 @@ Write-Host "Administrator privileges confirmed."
 $modules = @{
     "appsDataManager" = @("reconnect", "connect", "disconnect")
     "autostartManager" = @("update", "remove")
+    "mountsManager" = @("reconnect", "connect", "disconnect")
 }
 
 # Interactive module selection
