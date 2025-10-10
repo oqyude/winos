@@ -6,7 +6,7 @@ param(
 )
 
 if (-not $From) {
-    Write-Error "No From path – aborting"
+    Write-Error "No From path - aborting"
     Exit 1
 }
 if (-not [System.IO.Path]::IsPathRooted($To)) {
