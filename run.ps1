@@ -19,6 +19,7 @@ $modules = @{
 }
 
 # Interactive module selection
+Clear-Host
 Write-Host "Select a module:"
 $moduleNames = $modules.Keys | Sort-Object
 for ($i = 0; $i -lt $moduleNames.Count; $i++) {
@@ -31,6 +32,7 @@ do {
     if (-not $validModule) { Write-Host "Invalid module selection. Try again." }
 } until ($validModule)
 
+Clear-Host
 $selectedModule = $moduleNames[$moduleSelection - 1]
 $actions = $modules[$selectedModule]
 
@@ -54,6 +56,7 @@ if ($args.Count -ge 1) {
     $action = $actions[$selection - 1]
 }
 
+Clear-Host
 Write-Host "Selected action: $action"
 
 # Call the selected module with the chosen action

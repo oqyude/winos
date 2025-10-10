@@ -5,9 +5,8 @@ param(
 $taskPrefix = "winos_"
 
 function Get-ManagedTasks {
-    Get-ScheduledTask | Where-Object { $_.TaskName -like "$taskPrefix*" }
+    Get-ScheduledTask | Where-Object {$_.TaskName -like "$taskPrefix*"}
 }
-
 function Update-Tasks($shortcut) {
     $shell = New-Object -ComObject WScript.Shell
     $sc = $shell.CreateShortcut($shortcut.FullName)
@@ -15,47 +14,46 @@ function Update-Tasks($shortcut) {
 
     $existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
 
-    # Create ScheduledTaskAction including arguments
+    # Добавляем аргументы из ярлыка
     $actionObj = New-ScheduledTaskAction -Execute $sc.TargetPath -Argument $sc.Arguments
     if ($sc.WorkingDirectory) { $actionObj.WorkingDirectory = $sc.WorkingDirectory }
     $trigger = New-ScheduledTaskTrigger -AtLogOn
 
     if ($existingTask) {
-        Set-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger | Out-Null
-        Write-Host "[UPDATE] Task '$taskName' updated. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)"
+        Set-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger
     } else {
-        Register-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger -User $env:USERNAME -RunLevel Highest -Force | Out-Null
-        Write-Host "[CREATE] Task '$taskName' created. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)"
+        Register-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger -User $env:USERNAME -RunLevel Highest -Force
     }
 }
+
 
 function Remove-AllTasks($tasks) {
     foreach ($t in $tasks) {
         Unregister-ScheduledTask -TaskName $t.TaskName -Confirm:$false
-        Write-Host "[REMOVE] Task '$($t.TaskName)' removed."
     }
 }
 
 switch ($action) {
     "update" {
-        if (-not (Test-Path $autostartDir)) {
-            Write-Error "Autostart folder not found: $autostartDir"
+        if (-Not (Test-Path $autostartDir)) {
+            Write-Error "Папка автозапуска не найдена: $autostartDir"
             break
         }
 
+        # Получаем все ярлыки из папки
         $shortcuts = Get-ChildItem -Path $autostartDir -Filter *.lnk
 
+        # Создаем/обновляем задачи по ярлыкам
         foreach ($sc in $shortcuts) {
             Update-Tasks $sc
         }
 
-        # Remove tasks that no longer have corresponding shortcuts
+        # Удаляем задачи, которых нет в папке
         $existingTasks = Get-ManagedTasks
         foreach ($t in $existingTasks) {
             $nameWithoutPrefix = $t.TaskName.Substring($taskPrefix.Length)
-            if (-not ($shortcuts.BaseName -contains $nameWithoutPrefix)) {
+            if (-Not ($shortcuts.BaseName -contains $nameWithoutPrefix)) {
                 Unregister-ScheduledTask -TaskName $t.TaskName -Confirm:$false
-                Write-Host "[REMOVE] Task '$($t.TaskName)' removed because shortcut no longer exists."
             }
         }
     }
@@ -63,6 +61,6 @@ switch ($action) {
         Remove-AllTasks (Get-ManagedTasks)
     }
     default {
-        Write-Error "Unknown action: $action. Use 'update' or 'remove'."
+        Write-Error "Неизвестное действие: $action. Используйте 'update' или 'remove'."
     }
 }
