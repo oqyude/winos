@@ -1,5 +1,3 @@
-# LOCAL
-
 # Modules
 $appsDataManagerModule = "$PSScriptRoot\modules\appdata-manager.ps1"
 $autostartManagerModule = "$PSScriptRoot\modules\autostart-manager.ps1"
@@ -24,14 +22,7 @@ $data = "$root\data"
 $apps = "$data\isolate"
 $appsAll = "$data\apps.csv"
 $mountsAll = "$data\mounts.csv"
-# $appsUser = "$apps\$env:COMPUTERNAME"
 
 # GLOBAL
 $storage = "$env:USERPROFILE\Storage"
 $autostartDir = "$data\autorun"
-# $autostartDir = "C:\Winos\Scenaries\Autorun"
-
-# $userName = "oqyude"
-# $diskLabel = "S:"
-# $games = "$diskLabel\Games"
-# $storageGames = "N:\Games\.storage"
