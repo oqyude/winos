@@ -18,7 +18,7 @@ foreach ($pkg in $packageList) {
         "install" {
             Write-Host "Installing $pkg..." -ForegroundColor Cyan
             try {
-                winget install --id $pkg --silent --accept-package-list-agreements --accept-source-agreements
+                winget install --id $pkg --silent --accept-package-agreements --accept-source-agreements
             }
             catch {
                 Write-Host "Failed to install $pkg : $($_.Exception.Message)" -ForegroundColor Red
