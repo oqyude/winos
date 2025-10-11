@@ -1,12 +1,12 @@
 $initFile = Join-Path $PSScriptRoot ".\src\init.ps1"
 . $initFile
 
-# Check for administrator privileges
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+# Check for administrator privileges and restart if needed
+if (-not $isAdmin) {
     Write-Host "The script requires administrator privileges. Restarting..."
     
     # Restart the script with admin rights
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Start-Process -FilePath "powershell.exe" -ArgumentList $restartArgs -Verb RunAs
     exit
 }
 
