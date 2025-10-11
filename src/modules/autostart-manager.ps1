@@ -22,17 +22,17 @@ function Update-Tasks($shortcut) {
 
     if ($existingTask) {
         Set-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger | Out-Null
-        Write-Host "[UPDATE] Task '$taskName' updated. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)"
+        Write-Host "[UPDATE] Task '$taskName' updated. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)" -ForegroundColor Blue
     } else {
         Register-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger -User $env:USERNAME -RunLevel Highest -Force | Out-Null
-        Write-Host "[CREATE] Task '$taskName' created. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)"
+        Write-Host "[CREATE] Task '$taskName' created. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)" -ForegroundColor Blue
     }
 }
 
 function Remove-AllTasks($tasks) {
     foreach ($t in $tasks) {
         Unregister-ScheduledTask -TaskName $t.TaskName -Confirm:$false
-        Write-Host "[REMOVE] Task '$($t.TaskName)' removed."
+        Write-Host "[REMOVE] Task '$($t.TaskName)' removed." -ForegroundColor Red
     }
 }
 
@@ -49,13 +49,12 @@ switch ($action) {
             Update-Tasks $sc
         }
 
-        # Remove tasks that no longer have corresponding shortcuts
         $existingTasks = Get-ManagedTasks
         foreach ($t in $existingTasks) {
             $nameWithoutPrefix = $t.TaskName.Substring($taskPrefix.Length)
             if (-not ($shortcuts.BaseName -contains $nameWithoutPrefix)) {
                 Unregister-ScheduledTask -TaskName $t.TaskName -Confirm:$false
-                Write-Host "[REMOVE] Task '$($t.TaskName)' removed because shortcut no longer exists."
+                Write-Host "[REMOVE] Task '$($t.TaskName)' removed because shortcut no longer exists." -ForegroundColor DarkYellow
             }
         }
     }
