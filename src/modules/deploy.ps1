@@ -1,38 +1,34 @@
 param(
-    [ValidateSet("apply", "clean")]
-    [string]$action = "apply"
+    [ValidateSet('apply','clean')]
+    [string]$Action = 'apply'
 )
 
-# Start deployment process
-Write-Host "Deployment Manager started with action: $action"
+Write-Host "Deployment Manager started with action: $Action"
 
-# Define deployment modules and their corresponding actions
-$deployModules = @(
-    @{ Module = "autostartManagerModule"; Apply = "update"; Clean = "remove" },
-    @{ Module = "appsDataManagerModule"; Apply = "reconnect"; Clean = "disconnect" },
-    @{ Module = "mountsManagerModule"; Apply = "reconnect"; Clean = "disconnect" }
+# Define modules with their respective actions
+$Modules = @(
+    @{ Name = 'autostartManagerModule'; Apply = 'update';   Clean = 'remove' },
+    @{ Name = 'appsDataManagerModule';  Apply = 'reconnect'; Clean = 'disconnect' },
+    @{ Name = 'mountsManagerModule';    Apply = 'reconnect'; Clean = 'disconnect' }
 )
 
-foreach ($mod in $deployModules) {
+foreach ($module in $Modules) {
+    $currentAction = if ($Action -eq 'apply') { $module.Apply } else { $module.Clean }
+    Write-Host "`n=== $($module.Name) : $currentAction"
+    try {
+        # Resolve the script path stored in a variable with the same name
+        $scriptPath = (Get-Variable -Name $module.Name -ErrorAction Stop).Value
 
+        if (Test-Path -LiteralPath $scriptPath) {
+            & $scriptPath $currentAction
+        }
+        else {
+            Write-Warning "Module script not found: $scriptPath"
+        }
+    }
+    catch {
+        Write-Warning "Could not resolve path for module '$($module.Name)': $_"
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @{ Module = "autostartManagerModule"; Apply =
+Write-Host "`nDeployment finished."
