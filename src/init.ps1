@@ -1,8 +1,6 @@
-# Init
 Set-Location -Path $PSScriptRoot
 
 $root = Join-Path $PSScriptRoot ".."
-
 $varsFile = Join-Path $root "src\vars.ps1"
 if (Test-Path $varsFile) {
     . $varsFile 
