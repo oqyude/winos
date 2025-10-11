@@ -1,5 +1,5 @@
 param(
-    [string]$action = "update" # update, remove
+    [string]$action = "update"
 )
 
 $taskPrefix = "winos_"
@@ -15,16 +15,17 @@ function Update-Tasks($shortcut) {
 
     $existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
 
-    # Create ScheduledTaskAction including arguments
     $actionObj = New-ScheduledTaskAction -Execute $sc.TargetPath -Argument $sc.Arguments
     if ($sc.WorkingDirectory) { $actionObj.WorkingDirectory = $sc.WorkingDirectory }
     $trigger = New-ScheduledTaskTrigger -AtLogOn
 
+    $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
+
     if ($existingTask) {
-        Set-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger | Out-Null
+        Set-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger -Settings $settings | Out-Null
         Write-Host "[UPDATE] Task '$taskName' updated. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)" -ForegroundColor Blue
     } else {
-        Register-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger -User $env:USERNAME -RunLevel Highest -Force | Out-Null
+        Register-ScheduledTask -TaskName $taskName -Action $actionObj -Trigger $trigger -Settings $settings -User $env:USERNAME -RunLevel Highest -Force | Out-Null
         Write-Host "[CREATE] Task '$taskName' created. Target: $($sc.TargetPath) Arguments: $($sc.Arguments)" -ForegroundColor Blue
     }
 }
