@@ -1,18 +1,12 @@
-# Manage symlink state. Reconnect = disconnect && connect
 param(
-    [string]$action = "reconnect"  # connect | disconnect | reconnect
+    [string]$action = "reconnect"
 )
 
-Write-Host "Apps Manager started with action: $action"
+Write-Host "AppData Manager started with action: $action" -ForegroundColor Yellow
 
-# CSV file with applications
-$config = $appsAll
-
-# Import CSV
-$csv = Import-Csv -Path $config
+$csv = Import-Csv -Path $appsAll
 
 foreach ($app in $csv) {
-    # Skip disabled entries
     if ($app.Enabled -ne "1") { continue }
 
     $AppName = $app.App
@@ -30,12 +24,12 @@ foreach ($app in $csv) {
         $to = Join-Path $env:USERPROFILE $to
     }
 
-    Write-Host "=============================="
-    Write-Host "Processing $AppName with action $action (Type=$($app.Type))"
-    Write-Host "  Raw From: $rawFrom"
-    Write-Host "  Raw To  : $rawTo"
-    Write-Host "  Expanded From: $from"
-    Write-Host "  Expanded To  : $to"
+    Write-Host "==============================" -ForegroundColor Gray
+    Write-Host "Processing $AppName with action $action (Type=$($app.Type))" -ForegroundColor White
+    Write-Host "  Raw From: $rawFrom" -ForegroundColor White
+    Write-Host "  Raw To  : $rawTo" -ForegroundColor White
+    Write-Host "  Expanded From: $from" -ForegroundColor White
+    Write-Host "  Expanded To  : $to" -ForegroundColor White
 
     # Handle isolate type: execute a script instead of symlinks
     if ($app.Type -eq "isolate") {
@@ -52,41 +46,41 @@ foreach ($app in $csv) {
             $scriptPath = Join-Path $apps "$safeName.ps1"
         }
         
-        Write-Host "    Isolate mode: Executing script $scriptPath"
+        Write-Host "    Isolate mode: Executing script $scriptPath" -ForegroundColor Yellow
         if (Test-Path $scriptPath) {
             try {
                 # Pass action and app context to the script
                 & $scriptPath -Action $action -AppName $AppName -From $from -To $to
             } catch {
-                Write-Error "Script failed for $AppName`: $($_.Exception.Message)"
+                Write-Error "Script failed for $AppName`: $($_.Exception.Message)" -ForegroundColor Red
             }
         } else {
-            Write-Warning "Isolate script not found: $scriptPath"
+            Write-Warning "Isolate script not found: $scriptPath" -ForegroundColor Red
         }
-        continue  # Skip symlink handling
+        continue
     }
 
     switch ($action.ToLower()) {
         "disconnect" {
-            Write-Host "    Removing $to"
+            Write-Host "    Removing $to" -ForegroundColor Red
             if (Test-Path $to) { Remove-Item $to -Recurse -Force }
         }
         "connect" {
-            Write-Host "    Creating symlink $to -> $from"
+            Write-Host "    Creating symlink $to -> $from" -ForegroundColor Blue
             if (-not (Test-Path $to)) {
                 New-Item -Path $to -ItemType SymbolicLink -Value $from | Out-Null
             }
         }
         "reconnect" {
-            Write-Host "    Removing $to"
+            Write-Host "    Removing $to" -ForegroundColor Red
             if (Test-Path $to) { Remove-Item $to -Recurse -Force }
-            Write-Host "    Creating symlink $to -> $from"
+            Write-Host "    Creating symlink $to -> $from" -ForegroundColor Blue
             if (-not (Test-Path $to)) {
                 New-Item -Path $to -ItemType SymbolicLink -Value $from | Out-Null
             }
         }
         default {
-            Write-Warning "Unknown action: $action"
+            Write-Warning "Unknown action: $action" -ForegroundColor DarkYellow
         }
     }
 }

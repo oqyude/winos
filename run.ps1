@@ -10,39 +10,39 @@ if (-not $isAdmin) {
 Write-Host "Administrator privileges confirmed."
 
 Clear-Host
-Write-Host "Select a module:"
+Write-Host "Select a module:" -ForegroundColor Yellow
 $moduleNames = $modules.Keys | Sort-Object
 for ($i = 0; $i -lt $moduleNames.Count; $i++) {
-    Write-Host "[$($i+1)] $($moduleNames[$i])"
+    Write-Host "$($i+1). $($moduleNames[$i])" -ForegroundColor DarkYellow
 }
 do {
     $moduleSelection = Read-Host "Enter the number of your choice"
     $validModule = ($moduleSelection -as [int]) -and ($moduleSelection -ge 1) -and ($moduleSelection -le $moduleNames.Count)
-    if (-not $validModule) { Write-Host "Invalid module selection. Try again." }
+    if (-not $validModule) { Write-Host "Invalid module selection. Try again." -ForegroundColor Yellow }
 } until ($validModule)
 
 Clear-Host
 $selectedModule = $moduleNames[$moduleSelection - 1]
 $actions = $modules[$selectedModule]
-Write-Host "Selected module: $selectedModule"
+Write-Host "Selected module: $selectedModule" -ForegroundColor Yellow
 
 if ($args.Count -ge 1) {
     $action = $args[0]
 } else {
     Write-Host "Select an action for $selectedModule :"
     for ($i = 0; $i -lt $actions.Count; $i++) {
-        Write-Host "[$($i+1)] $($actions[$i])"
+        Write-Host "$($i+1). $($actions[$i])" -ForegroundColor DarkYellow
     }
     do {
         $selection = Read-Host "Enter the number of your choice"
         $valid = ($selection -as [int]) -and ($selection -ge 1) -and ($selection -le $actions.Count)
-        if (-not $valid) { Write-Host "Invalid selection. Try again." }
+        if (-not $valid) { Write-Host "Invalid selection. Try again." -ForegroundColor Yellow }
     } until ($valid)
 
     $action = $actions[$selection - 1]
 }
 
 Clear-Host
-Write-Host "Selected action: $action"
+Write-Host "Selected action: $action" -ForegroundColor Yellow
 
 & (Get-Variable $selectedModule).Value $action

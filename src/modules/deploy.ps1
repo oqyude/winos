@@ -3,7 +3,7 @@ param(
     [string]$Action = 'apply'
 )
 
-Write-Host "Deployment Manager started with action: $Action"
+Write-Host "Deployment Manager started with action: $Action" -ForegroundColor Yellow
 
 # Define modules with their respective actions
 $Modules = @(
@@ -16,7 +16,7 @@ $Modules = @(
 
 foreach ($module in $Modules) {
     $currentAction = if ($Action -eq 'apply') { $module.Apply } else { $module.Clean }
-    Write-Host "`n=== $($module.Name) : $currentAction"
+    Write-Host "`n=== $($module.Name) : $currentAction" -ForegroundColor White
     try {
         # Resolve the script path stored in a variable with the same name
         $scriptPath = (Get-Variable -Name $module.Name -ErrorAction Stop).Value
@@ -25,12 +25,12 @@ foreach ($module in $Modules) {
             & $scriptPath $currentAction
         }
         else {
-            Write-Warning "Module script not found: $scriptPath"
+            Write-Warning "Module script not found: $scriptPath" -ForegroundColor DarkYellow
         }
     }
     catch {
-        Write-Warning "Could not resolve path for module '$($module.Name)': $_"
+        Write-Warning "Could not resolve path for module '$($module.Name)': $_" -ForegroundColor DarkYellow
     }
 }
 
-Write-Host "`nDeployment finished."
+Write-Host "`nDeployment finished." -ForegroundColor Green

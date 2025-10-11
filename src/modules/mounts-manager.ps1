@@ -1,15 +1,10 @@
 param(
-    [string]$action = "reconnect"  # connect | disconnect | reconnect
+    [string]$action = "reconnect"
 )
 
-Write-Host "Folder Symlink Manager started with action: $action"
+Write-Host "Mounts Manager started with action: $action" -ForegroundColor Yellow
 
-# CSV file with folder mappings
-$config = $mountsAll  # переменная с путём к CSV
-
-# Import CSV
-$csv = Import-Csv -Path $config
-
+$csv = Import-Csv -Path $mountsAll
 foreach ($entry in $csv) {
     if ($entry.Enabled -ne "1") { continue }
 
@@ -28,26 +23,26 @@ foreach ($entry in $csv) {
         $to = Join-Path $env:USERPROFILE $to
     }
 
-    Write-Host "=============================="
-    Write-Host "Processing $Name with action $action"
-    Write-Host "  From: $from"
-    Write-Host "  To  : $to"
+    Write-Host "===============================" -ForegroundColor Gray
+    Write-Host "Processing $Name with action $action" -ForegroundColor White
+    Write-Host "  From: $from" -ForegroundColor White
+    Write-Host "  To  : $to" -ForegroundColor White
 
     switch ($action.ToLower()) {
         "disconnect" {
-            Write-Host "    Removing $to"
+            Write-Host "    Removing $to" -ForegroundColor Red
             if (Test-Path $to) { Remove-Item $to -Recurse -Force }
         }
         "connect" {
-            Write-Host "    Creating symlink $to -> $from"
+            Write-Host "    Creating symlink $to -> $from" -ForegroundColor Blue
             if (-not (Test-Path $to)) {
                 New-Item -Path $to -ItemType SymbolicLink -Value $from | Out-Null
             }
         }
         "reconnect" {
-            Write-Host "    Removing $to"
+            Write-Host "    Removing $to" -ForegroundColor Red
             if (Test-Path $to) { Remove-Item $to -Recurse -Force }
-            Write-Host "    Creating symlink $to -> $from"
+            Write-Host "    Creating symlink $to -> $from" -ForegroundColor Blue
             if (-not (Test-Path $to)) {
                 New-Item -Path $to -ItemType SymbolicLink -Value $from | Out-Null
             }
