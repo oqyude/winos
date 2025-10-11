@@ -13,6 +13,7 @@ $modules = @{
     "deployModule" = @("apply", "clean")
     "mountsManagerModule" = @("reconnect", "connect", "disconnect")
     "packageManagerModule" = @("install", "uninstall")
+    "wingetInstallerModule" = @("check", "install")
 }
 
 # Functions
