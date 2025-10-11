@@ -9,7 +9,3 @@ if (Test-Path $varsFile) {
 } else {
     Write-Warning "Vars file not found: $varsFile"
 }
-
-# Define variables for administrator check and restart
-$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-$restartArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""

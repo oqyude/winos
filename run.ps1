@@ -1,3 +1,8 @@
+# Define variables for administrator restart
+$isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+$restartArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+
+# Initalize environment
 $initFile = Join-Path $PSScriptRoot ".\src\init.ps1"
 . $initFile
 
@@ -9,7 +14,6 @@ if (-not $isAdmin) {
     Start-Process -FilePath "powershell.exe" -ArgumentList $restartArgs -Verb RunAs
     exit
 }
-
 Write-Host "Administrator privileges confirmed."
 
 # Interactive module selection
