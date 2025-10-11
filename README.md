@@ -1,4 +1,4 @@
-A personal project of PowerShell modules for automating my Windows environment.
+A personal project of PowerShell scripts for automating my Windows environment.
 Not meant as a universal solution — **use or adapt at your own risk**.
 
 The scripts handle:
@@ -9,7 +9,7 @@ The scripts handle:
 * full environment apply/clean actions with a single command;
 * maybe more in the future.
 
-Everything runs through PowerShell modules with no external dependencies.
+Everything runs through PowerShell scripts with no external dependencies.
 Intended for quick setup on clean systems and portable workflow experiments.
 
 ```powershell
@@ -17,4 +17,5 @@ Intended for quick setup on clean systems and portable workflow experiments.
 ```
 
 > ⚠️ **Built for personal use.**
+
 > Paths, scripts, and configs are tailored to *my setup* and may not fit yours.
