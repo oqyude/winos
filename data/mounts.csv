@@ -4,3 +4,4 @@ Enabled,Name,From,To
 1,bash_inputrc,$storage\User Folder\.inputrc,$env:USERPROFILE\.inputrc
 1,bash_gitconfig,$storage\User Folder\.gitconfig,$env:USERPROFILE\.gitconfig
 1,wslconfig,$storage\User Folder\.wslconfig,$env:USERPROFILE\.wslconfig
+1,deploy-folder,$root,$env:USERPROFILE\Winos\run.ps1
