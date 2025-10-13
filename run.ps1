@@ -23,7 +23,7 @@ do {
 
 Clear-Host
 $selectedModule = $moduleNames[$moduleSelection - 1]
-$actions = $modules[$selectedModule]
+$actions = $modules[$selectedModule].Actions
 Write-Host "Selected module: $selectedModule" -ForegroundColor Yellow
 
 if ($args.Count -ge 1) {
@@ -45,4 +45,6 @@ if ($args.Count -ge 1) {
 Clear-Host
 Write-Host "Selected action: $action" -ForegroundColor Yellow
 
-& (Get-Variable $selectedModule).Value $action
+# & (Get-Variable $selectedModule).Actions $action
+$modulePath = $modules[$selectedModule].Path
+& $modulePath $action

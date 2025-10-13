@@ -8,13 +8,32 @@ $packageManagerModule = "$PSScriptRoot\modules\package-manager.ps1"
 
 # Define available modules with their respective actions - need to ref
 $modules = @{
-    "appsDataManagerModule" = @("reconnect", "connect", "disconnect")
-    "autostartManagerModule" = @("update", "remove")
-    "deployModule" = @("apply", "clean")
-    "mountsManagerModule" = @("reconnect", "connect", "disconnect")
-    "packageManagerModule" = @("install", "uninstall")
-    "wingetInstallerModule" = @("check", "install")
+    "AppData Manager" = @{
+        Path    = $appsDataManagerModule
+        Actions = @("reconnect", "connect", "disconnect")
+    }
+    "Autostart Manager" = @{
+        Path    = $autostartManagerModule
+        Actions = @("update", "remove")
+    }
+    "Deploy Manager" = @{
+        Path    = $deployModule
+        Actions = @("apply", "clean")
+    }
+    "Mounts Manager" = @{
+        Path    = $mountsManagerModule
+        Actions = @("reconnect", "connect", "disconnect")
+    }
+    "Package Manager" = @{
+        Path    = $packageManagerModule
+        Actions = @("install", "uninstall")
+    }
+    "Winget Installer" = @{
+        Path    = $wingetInstallerModule
+        Actions = @("check", "install")
+    }
 }
+
 
 # Functions
 function checkWingetStatus {
