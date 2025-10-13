@@ -6,7 +6,7 @@ $deployModule = "$PSScriptRoot\modules\deploy.ps1"
 $wingetInstallerModule = "$PSScriptRoot\modules\winget-installer.ps1"
 $packageManagerModule = "$PSScriptRoot\modules\package-manager.ps1"
 
-# Define available modules with their respective actions
+# Define available modules with their respective actions - need to ref
 $modules = @{
     "appsDataManagerModule" = @("reconnect", "connect", "disconnect")
     "autostartManagerModule" = @("update", "remove")
