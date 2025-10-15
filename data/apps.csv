@@ -12,3 +12,4 @@ transmission,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,defa
 v2rayN,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,1
 VSCodium,$storage\$AppName,$env:APPDATA\$AppName,default,1
 EqualizerAPO,$storage\$AppName,$env:ProgramFiles\$AppName,isolate,1
+deemix,$storage\$AppName,$env:APPDATA\$AppName,default,1
