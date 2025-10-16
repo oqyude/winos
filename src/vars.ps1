@@ -5,6 +5,7 @@ $mountsManagerModule = "$PSScriptRoot\modules\mounts-manager.ps1"
 $deployModule = "$PSScriptRoot\modules\deploy.ps1"
 $wingetInstallerModule = "$PSScriptRoot\modules\winget-installer.ps1"
 $packageManagerModule = "$PSScriptRoot\modules\package-manager.ps1"
+$windowsCursorModule = "$PSScriptRoot\modules\windows-cursor.ps1"
 
 # Define available modules with their respective actions - need to ref
 $modules = @{
@@ -31,6 +32,10 @@ $modules = @{
     "Winget Installer" = @{
         Path    = $wingetInstallerModule
         Actions = @("check", "install")
+    }
+    "Windows Cursor" = @{
+        Path    = $windowsCursorModule
+        Actions = @("install", "uninstall")
     }
 }
 

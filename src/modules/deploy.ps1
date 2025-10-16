@@ -12,6 +12,7 @@ $Modules = @(
     @{ Name = 'mountsManagerModule';    Apply = 'reconnect'; Clean = 'disconnect' }
     @{ Name = 'wingetInstallerModule';    Apply = 'install'; Clean = 'check' }
     @{ Name = 'packageManagerModule';    Apply = 'install'; Clean = 'uninstall' }
+    @{ Name = 'windowsCursorModule';    Apply = 'install'; Clean = 'uninstall' }
 )
 
 foreach ($module in $Modules) {
