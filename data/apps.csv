@@ -14,3 +14,4 @@ VSCodium,$storage\$AppName,$env:APPDATA\$AppName,default,1
 EqualizerAPO,$storage\$AppName,$env:ProgramFiles\$AppName,isolate,1
 deemix,$storage\$AppName,$env:APPDATA\$AppName,default,1
 Stretchly,$storage\$AppName\config.json,$env:APPDATA\$AppName\config.json,default,1
+SyncTrayzor,$storage\$AppName\$env:COMPUTERNAME,$env:APPDATA\$AppName,default,1
