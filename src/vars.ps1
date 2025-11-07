@@ -53,9 +53,6 @@ function checkWingetStatus {
     }
 }
 
-# Data folder
-$data = "$root\data"
-
 # Setup Data Folder
 $apps = "$data\isolate"
 $appsAll = "$data\apps.csv"
@@ -65,3 +62,6 @@ $mountsAll = "$data\mounts.csv"
 $tempFolder = "$env:TEMP\winos";
 $storage = "$env:USERPROFILE\Storage"
 $autostartDir = "$data\autorun"
+
+# Data folder
+$data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$root\data" }
