@@ -39,7 +39,6 @@ $modules = @{
     }
 }
 
-
 # Functions
 function checkWingetStatus {
     try {
@@ -53,15 +52,15 @@ function checkWingetStatus {
     }
 }
 
+# GLOBAL
+$tempFolder = "$env:TEMP\winos";
+$storage = "$env:USERPROFILE\Storage"
+
+# Data folder
+$data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$root\data" }
+
 # Setup Data Folder
 $apps = "$data\isolate"
 $appsAll = "$data\apps.csv"
 $mountsAll = "$data\mounts.csv"
-
-# GLOBAL
-$tempFolder = "$env:TEMP\winos";
-$storage = "$env:USERPROFILE\Storage"
 $autostartDir = "$data\autorun"
-
-# Data folder
-$data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$root\data" }
