@@ -8,10 +8,10 @@ Powertoys,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\Microsoft\PowerT
 Sublime Text,$storage\$AppName\Config,$env:APPDATA\$AppName,default,1
 SumatraPDF,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,1
 Syncthing,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,1
-transmission,$storage\$AppName\$env:COMPUTERNAME,$env:LOCALAPPDATA\$AppName,default,1
 v2rayN,$storage\$AppName,$env:LOCALAPPDATA\$AppName,default,1
 VSCodium,$storage\$AppName,$env:APPDATA\$AppName,default,1
 EqualizerAPO,$storage\$AppName,$env:ProgramFiles\$AppName,isolate,1
 deemix,$storage\$AppName,$env:APPDATA\$AppName,default,1
 Stretchly,$storage\$AppName\config.json,$env:APPDATA\$AppName\config.json,default,1
 SyncTrayzor,$storage\$AppName\$env:COMPUTERNAME,$env:APPDATA\$AppName,default,1
+qBittorrent,$storage\$AppName,$env:APPDATA\$AppName,default,1
