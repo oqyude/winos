@@ -7,9 +7,7 @@ Write-Host "Deployment Manager started with action: $Action" -ForegroundColor Ye
 
 # Define modules with their respective actions
 $Modules = @(
-    @{ Name = 'autostartManagerModule'; Apply = 'update';   Clean = 'remove' },
-    @{ Name = 'appsDataManagerModule';  Apply = 'reconnect'; Clean = 'disconnect' },
-    @{ Name = 'mountsManagerModule';    Apply = 'reconnect'; Clean = 'disconnect' }
+    @{ Name = 'autostartManagerModule'; Apply = 'update';   Clean = 'remove' }
     @{ Name = 'wingetInstallerModule';    Apply = 'install'; Clean = 'check' }
     @{ Name = 'packageManagerModule';    Apply = 'install'; Clean = 'uninstall' }
     @{ Name = 'windowsCursorModule';    Apply = 'install'; Clean = 'uninstall' }
