@@ -9,8 +9,13 @@ $isolateMethod = Join-Path $PSScriptRoot "methods\isolate.ps1"
 
 function Resolve-Entry {
     param($entry)
-    $rawFrom = $entry.from -replace '\$name', $entry.name
-    $rawTo   = $entry.to   -replace '\$name', $entry.name
+
+    # Default `from` to $persist\$name (canonical source-of-truth).
+    $rawFrom = if ($entry.from) { $entry.from } else { '$persist\$name' }
+    $rawFrom = $rawFrom -replace '\$name', $entry.name
+
+    $rawTo = $entry.to -replace '\$name', $entry.name
+
     return @{
         name     = $entry.name
         enabled  = $entry.enabled

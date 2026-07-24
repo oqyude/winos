@@ -18,6 +18,7 @@ $modules = @{
 # GLOBAL
 $tempFolder = "$env:TEMP\winos"
 $storage = "$env:USERPROFILE\Storage"
+$persist = "$storage\persist"
 $data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$root\data" }
 $apps = "$data\isolate"
 $jsonConfig = "$data\data.json"

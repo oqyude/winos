@@ -24,8 +24,10 @@
 - Имена переменных: PascalCase для модулей/scope, lowerCamelCase для JSON-полей
 - Точка входа: `main.ps1` (CLI + интерактив)
 - Скрипты: `scripts/lint.ps1`, `scripts/test.ps1`
-- Тесты: `tests/`, smoke-тесты с Pester 5.x
-- Конфиг: `data/data.json` (version 2, схема symlinks[])
+- Тесты: `tests/`, smoke-тесты с Pester 5.x+
+- Конфиг: `data/data.json` (version 2, схема: `{ version, persistRoot, symlinks[] }`)
+- **Source-of-truth root: `~/Storage/persist/`** (`$persist` в `vars.ps1`)
+- Каждый `symlinks[].from` должен быть под `$persist` (исключения: `deploy-folder` → `$root`)
 - Линтер-конфиг: `.pspsscriptanalyzer.psd1`
 
 ## Структура проекта

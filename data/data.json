@@ -1,53 +1,54 @@
 {
   "version": 2,
+  "persistRoot": "$persist",
   "symlinks": [
     {
       "name": "AIMP",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "gramps",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "KeePassXC",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "ludusavi",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "Playnite",
       "archived": true,
       "enabled": true,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "Powertoys",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name\\$env:COMPUTERNAME",
+      "from": "$persist\\$name\\$env:COMPUTERNAME",
       "to": "$env:LOCALAPPDATA\\Microsoft\\PowerToys"
     },
     {
       "name": "SumatraPDF",
       "archived": false,
       "enabled": true,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:USERPROFILE\\scoop\\persist\\sumatrapdf",
       "mappings": [
         { "from": "SumatraPDF-settings.txt", "to": "SumatraPDF-settings.txt" }
@@ -57,21 +58,21 @@
       "name": "Syncthing",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name\\$env:COMPUTERNAME",
+      "from": "$persist\\$name\\$env:COMPUTERNAME",
       "to": "$env:LOCALAPPDATA\\$name"
     },
     {
       "name": "v2rayN",
       "archived": true,
       "enabled": true,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:LOCALAPPDATA\\$name"
     },
     {
       "name": "VSCodium",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
@@ -79,70 +80,70 @@
       "archived": true,
       "enabled": true,
       "method": "isolate",
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:ProgramFiles\\$name"
     },
     {
       "name": "deemix",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "Stretchly",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name\\config.json",
+      "from": "$persist\\$name\\config.json",
       "to": "$env:APPDATA\\$name\\config.json"
     },
     {
       "name": "SyncTrayzor",
       "archived": true,
       "enabled": true,
-      "from": "$storage\\$name\\$env:COMPUTERNAME",
+      "from": "$persist\\$name\\$env:COMPUTERNAME",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "qBittorrent",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\$name",
+      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "SSH",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\ssh",
+      "from": "$persist\\ssh",
       "to": "$env:USERPROFILE\\.ssh"
     },
     {
       "name": "bash_rc",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\User Folder\\.bashrc",
+      "from": "$persist\\User Folder\\.bashrc",
       "to": "$env:USERPROFILE\\.bashrc"
     },
     {
       "name": "bash_inputrc",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\User Folder\\.inputrc",
+      "from": "$persist\\User Folder\\.inputrc",
       "to": "$env:USERPROFILE\\.inputrc"
     },
     {
       "name": "bash_gitconfig",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\User Folder\\.gitconfig",
+      "from": "$persist\\User Folder\\.gitconfig",
       "to": "$env:USERPROFILE\\.gitconfig"
     },
     {
       "name": "wslconfig",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\User Folder\\.wslconfig",
+      "from": "$persist\\User Folder\\.wslconfig",
       "to": "$env:USERPROFILE\\.wslconfig"
     },
     {
@@ -156,7 +157,7 @@
       "name": "continue",
       "archived": true,
       "enabled": false,
-      "from": "$storage\\User Folder\\.continue",
+      "from": "$persist\\User Folder\\.continue",
       "to": "$env:USERPROFILE\\.continue"
     }
   ]
