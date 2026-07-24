@@ -1,0 +1,23 @@
+{
+  "$schema": "metaagent-task-manifest",
+  "version": "1.0",
+  "session_id": "{{ session_id }}",
+  "goal": "{{ goal }}",
+  "created_at": "{{ timestamp }}",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "{{ task_title }}",
+      "description": "{{ task_description }}",
+      "type": "feature|refactor|test|fix|config|docs",
+      "files": ["path/to/file1.py", "path/to/file2.py"],
+      "depends_on": [],
+      "acceptance_criteria": [
+        "Критерий 1: ...",
+        "Критерий 2: ..."
+      ],
+      "context": "Дополнительная информация",
+      "status": "pending"
+    }
+  ]
+}
