@@ -1,3 +1,4 @@
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [ValidateSet("deploy", "clean")]
     [string]$action,
@@ -7,10 +8,13 @@ param(
 )
 
 function Remove-ItemLogged {
+    [CmdletBinding(SupportsShouldProcess)]
     param([string]$path)
     if (Test-Path $path) {
-        Remove-Item $path -Recurse -Force
-        Write-Host "    Removed $path" -ForegroundColor DarkYellow
+        if ($PSCmdlet.ShouldProcess($path, "Remove")) {
+            Remove-Item $path -Recurse -Force
+            Write-Host "    Removed $path" -ForegroundColor DarkYellow
+        }
     }
 }
 
@@ -25,10 +29,13 @@ function Get-SymlinkTarget {
 }
 
 function Set-Symlink {
+    [CmdletBinding(SupportsShouldProcess)]
     param([string]$source, [string]$target)
     $parent = Split-Path $target -Parent
     if (-not (Test-Path $parent)) {
-        New-Item $parent -ItemType Directory -Force | Out-Null
+        if ($PSCmdlet.ShouldProcess($parent, "Create directory")) {
+            New-Item $parent -ItemType Directory -Force | Out-Null
+        }
     }
     $current = Get-SymlinkTarget $target
     if ($current -and $current -eq $source) {
@@ -36,11 +43,15 @@ function Set-Symlink {
         return
     }
     if (Test-Path $target) {
-        Remove-Item $target -Recurse -Force
-        Write-Host "    Removed $target" -ForegroundColor DarkYellow
+        if ($PSCmdlet.ShouldProcess($target, "Remove existing")) {
+            Remove-Item $target -Recurse -Force
+            Write-Host "    Removed $target" -ForegroundColor DarkYellow
+        }
     }
-    New-Item -Path $target -ItemType SymbolicLink -Value $source -Force | Out-Null
-    Write-Host "    Symlink created: $target -> $source" -ForegroundColor Green
+    if ($PSCmdlet.ShouldProcess($target, "Create symlink to $source")) {
+        New-Item -Path $target -ItemType SymbolicLink -Value $source -Force | Out-Null
+        Write-Host "    Symlink created: $target -> $source" -ForegroundColor Green
+    }
 }
 
 switch ($action) {

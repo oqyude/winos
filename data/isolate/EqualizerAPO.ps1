@@ -1,5 +1,6 @@
+[CmdletBinding(SupportsShouldProcess)]
 param(
-    [string]$Action = "reconnect",
+    [string]$action = "reconnect",
     [string]$AppName = "EqualizerAPO",
     [string]$From,
     [string]$To
@@ -23,58 +24,78 @@ $vstDir = Join-Path $To "VSTPlugins"
 $FabFilterLink = Join-Path $vstDir "FabFilter Pro-Q 3.dll"
 $globalDLL = "$env:ProgramFiles\VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll"
 
-Write-Host "Isolate: $AppName ($Action) | From: $From | To: $To" -ForegroundColor Yellow
+Write-Host "Isolate: $AppName ($action) | From: $From | To: $To" -ForegroundColor Yellow
 
 function Disconnect-App {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
     Write-Host "  Disconnecting..." -ForegroundColor Yellow
-    
+
     if (Test-Path $configDir) {
-        Remove-Item $configDir -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Host "    Config wiped" -ForegroundColor Red
+        if ($PSCmdlet.ShouldProcess($configDir, "Remove config directory")) {
+            Remove-Item $configDir -Recurse -Force -ErrorAction SilentlyContinue
+            Write-Host "    Config wiped" -ForegroundColor Red
+        }
     }
-    
+
     if (Test-Path $FabFilterLink) {
-        Remove-Item $FabFilterLink -Force -ErrorAction SilentlyContinue
-        Write-Host "    VST link removed" -ForegroundColor Red
+        if ($PSCmdlet.ShouldProcess($FabFilterLink, "Remove VST link")) {
+            Remove-Item $FabFilterLink -Force -ErrorAction SilentlyContinue
+            Write-Host "    VST link removed" -ForegroundColor Red
+        }
     }
-    
+
     if (Test-Path $regPath) {
-        Remove-ItemProperty -Path $regPath -Name $regKey -ErrorAction SilentlyContinue
-        Write-Host "    Registry cleaned" -ForegroundColor Red
+        if ($PSCmdlet.ShouldProcess("$regPath\$regKey", "Remove registry key")) {
+            Remove-ItemProperty -Path $regPath -Name $regKey -ErrorAction SilentlyContinue
+            Write-Host "    Registry cleaned" -ForegroundColor Red
+        }
     }
 }
 
 function Connect-App {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
     Write-Host "  Connecting..." -ForegroundColor Yellow
-    
+
     if (-not (Test-Path $regPath)) {
-        New-Item -Path $regPath -Force | Out-Null
+        if ($PSCmdlet.ShouldProcess($regPath, "Create registry key")) {
+            New-Item -Path $regPath -Force | Out-Null
+        }
     }
-    Set-ItemProperty -Path $regPath -Name $regKey -Value $From -Type String -Force
-    Write-Host "    ConfigPath -> $From" -ForegroundColor Blue
-    
+    if ($PSCmdlet.ShouldProcess("$regPath\$regKey", "Set ConfigPath to $From")) {
+        Set-ItemProperty -Path $regPath -Name $regKey -Value $From -Type String -Force
+        Write-Host "    ConfigPath -> $From" -ForegroundColor Blue
+    }
+
     if (-not (Test-Path $vstDir)) {
-        New-Item -ItemType Directory -Path $vstDir -Force | Out-Null
+        if ($PSCmdlet.ShouldProcess($vstDir, "Create VST dir")) {
+            New-Item -ItemType Directory -Path $vstDir -Force | Out-Null
+        }
     }
     if (Test-Path $FabFilterLink) {
-        Remove-Item $FabFilterLink -Force
+        if ($PSCmdlet.ShouldProcess($FabFilterLink, "Remove existing VST link")) {
+            Remove-Item $FabFilterLink -Force
+        }
     }
     if (Test-Path $globalDLL) {
-        New-Item -ItemType SymbolicLink -Path $FabFilterLink -Value $globalDLL -Force | Out-Null
-        Write-Host "    VST linked: $FabFilterLink -> $globalDLL" -ForegroundColor Blue
+        if ($PSCmdlet.ShouldProcess($FabFilterLink, "Link to $globalDLL")) {
+            New-Item -SymbolicLink -Path $FabFilterLink -Value $globalDLL -Force | Out-Null
+            Write-Host "    VST linked: $FabFilterLink -> $globalDLL" -ForegroundColor Blue
+        }
     } else {
         Write-Warning "  No system VST: $globalDLL (install it?)"
     }
 }
 
-switch ($Action.ToLower()) {
+switch ($action) {
     "disconnect" { Disconnect-App }
     "connect" { Connect-App }
-    "reconnect" { 
-        Disconnect-App 
-        Connect-App 
+    "reconnect" {
+        Disconnect-App
+        Connect-App
     }
-    default { Write-Warning "Unknown action: $Action" }
+    default { Write-Warning "Unknown action: $action" }
 }
 
 Write-Host "Done with $AppName" -ForegroundColor Green

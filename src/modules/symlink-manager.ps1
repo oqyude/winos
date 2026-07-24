@@ -1,3 +1,4 @@
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [ValidateSet("deploy", "clean", "redeploy")]
     [string]$action = "deploy"

@@ -3,7 +3,7 @@
     ExcludeRules = @(
         'PSAvoidUsingWriteHost'
         'PSUseShouldProcessForStateChangingFunctions'
-        'PSUseDeclaredVarsMoreThanAssignment'
+        'PSUseDeclaredVarsMoreThanAssignments'
         'PSUseBOMForUnicodeEncodedFile'
     )
 }

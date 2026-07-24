@@ -1,31 +1,35 @@
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [ValidateSet("install","uninstall")]
     [string]$action
 )
 
-# === Настройки ===
-$InfPath = "$Storage\Windows\Cursor\default\Install.inf"
-$SchemeName = "W11 Cursors Dark HDPI default (small) by Jepri Creations"
-$DefaultScheme = "Windows Aero"
-
-# === Проверка наличия файла ===
-if ($action -eq "install" -and -not (Test-Path $InfPath)) {
-    Write-Host "INF file not found: $InfPath" -ForegroundColor Red
-    exit 1
-}
-
-# === Функция обновления системных параметров ===
-function Update-Cursor {
-    Add-Type -TypeDefinition @"
+# === Cursor API (loaded once per module) ===
+Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
 public class WinAPI {
     [DllImport("user32.dll", SetLastError = true)]
     public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
 }
-"@ | Out-Null
+"@ -ErrorAction SilentlyContinue | Out-Null
 
+# === Настройки ===
+$InfPath = "$Storage\Windows\Cursor\default\Install.inf"
+$SchemeName = "W11 Cursors Dark HDPI default (small) by Jepri Creations"
+$DefaultScheme = "Windows Aero"
+
+function Update-Cursor {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+    $PSCmdlet.ShouldProcess("SystemParametersInfo", "Refresh cursor theme") | Out-Null
     [WinAPI]::SystemParametersInfo(0x0057, 0, $null, 0x01 -bor 0x02) | Out-Null
+}
+
+# === Проверка наличия файла ===
+if ($action -eq "install" -and -not (Test-Path $InfPath)) {
+    Write-Host "INF file not found: $InfPath" -ForegroundColor Red
+    exit 1
 }
 
 # === Основная логика ===

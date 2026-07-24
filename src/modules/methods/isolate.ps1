@@ -1,3 +1,4 @@
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [ValidateSet("deploy", "clean")]
     [string]$action,
@@ -12,7 +13,7 @@ $scriptPath = Join-Path $appsDir "$safeName.ps1"
 
 if (Test-Path $scriptPath) {
     Write-Host "    Running isolate script: $scriptPath" -ForegroundColor Yellow
-    & $scriptPath -Action $action -AppName $name -From $from -To $to
+    & $scriptPath -action $action -AppName $name -From $from -To $to
 } else {
     Write-Warning "Isolate script not found: $scriptPath"
 }
