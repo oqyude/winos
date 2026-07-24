@@ -1,0 +1,13 @@
+{
+  "id": "C6",
+  "title": "Удалить админ-проверку и старые модули",
+  "type": "refactor",
+  "depends_on": [],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "run.ps1 без администратора",
+    "Очищены неиспользуемые модули"
+  ],
+  "summary": "Удалены: проверка администратора (run.ps1 теперь работает без elevation), неиспользуемые модули appdata-manager.ps1, mounts-manager.ps1, csv-config, старая структура."
+}

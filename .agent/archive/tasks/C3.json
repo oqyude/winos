@@ -1,0 +1,12 @@
+{
+  "id": "C3",
+  "title": "Unified $action во всех модулях",
+  "type": "refactor",
+  "depends_on": [],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "Все модули принимают $action с ValidateSet"
+  ],
+  "summary": "Унифицирован параметр [string]$action с [ValidateSet(...)] во всех модулях (symlink-manager, essentials). main.ps1 передаёт выбранное action через & $module $action."
+}

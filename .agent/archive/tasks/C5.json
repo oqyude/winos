@@ -1,0 +1,13 @@
+{
+  "id": "C5",
+  "title": "Essentials module (ex Windows Cursor)",
+  "type": "fix",
+  "depends_on": [],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "Uninstall починен",
+    "Модуль переименован"
+  ],
+  "summary": "windows-cursor.ps1 переименован в essentials.ps1. Курсоры — теперь подмножество (Cursor themes). Починен uninstall: удаляет файлы, оставленные install (cursor theme)."
+}

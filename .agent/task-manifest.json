@@ -5,35 +5,14 @@
   "goal": "Инициализация проекта winos: рефакторинг архитектуры, миграция CSV→JSON, создание Symlink Manager, унификация модулей.",
   "created_at": "2026-07-24T00:00:00.000Z",
   "tasks": [
-    { "id": "C1", "title": "Миграция CSV → JSON (data/data.json v2)", "type": "refactor", "depends_on": [], "status": "completed" },
-    { "id": "C2", "title": "Symlink Manager с method-архитектурой (dispatcher + methods)", "type": "feature", "depends_on": [], "status": "completed" },
-    { "id": "C3", "title": "Unified $action во всех модулях", "type": "refactor", "depends_on": [], "status": "completed" },
-    { "id": "C4", "title": "Новый main.ps1 (CLI + интерактив с Back/Exit)", "type": "refactor", "depends_on": [], "status": "completed" },
-    { "id": "C5", "title": "Essentials module (ex Windows Cursor, uninstall починен)", "type": "fix", "depends_on": [], "status": "completed" },
-    { "id": "C6", "title": "Удалить админ-проверку и старые модули", "type": "refactor", "depends_on": [], "status": "completed" },
-    {
-      "id": "P3",
-      "title": "PSScriptAnalyzer + approved verbs",
-      "type": "config",
-      "files": [".pspsscriptanalyzer.psd1", "scripts/lint.ps1"],
-      "depends_on": [],
-      "status": "completed"
-    },
-    {
-      "id": "P4",
-      "title": "Pester smoke-тесты",
-      "type": "config",
-      "files": ["tests/", "scripts/test.ps1"],
-      "depends_on": ["P3"],
-      "status": "completed"
-    },
-    {
-      "id": "P5",
-      "title": "Структура проекта + интерактив",
-      "type": "refactor",
-      "files": ["main.ps1", "scripts/"],
-      "depends_on": ["P4"],
-      "status": "completed"
-    }
+    { "id": "C1", "title": "Миграция CSV → JSON (data/data.json v2)", "status": "archived" },
+    { "id": "C2", "title": "Symlink Manager с method-архитектурой (dispatcher + methods)", "status": "archived" },
+    { "id": "C3", "title": "Unified $action во всех модулях", "status": "archived" },
+    { "id": "C4", "title": "Новый main.ps1 (CLI + интерактив с Back/Exit)", "status": "archived" },
+    { "id": "C5", "title": "Essentials module (ex Windows Cursor, uninstall починен)", "status": "archived" },
+    { "id": "C6", "title": "Удалить админ-проверку и старые модули", "status": "archived" },
+    { "id": "P3", "title": "PSScriptAnalyzer + approved verbs", "status": "archived" },
+    { "id": "P4", "title": "Pester smoke-тесты", "status": "archived" },
+    { "id": "P5", "title": "Структура проекта + интерактив", "status": "archived" }
   ]
 }

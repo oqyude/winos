@@ -1,0 +1,13 @@
+{
+  "id": "C2",
+  "title": "Symlink Manager с method-архитектурой",
+  "type": "feature",
+  "depends_on": [],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "symlink-manager.ps1 dispatcher + methods/symlink.ps1 + methods/isolate.ps1",
+    "Поддержка mappings"
+  ],
+  "summary": "Создан src/modules/symlink-manager.ps1 (dispatcher: deploy/clean/redeploy) с двумя методами: src/modules/methods/symlink.ps1 (Set-Symlink, Remove-ItemLogged) и src/modules/methods/isolate.ps1 (per-app скрипты из data/isolate/)."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "P5",
+  "title": "Структура проекта + интерактив",
+  "type": "refactor",
+  "files": ["main.ps1", "scripts/"],
+  "depends_on": ["P4"],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "main.ps1 в корне",
+    "scripts/lint.ps1, test.ps1",
+    "Back/Exit в меню"
+  ],
+  "summary": "Структура стандартизирована: main.ps1 в корне проекта, scripts/lint.ps1 и scripts/test.ps1, src/ для модулей, tests/ для Pester. main.ps1 имеет навигацию Back/Exit через Read-Choice -AllowZero."
+}

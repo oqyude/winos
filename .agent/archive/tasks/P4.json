@@ -1,0 +1,14 @@
+{
+  "id": "P4",
+  "title": "Pester smoke-тесты",
+  "type": "config",
+  "files": ["tests/", "scripts/test.ps1"],
+  "depends_on": ["P3"],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "Smoke-тесты (11/11 passed)",
+    "scripts/test.ps1"
+  ],
+  "summary": "Pester 5.x тесты. tests/vars.Tests.ps1 — smoke: загрузка vars.ps1 и наличие модулей. tests/modules/symlink-manager.Tests.ps1 — smoke: парсинг dispatcher + methods. tests/modules/essentials.Tests.ps1 — smoke: парсинг. Всего 11 тестов, 11 passed. scripts/test.ps1 запускает Invoke-Pester."
+}

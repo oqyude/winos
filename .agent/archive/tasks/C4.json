@@ -1,0 +1,13 @@
+{
+  "id": "C4",
+  "title": "Новый main.ps1 (CLI + интерактив)",
+  "type": "refactor",
+  "depends_on": [],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    ".\\main.ps1 'Module' action",
+    "Интерактив с Back/Exit, номера + имена"
+  ],
+  "summary": "main.ps1 перенесён в корень проекта. Поддерживает CLI: .\\main.ps1 \"Module\" action и интерактивное меню с Back/Exit. Show-Menu + Read-Choice с поддержкой AllowZero."
+}

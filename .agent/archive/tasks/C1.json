@@ -1,0 +1,13 @@
+{
+  "id": "C1",
+  "title": "Миграция CSV → JSON (data/data.json v2)",
+  "type": "refactor",
+  "depends_on": [],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "Один data.json вместо apps.csv+mounts.csv",
+    "Булевы поля вместо строк 0/1"
+  ],
+  "summary": "Заменены data/apps.csv (16 записей) и data/mounts.csv (8 записей) на единый data/data.json v2 со схемой { version: 2, symlinks: [{ name, archived, enabled, from, to, method?, mappings? }] }."
+}

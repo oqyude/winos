@@ -1,0 +1,35 @@
+{
+  "metaagent_version": "1.1.1",
+  "session_id": "00000000-0000-0000-0000-000000000001",
+  "target_repo": "S:\\Git\\winos",
+  "goal": "Инициализация проекта winos: рефакторинг архитектуры, миграция CSV→JSON, создание Symlink Manager, унификация модулей.",
+  "project_type": "existing",
+  "config": {
+    "depth": 4,
+    "design": { "adr": false, "alternative_arch": false },
+    "red_team": false,
+    "risk_register": false,
+    "decomposition": { "invariant_tests": false },
+    "handoff": { "layer_structure": false }
+  },
+  "phases": {
+    "analysis": "completed",
+    "design": "skipped",
+    "red_team": "skipped",
+    "decomposition": "completed",
+    "environment": "completed",
+    "handoff": "completed"
+  },
+  "tasks": [
+    { "id": "C1", "title": "Миграция CSV → JSON (data/data.json v2)", "status": "completed", "acceptance_criteria": ["Один data.json вместо apps.csv+mounts.csv", "Булевы поля вместо строк 0/1"] },
+    { "id": "C2", "title": "Symlink Manager с method-архитектурой", "status": "completed", "acceptance_criteria": ["symlink-manager.ps1 dispatcher + methods/symlink.ps1 + methods/isolate.ps1", "Поддержка mappings"] },
+    { "id": "C3", "title": "Unified $action во всех модулях", "status": "completed", "acceptance_criteria": ["Все модули принимают $action с ValidateSet"] },
+    { "id": "C4", "title": "Новый main.ps1 (CLI + интерактив)", "status": "completed", "acceptance_criteria": [".\\main.ps1 'Module' action", "Интерактив с Back/Exit, номера + имена"] },
+    { "id": "C5", "title": "Essentials module (ex Windows Cursor)", "status": "completed", "acceptance_criteria": ["Uninstall починен", "Модуль переименован"] },
+    { "id": "C6", "title": "Удаление админ-проверки и старых модулей", "status": "completed", "acceptance_criteria": ["run.ps1 без администратора", "Очищены неиспользуемые модули"] },
+    { "id": "P3", "title": "PSScriptAnalyzer + линтинг", "status": "completed", "depends_on": [], "acceptance_criteria": ["PSScriptAnalyzer установлен", "Конфиг .psd1 создан", "Функции с approved verbs"] },
+    { "id": "P4", "title": "Pester тесты", "status": "completed", "depends_on": ["P3"], "acceptance_criteria": ["Smoke-тесты (11/11 passed)", "scripts/test.ps1"] },
+    { "id": "P5", "title": "Структура проекта + интерактив", "status": "completed", "depends_on": ["P4"], "acceptance_criteria": ["main.ps1 в корне", "scripts/lint.ps1, test.ps1", "Back/Exit в меню"] }
+  ],
+  "last_updated": "2026-07-24T14:00:00.000Z"
+}

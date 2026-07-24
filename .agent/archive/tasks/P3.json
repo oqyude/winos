@@ -1,0 +1,15 @@
+{
+  "id": "P3",
+  "title": "PSScriptAnalyzer + approved verbs",
+  "type": "config",
+  "files": [".pspsscriptanalyzer.psd1", "scripts/lint.ps1"],
+  "depends_on": [],
+  "status": "completed",
+  "completed_at": "2026-07-24",
+  "acceptance_criteria": [
+    "PSScriptAnalyzer установлен",
+    "Конфиг .psd1 создан",
+    "Функции с approved verbs"
+  ],
+  "summary": "Установлен PSScriptAnalyzer. Создан .pspsscriptanalyzer.psd1 с Severity=Error/Warning и ExcludeRules (PSAvoidUsingWriteHost, PSUseShouldProcessForStateChangingFunctions, PSUseDeclaredVarsMoreThanAssignment, PSUseBOMForUnicodeEncodedFile). Скрипт scripts/lint.ps1 вызывает Invoke-ScriptAnalyzer. Функции переименованы в approved verbs: Set-Symlink, Remove-Entry, Remove-ItemLogged, Update-Cursor."
+}
