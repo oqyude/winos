@@ -91,9 +91,55 @@ function Remove-VSTLink {
     }
 }
 
+# === ACL: grant Windows Audio service read access to config tree ===
+# On Windows 10/11 the Audiosrv service runs as LOCAL SERVICE
+# (NT AUDIO\AudioSrv is no longer a separate principal since Win7).
+function Grant-AudioServiceAccess {
+    [CmdletBinding(SupportsShouldProcess)]
+    param([string]$Path)
+
+    if (-not (Test-Path $Path)) {
+        Write-Warning "Path not found, cannot grant access: $Path"
+        return
+    }
+
+    $principals = @(
+        "SYSTEM",
+        "LOCAL SERVICE"
+    )
+
+    try {
+        $acl = Get-Acl -Path $Path
+    } catch {
+        Write-Warning "Could not read ACL on $Path`: $($_.Exception.Message)"
+        return
+    }
+
+    $added = $false
+    foreach ($principal in $principals) {
+        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+            $principal, "Read", "ContainerInherit,ObjectInherit", "None", "Allow"
+        )
+        $acl.AddAccessRule($rule)
+        $added = $true
+        if ($PSCmdlet.ShouldProcess($Path, "Grant $principal Read access")) {
+            Write-Host "    Granted Read to $principal" -ForegroundColor Blue
+        }
+    }
+
+    if ($added -and $PSCmdlet.ShouldProcess($Path, "Apply ACL")) {
+        try {
+            Set-Acl -Path $Path -AclObject $acl
+        } catch {
+            Write-Warning "Failed to set ACL on $Path (run as admin?): $($_.Exception.Message)"
+        }
+    }
+}
+
 # === Action dispatch ===
 function Invoke-Deploy {
     Set-RegistryConfigPath
+    Grant-AudioServiceAccess -Path $From
     Set-VSTLink
 }
 
