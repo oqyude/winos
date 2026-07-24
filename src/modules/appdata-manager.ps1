@@ -4,12 +4,12 @@ param(
 
 Write-Host "AppData Manager started with action: $action" -ForegroundColor Yellow
 
-$csv = Import-Csv -Path $appsAll
+$config = Get-Content -Raw -Path $jsonConfig | ConvertFrom-Json
 
-foreach ($app in $csv) {
-    if ($app.Enabled -ne "1") { continue }
+foreach ($app in $config.'user-appdata') {
+    if (-not $app.enabled) { continue }
 
-    $AppName = $app.App
+    $AppName = $app.name
 
     # Expand From and To strings with $AppName substitution
     $rawFrom = $app.From -replace '\$AppName', $AppName
@@ -25,17 +25,17 @@ foreach ($app in $csv) {
     }
 
     Write-Host "==============================" -ForegroundColor Gray
-    Write-Host "Processing $AppName with action $action (Type=$($app.Type))" -ForegroundColor White
+    Write-Host "Processing $AppName with action $action (Type=$($app.type))" -ForegroundColor White
     Write-Host "  Raw From: $rawFrom" -ForegroundColor White
     Write-Host "  Raw To  : $rawTo" -ForegroundColor White
     Write-Host "  Expanded From: $from" -ForegroundColor White
     Write-Host "  Expanded To  : $to" -ForegroundColor White
 
     # Handle isolate type: execute a script instead of symlinks
-    if ($app.Type -eq "isolate") {
-        if ($app.Script) {
+    if ($app.type -eq "isolate") {
+        if ($app.script) {
             # Step 1: replace $AppName
-            $scriptRaw = $app.Script -replace '\$AppName', $AppName
+            $scriptRaw = $app.script -replace '\$AppName', $AppName
             # Step 2: replace $Apps with $apps path (in case of typo in CSV)
             $scriptRaw = $scriptRaw -replace '\$apps', $apps
             # Step 3: expand remaining variables (env etc.)

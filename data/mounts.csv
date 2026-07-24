@@ -1,8 +1,0 @@
-Enabled,Name,From,To
-0,SSH,$storage\ssh,$env:USERPROFILE\.ssh
-0,bash_rc,$storage\User Folder\.bashrc,$env:USERPROFILE\.bashrc
-0,bash_inputrc,$storage\User Folder\.inputrc,$env:USERPROFILE\.inputrc
-0,bash_gitconfig,$storage\User Folder\.gitconfig,$env:USERPROFILE\.gitconfig
-0,wslconfig,$storage\User Folder\.wslconfig,$env:USERPROFILE\.wslconfig
-1,deploy-folder,$root,$env:USERPROFILE\Winos
-0,continue,$storage\User Folder\.continue,$env:USERPROFILE\.continue

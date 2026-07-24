@@ -1,14 +1,14 @@
 # Undone
 param(
-    [string]$csvPath = $appsAll
+    [string]$configPath = $jsonConfig
 )
 
-$apps = Import-Csv -Path $csvPath
+$config = Get-Content -Raw -Path $configPath | ConvertFrom-Json
 
-foreach ($app in $apps) {
-    if ($app.Enabled -ne "1") { continue }
+foreach ($app in $config.'user-appdata') {
+    if (-not $app.enabled) { continue }
 
-    $AppName = $app.App
+    $AppName = $app.name
 
     $rawFrom = $app.From -replace '\$AppName', $AppName
     $rawTo   = $app.To   -replace '\$AppName', $AppName

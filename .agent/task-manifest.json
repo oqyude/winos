@@ -1,0 +1,112 @@
+{
+  "$schema": "metaagent-task-manifest",
+  "version": "1.0",
+  "session_id": "00000000-0000-0000-0000-000000000001",
+  "goal": "Базовая инициализация проекта winos. Подготовка к работе и планированию.",
+  "created_at": "2026-07-24T00:00:00.000Z",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Добавить PSScriptAnalyzer и конфигурацию линтинга",
+      "description": "Установить и настроить PSScriptAnalyzer — официальный линтер для PowerShell. Создать .psd1 конфиг с правилами, проверить существующие скрипты.",
+      "type": "config",
+      "files": [".pspsscriptanalyzer.psd1", ".vscode/settings.json"],
+      "depends_on": [],
+      "acceptance_criteria": [
+        "PSScriptAnalyzer установлен и запускается без ошибок",
+        "Создан конфигурационный файл с базовыми правилами",
+        "Все существующие .ps1 файлы проходят линтинг (или есть список игнорируемых правил)",
+        "В корне проекта есть инструкция по запуску линтера"
+      ],
+      "context": "Анализ показал отсутствие линтера. PowerShell Best Practices: именование (PascalCase для функций, команд), наличие help-блоков, обработка ошибок.",
+      "status": "pending"
+    },
+    {
+      "id": "T2",
+      "title": "Создать тестовую инфраструктуру Pester",
+      "description": "Установить Pester (фреймворк для тестирования PowerShell), создать базовую структуру tests/, написать smoke-тесты для проверки подгрузки модулей.",
+      "type": "config",
+      "files": ["tests/", "tests/smoke.Tests.ps1"],
+      "depends_on": [],
+      "acceptance_criteria": [
+        "Pester установлен и доступен",
+        "Создана директория tests/",
+        "Smoke-тест проверяет, что vars.ps1 загружается без ошибок",
+        "Smoke-тест проверяет, что все модули из списка существуют",
+        "Команда Invoke-Pester завершается успешно (хотя бы 1 тест пройден)"
+      ],
+      "context": "Сейчас тестов нет. Pester — стандартный фреймворк для PowerShell.",
+      "status": "pending"
+    },
+    {
+      "id": "T3",
+      "title": "Добавить CI через GitHub Actions",
+      "description": "Создать .github/workflows/ci.yml с запуском PSScriptAnalyzer и Pester-тестов на каждый push/PR.",
+      "type": "config",
+      "files": [".github/workflows/ci.yml"],
+      "depends_on": ["T1", "T2"],
+      "acceptance_criteria": [
+        "Workflow запускается на push в dev/main",
+        "Workflow запускает PSScriptAnalyzer",
+        "Workflow запускает Pester-тесты",
+        "Workflow не падает при отсутствии изменений в коде"
+      ],
+      "context": "CI/CD отсутствует. Базовый GitHub Actions для Windows (runs-on: windows-latest).",
+      "status": "pending"
+    },
+    {
+      "id": "T4",
+      "title": "Стандартизировать обработку ошибок в модулях",
+      "description": "Добавить единый шаблон try/catch во все модули, централизованные функции Write-Error и Write-Warning. Унифицировать параметры (все модули должны иметь param-блок с action).",
+      "type": "refactor",
+      "files": [
+        "src/modules/appdata-manager.ps1",
+        "src/modules/autostart-manager.ps1",
+        "src/modules/mounts-manager.ps1",
+        "src/modules/package-manager.ps1",
+        "src/modules/winget-installer.ps1",
+        "src/modules/windows-cursor.ps1",
+        "src/modules/deploy.ps1"
+      ],
+      "depends_on": [],
+      "acceptance_criteria": [
+        "Все модули имеют единый param-блок с [string]$Action",
+        "Критические операции обёрнуты в try/catch с человекочитаемым сообщением",
+        "Ошибки не приводят к падению всего скрипта без сообщения"
+      ],
+      "context": "Сейчас appdata-manager.ps1 имеет try/catch, deploy.ps1 частично. Остальные модули не имеют обработки ошибок в критических участках.",
+      "status": "pending"
+    },
+    {
+      "id": "T5",
+      "title": "Добавить валидацию CSV-конфигов перед использованием",
+      "description": "Создать функцию Validate-CsvConfig, которая проверяет структуру apps.csv и mounts.csv перед их использованием модулями. Добавить проверку обязательных колонок и типов.",
+      "type": "feature",
+      "files": ["src/modules/csv-validator.ps1", "data/apps.csv", "data/mounts.csv"],
+      "depends_on": [],
+      "acceptance_criteria": [
+        "Функция проверяет наличие обязательных колонок в CSV",
+        "Функция сообщает о проблемах до начала операций с файловой системой",
+        "Функция интегрирована в appdata-manager.ps1 и mounts-manager.ps1"
+      ],
+      "context": "CSV-файлы — единственный источник конфигурации. Сейчас нет проверки их корректности, ошибка в CSV приводит к неявным сбоям.",
+      "status": "pending"
+    },
+    {
+      "id": "T6",
+      "title": "Создать документацию модулей и архитектуры",
+      "description": "Написать MODULES.md с описанием каждого модуля, его действий (actions), формата CSV-конфигов и примерами использования.",
+      "type": "docs",
+      "files": ["MODULES.md"],
+      "depends_on": ["T4", "T5"],
+      "acceptance_criteria": [
+        "Описаны все 8 модулей с их actions",
+        "Описаны форматы apps.csv и mounts.csv",
+        "Описана архитектура запуска (run.ps1 → init → vars → modules)",
+        "Добавлены примеры использования"
+      ],
+      "context": "README.md даёт только общее описание. Нет документации по модулям и форматам конфигов.",
+      "status": "pending"
+    }
+  ]
+}

@@ -4,11 +4,11 @@ param(
 
 Write-Host "Mounts Manager started with action: $action" -ForegroundColor Yellow
 
-$csv = Import-Csv -Path $mountsAll
-foreach ($entry in $csv) {
-    if ($entry.Enabled -ne "1") { continue }
+$config = Get-Content -Raw -Path $jsonConfig | ConvertFrom-Json
+foreach ($entry in $config.'user-mounts') {
+    if (-not $entry.enabled) { continue }
 
-    $Name = $entry.Name
+    $Name = $entry.name
 
     # Expand From and To strings
     $rawFrom = $entry.From -replace '\$Name', $Name

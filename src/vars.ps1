@@ -61,6 +61,5 @@ $data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$
 
 # Setup Data Folder
 $apps = "$data\isolate"
-$appsAll = "$data\apps.csv"
-$mountsAll = "$data\mounts.csv"
+$jsonConfig = "$data\data.json"
 $autostartDir = "$data\autorun"

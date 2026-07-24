@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "user-appdata": [
+    {
+      "name": "AIMP",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "gramps",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "KeePassXC",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "ludusavi",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "Playnite",
+      "enabled": true,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "Powertoys",
+      "enabled": false,
+      "from": "$storage\\$AppName\\$env:COMPUTERNAME",
+      "to": "$env:LOCALAPPDATA\\Microsoft\\PowerToys"
+    },
+    {
+      "name": "Sublime Text",
+      "enabled": false,
+      "from": "$storage\\$AppName\\Config",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "SumatraPDF",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:LOCALAPPDATA\\$AppName"
+    },
+    {
+      "name": "Syncthing",
+      "enabled": false,
+      "from": "$storage\\$AppName\\$env:COMPUTERNAME",
+      "to": "$env:LOCALAPPDATA\\$AppName"
+    },
+    {
+      "name": "v2rayN",
+      "enabled": true,
+      "from": "$storage\\$AppName",
+      "to": "$env:LOCALAPPDATA\\$AppName"
+    },
+    {
+      "name": "VSCodium",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "EqualizerAPO",
+      "enabled": true,
+      "type": "isolate",
+      "from": "$storage\\$AppName",
+      "to": "$env:ProgramFiles\\$AppName"
+    },
+    {
+      "name": "deemix",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "Stretchly",
+      "enabled": false,
+      "from": "$storage\\$AppName\\config.json",
+      "to": "$env:APPDATA\\$AppName\\config.json"
+    },
+    {
+      "name": "SyncTrayzor",
+      "enabled": true,
+      "from": "$storage\\$AppName\\$env:COMPUTERNAME",
+      "to": "$env:APPDATA\\$AppName"
+    },
+    {
+      "name": "qBittorrent",
+      "enabled": false,
+      "from": "$storage\\$AppName",
+      "to": "$env:APPDATA\\$AppName"
+    }
+  ],
+  "user-mounts": [
+    {
+      "name": "SSH",
+      "enabled": false,
+      "from": "$storage\\ssh",
+      "to": "$env:USERPROFILE\\.ssh"
+    },
+    {
+      "name": "bash_rc",
+      "enabled": false,
+      "from": "$storage\\User Folder\\.bashrc",
+      "to": "$env:USERPROFILE\\.bashrc"
+    },
+    {
+      "name": "bash_inputrc",
+      "enabled": false,
+      "from": "$storage\\User Folder\\.inputrc",
+      "to": "$env:USERPROFILE\\.inputrc"
+    },
+    {
+      "name": "bash_gitconfig",
+      "enabled": false,
+      "from": "$storage\\User Folder\\.gitconfig",
+      "to": "$env:USERPROFILE\\.gitconfig"
+    },
+    {
+      "name": "wslconfig",
+      "enabled": false,
+      "from": "$storage\\User Folder\\.wslconfig",
+      "to": "$env:USERPROFILE\\.wslconfig"
+    },
+    {
+      "name": "deploy-folder",
+      "enabled": true,
+      "from": "$root",
+      "to": "$env:USERPROFILE\\Winos"
+    },
+    {
+      "name": "continue",
+      "enabled": false,
+      "from": "$storage\\User Folder\\.continue",
+      "to": "$env:USERPROFILE\\.continue"
+    }
+  ]
+}
