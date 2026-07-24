@@ -7,13 +7,6 @@
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
-    },
-    {
-      "name": "AIMP",
-      "archived": true,
-      "enabled": false,
-      "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name",
       "mappings": [
         { "from": "AudioLibrary", "to": "AudioLibrary" },

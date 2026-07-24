@@ -7,6 +7,7 @@ Describe "build-mappings.ps1" {
         }
         New-Item -ItemType Directory -Path $script:TestDir -Force | Out-Null
         New-Item -ItemType Directory -Path (Join-Path $script:TestDir "sub") -Force | Out-Null
+        New-Item -ItemType Directory -Path (Join-Path $script:TestDir "AudioLibrary") -Force | Out-Null
         "a" | Out-File -FilePath (Join-Path $script:TestDir "top1.txt") -Encoding utf8
         "b" | Out-File -FilePath (Join-Path $script:TestDir "top2.txt") -Encoding utf8
         "c" | Out-File -FilePath (Join-Path $script:TestDir "sub/nested.txt") -Encoding utf8
@@ -34,19 +35,32 @@ Describe "build-mappings.ps1" {
         $proc.ExitCode | Should -Not -Be 0
     }
 
-    It "produces top-level files only by default" {
+    It "includes both files and directories by default" {
         $json = pwsh -File $script:Builder -Path $script:TestDir -AsJson
         $lines = $json | ConvertFrom-Json
+        # 2 files + 2 directories (sub, AudioLibrary) = 4
+        $lines.Count | Should -Be 4
+        $froms = $lines | ForEach-Object { $_.from }
+        $froms | Should -Contain "top1.txt"
+        $froms | Should -Contain "top2.txt"
+        $froms | Should -Contain "sub"
+        $froms | Should -Contain "AudioLibrary"
+    }
+
+    It "-FilesOnly excludes directories" {
+        $json = pwsh -File $script:Builder -Path $script:TestDir -FilesOnly -AsJson
+        $lines = $json | ConvertFrom-Json
         $lines.Count | Should -Be 2
-        ($lines | ForEach-Object { $_.from }) | Should -Contain "top1.txt"
-        ($lines | ForEach-Object { $_.from }) | Should -Contain "top2.txt"
-        ($lines | ForEach-Object { $_.from }) | Should -Not -Contain "sub/nested.txt"
+        $froms = $lines | ForEach-Object { $_.from }
+        $froms | Should -Not -Contain "sub"
+        $froms | Should -Not -Contain "AudioLibrary"
     }
 
     It "includes subdirectories with -Recurse" {
         $json = pwsh -File $script:Builder -Path $script:TestDir -Recurse -AsJson
         $lines = $json | ConvertFrom-Json
-        $lines.Count | Should -Be 3
+        # 2 files + 2 dirs (top-level) + 1 nested file = 5
+        $lines.Count | Should -Be 5
         ($lines | ForEach-Object { $_.from }) | Should -Contain "sub/nested.txt"
     }
 

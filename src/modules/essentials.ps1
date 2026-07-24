@@ -4,6 +4,11 @@ param(
     [string]$action
 )
 
+# Self-bootstrap: if vars.ps1 hasn't been sourced (run directly), source it.
+if (-not $Storage) {
+    . (Join-Path $PSScriptRoot "..\init.ps1")
+}
+
 # === Cursor API (loaded once per module) ===
 Add-Type -TypeDefinition @"
 using System;

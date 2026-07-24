@@ -4,6 +4,11 @@ param(
     [string]$action = "deploy"
 )
 
+# Self-bootstrap: if vars.ps1 hasn't been sourced (run directly), source it.
+if (-not $jsonConfig) {
+    . (Join-Path $PSScriptRoot "..\init.ps1")
+}
+
 $symlinkMethod = Join-Path $PSScriptRoot "methods\symlink.ps1"
 $isolateMethod = Join-Path $PSScriptRoot "methods\isolate.ps1"
 

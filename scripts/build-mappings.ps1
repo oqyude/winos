@@ -6,21 +6,24 @@
     Scans a directory and produces { from, to } mappings with paths relative
     to the source directory. The output is suitable for inclusion in
     data.json under a symlink entry's "mappings" array.
+
+    By default, both files AND directories are included, since "contents of
+    a directory" naturally includes subdirectories. Use -FilesOnly to only
+    include files.
 .PARAMETER Path
     Source directory to scan.
 .PARAMETER Recurse
     Include files in subdirectories (default: top-level only).
-.PARAMETER IncludeDirectories
-    Include directories as mapping entries (default: files only).
+.PARAMETER FilesOnly
+    Include only files (default: files AND directories).
 .PARAMETER AsJson
     Output as JSON string (default: PowerShell objects).
-.PARAMETER SameToFrom
-    Mirror each file 1:1 from->to (default). When false, only "from" is set;
-    "to" defaults to the same relative path at runtime.
 .EXAMPLE
     pwsh -File scripts/build-mappings.ps1 -Path "$persist\AIMP"
 .EXAMPLE
     pwsh -File scripts/build-mappings.ps1 -Path "$persist\AIMP" -Recurse -AsJson
+.EXAMPLE
+    pwsh -File scripts/build-mappings.ps1 -Path "$persist\AIMP" -FilesOnly
 #>
 [CmdletBinding()]
 param(
@@ -29,7 +32,7 @@ param(
 
     [switch]$Recurse,
 
-    [switch]$IncludeDirectories,
+    [switch]$FilesOnly,
 
     [switch]$AsJson
 )
@@ -43,7 +46,7 @@ $sourceFull = $sourceFull.TrimEnd('\', '/')
 
 $getParams = @{
     Path = $sourceFull
-    File = -not $IncludeDirectories
+    File = [bool]$FilesOnly
 }
 if ($Recurse) { $getParams.Recurse = $true }
 
