@@ -1,95 +1,70 @@
-# Analysis Report
+# Analysis Report (updated)
 
 ## Session
 
 - **Session ID:** `00000000-0000-0000-0000-000000000001`
 - **Target repo:** `S:\Git\winos`
-- **Date:** 2026-07-24
+- **Date:** 2026-07-24 (updated)
 - **Project type:** `existing`
 
 ## 1. Общая информация
 
-- **README:** Личный проект PowerShell-скриптов для автоматизации Windows-окружения. Перенаправление AppData через симлинки, монтирование папок из CSV, управление автозапуском через Task Scheduler, деплой/clean одним скриптом.
+- **README:** Личный проект PowerShell-скриптов для автоматизации Windows-окружения. Симлинки приложений, монтирование, пользовательские настройки.
 - **Лицензия:** MIT
 - **CI/CD:** Отсутствует
-- **Точка входа:** `run.ps1` — интерактивное меню выбора модуля и действия
+- **Точка входа:** `run.ps1` — CLI `.\run.ps1 "Module" action` или интерактив
 - **Система сборки:** Отсутствует (чистый PowerShell)
 
 ## 2. Стек технологий
 
 | Компонент | Значение |
 |---|---|
-| Язык | PowerShell 5.1+ |
-| Фреймворк | Нет |
-| База данных | Нет (CSV-файлы для конфигурации) |
+| Язык | PowerShell 7.6.3 |
 | Тестовый раннер | Нет |
-| Пакетный менеджер | winget (вызывается из скриптов) |
+| Пакетный менеджер | winget, Scoop |
 | Линтер/форматтер | Нет |
 
 ## 3. Архитектура
 
 ```
 winos/
-  run.ps1                   # точка входа
+  run.ps1                       # CLI + интерактив
   src/
-    init.ps1                # инициализация (подгрузка vars)
-    vars.ps1                # переменные окружения, список модулей
+    init.ps1                    # инициализация
+    vars.ps1                    # пути, список модулей (Symlink Manager, Essentials)
     modules/
-      appdata-manager.ps1   # управление симлинками AppData
-      appdata-check.ps1     # проверка состояния AppData
-      autostart-manager.ps1 # управление автозапуском
-      deploy.ps1            # массовый apply/clean модулей
-      mounts-manager.ps1    # монтирование папок
-      package-manager.ps1   # управление пакетами
-      windows-cursor.ps1    # установка курсоров
-      winget-installer.ps1  # установка через winget
+      symlink-manager.ps1       # dispatcher: deploy/clean/redeploy
+      essentials.ps1            # install/uninstall (курсоры и др.)
+      methods/
+        symlink.ps1             # создание/удаление симлинков с mapping
+        isolate.ps1             # запуск скриптов из data\isolate\
   data/
-    apps.csv                # конфигурация AppData-приложений
-    mounts.csv              # конфигурация монтирований
-    isolate/                # изолированные скрипты для приложений
-    autorun/                # .lnk для автозапуска
-  bucket/                   # Scoop-манифесты
+    data.json                   # version 2, единый конфиг symlinks[]
+    isolate/                    # isolate-скрипты приложений
+    autorun/                    # .lnk для автозапуска
+  bucket/                       # Scoop-манифесты
 ```
 
-**Паттерн:** Скриптовый модульный монолит (каждый модуль — отдельный .ps1, вызывается по имени с action-параметром).
-
-**Ключевые модули:**
-
-| Модуль | Описание |
-|---|---|
-| appdata-manager.ps1 | Создание/удаление симлинков для AppData на основе apps.csv |
-| deploy.ps1 | Последовательный apply/clean всех модулей (autostart, winget, packages, cursor) |
-| mounts-manager.ps1 | Монтирование папок и файлов через симлинки на основе mounts.csv |
-| autostart-manager.ps1 | Регистрация/удаление задач в Task Scheduler |
-| package-manager.ps1 | Установка/удаление пакетов (Scoop) |
+**Паттерн:** Модульный dispatcher с method-архитектурой.
 
 ## 4. Конвенции
 
-- **Стиль:** PascalCase для переменных модулей, snake_case для CSV-полей. Комментарии на английском.
-- **Импорты:** dot-sourcing (`. $path`) для модулей и конфигов
-- **Типизация:** Частичная — `param([string]$action)`, `[ValidateSet()]`
-- **Обработка ошибок:** `try/catch` с `Write-Error`/`Write-Warning`, проверки `Test-Path`
-- **Логирование:** `Write-Host` с `-ForegroundColor` для визуального разделения
+- Именование: PascalCase для модулей, lowerCamelCase для JSON-полей
+- Все модули принимают `[string]$action` с `[ValidateSet()]`
+- Dot-sourcing для vars, прямые вызовы для модулей
 
 ## 5. Тесты
 
-- **Команда запуска:** `нет`
-- **Всего тестов:** 0
-- **Пройдено:** 0
-- **Упало:** 0
-- **Пропущено:** 0
-- **Упавшие тесты:** отсутствуют
+- Команда запуска: нет
+- Всего тестов: 0
 
 ## 6. Базовая проверка
 
-- **Сборка:** Не требуется (интерпретируемый PowerShell)
-- **Запуск:** `.\run.ps1` — требуется Administrator; ручной запуск
-- **Git status:** Чистый working tree, ветка `dev`, up to date с `gitea/dev`
+- Сборка: не требуется
+- Запуск: `.\run.ps1` (без администратора)
+- Git status: чисто
 
 ## 8. Примечания
 
-- Проект персональный, оптимизирован под конкретную конфигурацию автора
-- Нет тестов, нет CI/CD, нет линтера — базовая кодовая база для рефакторинга и расширения
-- Требуется Administrator для работы с симлинками и Task Scheduler
-- Используются внешние утилиты: winget, Scoop
-- Основной формат хранения конфигов — CSV
+- 6 задач выполнено (миграция, symlink-manager, унификация, CLI, essentials, очистка)
+- 4 задачи в плане (scoop-persist, docs, линтинг, тесты + CI)

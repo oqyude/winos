@@ -2,7 +2,7 @@
   "metaagent_version": "1.1.1",
   "session_id": "00000000-0000-0000-0000-000000000001",
   "target_repo": "S:\\Git\\winos",
-  "goal": "Базовая инициализация проекта winos (уровень 3-4, existing). Подготовка к работе и планированию.",
+  "goal": "Инициализация проекта winos: рефакторинг архитектуры, миграция CSV→JSON, создание Symlink Manager, унификация модулей.",
   "project_type": "existing",
   "config": {
     "depth": 4,
@@ -21,77 +21,16 @@
     "handoff": "completed"
   },
   "tasks": [
-    {
-      "id": "T1",
-      "title": "Добавить PSScriptAnalyzer и конфигурацию линтинга",
-      "type": "config",
-      "depends_on": [],
-      "status": "pending",
-      "acceptance_criteria": [
-        "PSScriptAnalyzer установлен и запускается без ошибок",
-        "Создан конфигурационный файл с базовыми правилами",
-        "Все существующие .ps1 файлы проходят линтинг (или есть список игнорируемых правил)"
-      ]
-    },
-    {
-      "id": "T2",
-      "title": "Создать тестовую инфраструктуру Pester",
-      "type": "config",
-      "depends_on": [],
-      "status": "pending",
-      "acceptance_criteria": [
-        "Pester установлен и доступен",
-        "Создана директория tests/",
-        "Smoke-тест проверяет подгрузку vars.ps1 и наличие всех модулей",
-        "Invoke-Pester завершается успешно"
-      ]
-    },
-    {
-      "id": "T3",
-      "title": "Добавить CI через GitHub Actions",
-      "type": "config",
-      "depends_on": ["T1", "T2"],
-      "status": "pending",
-      "acceptance_criteria": [
-        "Workflow запускает PSScriptAnalyzer и Pester на push/PR",
-        "Workflow работает на windows-latest"
-      ]
-    },
-    {
-      "id": "T4",
-      "title": "Стандартизировать обработку ошибок в модулях",
-      "type": "refactor",
-      "depends_on": [],
-      "status": "pending",
-      "acceptance_criteria": [
-        "Все модули имеют единый param-блок с [string]$Action",
-        "Критические операции обёрнуты в try/catch",
-        "Ошибки не приводят к падению скрипта без сообщения"
-      ]
-    },
-    {
-      "id": "T5",
-      "title": "Добавить валидацию CSV-конфигов перед использованием",
-      "type": "feature",
-      "depends_on": [],
-      "status": "pending",
-      "acceptance_criteria": [
-        "Функция проверяет обязательные колонки в CSV",
-        "Интегрирована в appdata-manager.ps1 и mounts-manager.ps1"
-      ]
-    },
-    {
-      "id": "T6",
-      "title": "Создать документацию модулей и архитектуры",
-      "type": "docs",
-      "depends_on": ["T4", "T5"],
-      "status": "pending",
-      "acceptance_criteria": [
-        "Описаны все 8 модулей с actions",
-        "Описаны форматы CSV-конфигов",
-        "Описана архитектура запуска"
-      ]
-    }
+    { "id": "C1", "title": "Миграция CSV → JSON (data/data.json v2)", "status": "completed", "acceptance_criteria": ["Один data.json вместо apps.csv+mounts.csv", "Булевы поля вместо строк 0/1"] },
+    { "id": "C2", "title": "Symlink Manager с method-архитектурой", "status": "completed", "acceptance_criteria": ["symlink-manager.ps1 dispatcher + methods/symlink.ps1 + methods/isolate.ps1", "Поддержка mappings"] },
+    { "id": "C3", "title": "Unified $action во всех модулях", "status": "completed", "acceptance_criteria": ["Все модули принимают $action с ValidateSet"] },
+    { "id": "C4", "title": "Новый run.ps1 (CLI + интерактив)", "status": "completed", "acceptance_criteria": [".\run.ps1 'Module' action", "Интерактив без Clear-Host, номера + имена"] },
+    { "id": "C5", "title": "Essentials module (ex Windows Cursor)", "status": "completed", "acceptance_criteria": ["Uninstall починен", "Модуль переименован"] },
+    { "id": "C6", "title": "Удаление админ-проверки и старых модулей", "status": "completed", "acceptance_criteria": ["run.ps1 без администратора", "Очищены неиспользуемые модули"] },
+    { "id": "P1", "title": "Scoop-persist интеграция (секция в data.json + deploy)", "status": "pending", "depends_on": [], "acceptance_criteria": ["Секция scoop-persist в data.json", "Деплой симлинков в scoop\\persist\\<app>"] },
+    { "id": "P2", "title": "Документация модулей (MODULES.md)", "status": "pending", "depends_on": [], "acceptance_criteria": ["Описаны symlink-manager, essentials, data.json"] },
+    { "id": "P3", "title": "PSScriptAnalyzer + линтинг", "status": "pending", "depends_on": [], "acceptance_criteria": ["PSScriptAnalyzer установлен", "Конфиг .psd1 создан"] },
+    { "id": "P4", "title": "Pester тесты + CI", "status": "pending", "depends_on": ["P3"], "acceptance_criteria": ["Smoke-тесты для symlink-manager", "GitHub Actions"] }
   ],
   "last_updated": "2026-07-24T00:00:00.000Z"
 }

@@ -1,11 +1,16 @@
 {
   "version": "1.1.1",
   "archived_at": "2026-07-24T00:00:00.000Z",
-  "tasks": [],
+  "tasks": [
+    { "id": "C1", "title": "Миграция CSV → JSON", "archived_at": "2026-07-24T00:00:00.000Z" },
+    { "id": "C2", "title": "Symlink Manager с method-архитектурой", "archived_at": "2026-07-24T00:00:00.000Z" },
+    { "id": "C3", "title": "Unified $action", "archived_at": "2026-07-24T00:00:00.000Z" },
+    { "id": "C4", "title": "Новый run.ps1", "archived_at": "2026-07-24T00:00:00.000Z" },
+    { "id": "C5", "title": "Essentials module", "archived_at": "2026-07-24T00:00:00.000Z" },
+    { "id": "C6", "title": "Удаление админ-проверки и старых модулей", "archived_at": "2026-07-24T00:00:00.000Z" }
+  ],
   "checkpoints": [
-    {
-      "file": "checkpoints/2026-07-24T00-00-00.json",
-      "archived_at": "2026-07-24T00:00:00.000Z"
-    }
+    { "file": "checkpoints/2026-07-24T00-00-00.json", "archived_at": "2026-07-24T00:00:00.000Z" },
+    { "file": "checkpoints/2026-07-24T00-00-00_v1.json", "archived_at": "2026-07-24T00:00:00.000Z" }
   ]
 }

@@ -1,60 +1,21 @@
 # Modules
 $symlinkManagerModule = "$PSScriptRoot\modules\symlink-manager.ps1"
-$autostartManagerModule = "$PSScriptRoot\modules\autostart-manager.ps1"
-$deployModule = "$PSScriptRoot\modules\deploy.ps1"
-$wingetInstallerModule = "$PSScriptRoot\modules\winget-installer.ps1"
-$packageManagerModule = "$PSScriptRoot\modules\package-manager.ps1"
-$windowsCursorModule = "$PSScriptRoot\modules\windows-cursor.ps1"
+$essentialsModule = "$PSScriptRoot\modules\essentials.ps1"
 
-# Define available modules with their respective actions - need to ref
 $modules = @{
     "Symlink Manager" = @{
         Path    = $symlinkManagerModule
         Actions = @("deploy", "clean", "redeploy")
     }
-    "Autostart Manager" = @{
-        Path    = $autostartManagerModule
-        Actions = @("update", "remove")
-    }
-    "Deploy Manager" = @{
-        Path    = $deployModule
-        Actions = @("apply", "clean")
-    }
-    "Package Manager" = @{
-        Path    = $packageManagerModule
+    "Essentials" = @{
+        Path    = $essentialsModule
         Actions = @("install", "uninstall")
-    }
-    "Winget Installer" = @{
-        Path    = $wingetInstallerModule
-        Actions = @("check", "install")
-    }
-    "Windows Cursor" = @{
-        Path    = $windowsCursorModule
-        Actions = @("install", "uninstall")
-    }
-}
-
-# Functions
-function checkWingetStatus {
-    try {
-        $null = winget --version 2>$null
-        Write-Host "Winget is installed." -ForegroundColor Green
-        return $true
-    }
-    catch {
-        Write-Host "Winget is not installed." -ForegroundColor Yellow
-        return $false
     }
 }
 
 # GLOBAL
-$tempFolder = "$env:TEMP\winos";
+$tempFolder = "$env:TEMP\winos"
 $storage = "$env:USERPROFILE\Storage"
-
-# Data folder
 $data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$root\data" }
-
-# Setup Data Folder
 $apps = "$data\isolate"
 $jsonConfig = "$data\data.json"
-$autostartDir = "$data\autorun"

@@ -1,7 +1,6 @@
 param(
-    [Parameter(Mandatory=$true)]
     [ValidateSet("install","uninstall")]
-    [string]$Mode
+    [string]$action
 )
 
 # === Настройки ===
@@ -30,7 +29,7 @@ public class WinAPI {
 }
 
 # === Основная логика ===
-switch ($Mode) {
+switch ($action) {
     "install" {
         Write-Host "Installing cursor theme..." -ForegroundColor Cyan
         try {
@@ -45,17 +44,16 @@ switch ($Mode) {
     }
 
     "uninstall" {
-        Write-Host "WIP..." -ForegroundColor Cyan
-        # Write-Host "Uninstalling cursor theme..." -ForegroundColor Cyan
-        # try {
-        #     Set-ItemProperty "HKCU:\Control Panel\Cursors" -Name "(Default)" -Value $DefaultScheme
-        #     Remove-ItemProperty -Path "HKCU:\Control Panel\Cursors\Schemes" -Name $SchemeName -ErrorAction SilentlyContinue
-        #     Refresh-Cursors
-        #     Write-Host "Cursor scheme '$SchemeName' removed. Default restored." -ForegroundColor Green
-        # }
-        # catch {
-        #     Write-Host "Failed to uninstall cursor scheme: $($_.Exception.Message)" -ForegroundColor Red
-        # }
+        Write-Host "Uninstalling cursor theme..." -ForegroundColor Cyan
+        try {
+            Set-ItemProperty "HKCU:\Control Panel\Cursors" -Name "(Default)" -Value $DefaultScheme
+            Remove-ItemProperty -Path "HKCU:\Control Panel\Cursors\Schemes" -Name $SchemeName -ErrorAction SilentlyContinue
+            Refresh-Cursors
+            Write-Host "Cursor scheme reverted to '$DefaultScheme'." -ForegroundColor Green
+        }
+        catch {
+            Write-Host "Failed to uninstall cursor scheme: $($_.Exception.Message)" -ForegroundColor Red
+        }
     }
 }
 
