@@ -6,7 +6,7 @@ param(
     $mappings = $null
 )
 
-function Remove-AndLog {
+function Remove-ItemLogged {
     param([string]$path)
     if (Test-Path $path) {
         Remove-Item $path -Recurse -Force
@@ -24,7 +24,7 @@ function Get-SymlinkTarget {
     return $null
 }
 
-function Ensure-Symlink {
+function Set-Symlink {
     param([string]$source, [string]$target)
     $parent = Split-Path $target -Parent
     if (-not (Test-Path $parent)) {
@@ -49,20 +49,20 @@ switch ($action) {
             foreach ($m in $mappings) {
                 $src = Join-Path $from $m.from
                 $dst = Join-Path $to $m.to
-                Ensure-Symlink $src $dst
+                Set-Symlink $src $dst
             }
         } else {
-            Ensure-Symlink $from $to
+            Set-Symlink $from $to
         }
     }
     "clean" {
         if ($mappings -and $mappings.Count -gt 0) {
             foreach ($m in $mappings) {
                 $dst = Join-Path $to $m.to
-                Remove-AndLog $dst
+                Remove-ItemLogged $dst
             }
         } else {
-            Remove-AndLog $to
+            Remove-ItemLogged $to
         }
     }
 }

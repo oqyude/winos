@@ -30,7 +30,7 @@ function Deploy-Entry {
     }
 }
 
-function Clean-Entry {
+function Remove-Entry {
     param($e)
     Write-Host "[CLEAN] $($e.name)" -ForegroundColor Cyan
     if ($e.method -eq $isolateMethod) {
@@ -47,13 +47,13 @@ $resolved = $entries | ForEach-Object { Resolve-Entry $_ }
 switch ($action) {
     "deploy" {
         foreach ($e in $resolved) {
-            if ($e.enabled) { Deploy-Entry $e } else { Clean-Entry $e }
+            if ($e.enabled) { Deploy-Entry $e } else { Remove-Entry $e }
         }
     }
     "clean" {
-        foreach ($e in $resolved) { Clean-Entry $e }
+        foreach ($e in $resolved) { Remove-Entry $e }
     }
     "redeploy" {
-        foreach ($e in $resolved) { Clean-Entry $e; if ($e.enabled) { Deploy-Entry $e } }
+        foreach ($e in $resolved) { Remove-Entry $e; if ($e.enabled) { Deploy-Entry $e } }
     }
 }

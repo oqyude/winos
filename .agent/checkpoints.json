@@ -27,10 +27,8 @@
     { "id": "C4", "title": "Новый run.ps1 (CLI + интерактив)", "status": "completed", "acceptance_criteria": [".\run.ps1 'Module' action", "Интерактив без Clear-Host, номера + имена"] },
     { "id": "C5", "title": "Essentials module (ex Windows Cursor)", "status": "completed", "acceptance_criteria": ["Uninstall починен", "Модуль переименован"] },
     { "id": "C6", "title": "Удаление админ-проверки и старых модулей", "status": "completed", "acceptance_criteria": ["run.ps1 без администратора", "Очищены неиспользуемые модули"] },
-    { "id": "P1", "title": "Scoop-persist интеграция (секция в data.json + deploy)", "status": "pending", "depends_on": [], "acceptance_criteria": ["Секция scoop-persist в data.json", "Деплой симлинков в scoop\\persist\\<app>"] },
-    { "id": "P2", "title": "Документация модулей (MODULES.md)", "status": "pending", "depends_on": [], "acceptance_criteria": ["Описаны symlink-manager, essentials, data.json"] },
-    { "id": "P3", "title": "PSScriptAnalyzer + линтинг", "status": "pending", "depends_on": [], "acceptance_criteria": ["PSScriptAnalyzer установлен", "Конфиг .psd1 создан"] },
-    { "id": "P4", "title": "Pester тесты + CI", "status": "pending", "depends_on": ["P3"], "acceptance_criteria": ["Smoke-тесты для symlink-manager", "GitHub Actions"] }
+    { "id": "P3", "title": "PSScriptAnalyzer + линтинг", "status": "completed", "depends_on": [], "acceptance_criteria": ["PSScriptAnalyzer установлен", "Конфиг .psd1 создан"] },
+    { "id": "P4", "title": "Pester тесты + CI", "status": "completed", "depends_on": ["P3"], "acceptance_criteria": ["Smoke-тесты для symlink-manager", "GitHub Actions"] }
   ],
-  "last_updated": "2026-07-24T00:00:00.000Z"
+  "last_updated": "2026-07-24T12:00:00.000Z"
 }

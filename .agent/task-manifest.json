@@ -12,40 +12,16 @@
     { "id": "C5", "title": "Essentials module (ex Windows Cursor, uninstall починен)", "type": "fix", "depends_on": [], "status": "completed" },
     { "id": "C6", "title": "Удалить админ-проверку и старые модули", "type": "refactor", "depends_on": [], "status": "completed" },
     {
-      "id": "P1",
-      "title": "Scoop-persist интеграция (секция в data.json + deploy)",
-      "type": "feature",
-      "files": ["data/data.json", "src/modules/methods/symlink.ps1"],
-      "depends_on": [],
-      "acceptance_criteria": [
-        "Добавить scoop-записи в data.json:symlinks",
-        "Symlink manager обрабатывает пути в scoop\\persist\\<app>"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "P2",
-      "title": "Документация модулей (MODULES.md)",
-      "type": "docs",
-      "files": ["MODULES.md"],
-      "depends_on": [],
-      "acceptance_criteria": [
-        "Описаны Symlink Manager и Essentials",
-        "Описана схема data.json"
-      ],
-      "status": "pending"
-    },
-    {
       "id": "P3",
       "title": "PSScriptAnalyzer + конфигурация линтинга",
       "type": "config",
       "files": [".pspsscriptanalyzer.psd1"],
       "depends_on": [],
+      "status": "pending",
       "acceptance_criteria": [
         "Invoke-ScriptAnalyzer проходит без ошибок",
         "Конфиг с правилами проекта"
-      ],
-      "status": "pending"
+      ]
     },
     {
       "id": "P4",
@@ -53,11 +29,11 @@
       "type": "config",
       "files": ["tests/", ".github/workflows/ci.yml"],
       "depends_on": ["P3"],
+      "status": "pending",
       "acceptance_criteria": [
         "Smoke-тесты для symlink-manager",
         "CI запускает линтинг и тесты"
-      ],
-      "status": "pending"
+      ]
     }
   ]
 }

@@ -20,8 +20,6 @@
 ## Pending
 
 | ID | Title | Type | Depends On | Status |
-|---|---|---|---|---|
-| P1 | Scoop-persist интеграция | feature | — | pending |
-| P2 | Документация модулей (MODULES.md) | docs | — | pending |
+|---|---|---|---|---|---|
 | P3 | PSScriptAnalyzer + линтинг | config | — | pending |
 | P4 | Pester тесты + CI | config | P3 | pending |

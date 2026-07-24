@@ -9,13 +9,13 @@ $SchemeName = "W11 Cursors Dark HDPI default (small) by Jepri Creations"
 $DefaultScheme = "Windows Aero"
 
 # === Проверка наличия файла ===
-if ($Mode -eq "install" -and -not (Test-Path $InfPath)) {
+if ($action -eq "install" -and -not (Test-Path $InfPath)) {
     Write-Host "INF file not found: $InfPath" -ForegroundColor Red
     exit 1
 }
 
 # === Функция обновления системных параметров ===
-function Refresh-Cursors {
+function Update-Cursor {
     Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
@@ -35,7 +35,7 @@ switch ($action) {
         try {
             rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 132 "$InfPath" | Out-Null
             Set-ItemProperty "HKCU:\Control Panel\Cursors" -Name "(Default)" -Value $SchemeName
-            Refresh-Cursors
+            Update-Cursor
             Write-Host "Cursor scheme '$SchemeName' installed and applied." -ForegroundColor Green
         }
         catch {
@@ -48,7 +48,7 @@ switch ($action) {
         try {
             Set-ItemProperty "HKCU:\Control Panel\Cursors" -Name "(Default)" -Value $DefaultScheme
             Remove-ItemProperty -Path "HKCU:\Control Panel\Cursors\Schemes" -Name $SchemeName -ErrorAction SilentlyContinue
-            Refresh-Cursors
+            Update-Cursor
             Write-Host "Cursor scheme reverted to '$DefaultScheme'." -ForegroundColor Green
         }
         catch {

@@ -19,12 +19,10 @@
 | C5 | `essentials.ps1` (ex Windows Cursor), `uninstall` починен |
 | C6 | Admin check удалён, старые модули удалены |
 
-## Pending Work (4 tasks)
+## Pending Work (2 tasks)
 
 | ID | Задача | Зависимости |
 |---|---|---|
-| P1 | Scoop-persist интеграция | — |
-| P2 | MODULES.md документация | — |
 | P3 | PSScriptAnalyzer + линтинг | — |
 | P4 | Pester тесты + CI | P3 |
 
