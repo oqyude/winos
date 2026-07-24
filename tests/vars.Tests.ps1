@@ -85,4 +85,19 @@ Describe "data.json schema" {
             $expanded | Should -BeLike "$($script:PersistRoot)*"
         }
     }
+
+    It "AIMP has mappings generated for its persist contents" {
+        $aimp = $script:RepoConfig.symlinks | Where-Object { $_.name -eq "AIMP" }
+        $aimp.mappings | Should -Not -BeNullOrEmpty
+
+        $validMappings = $aimp.mappings | Where-Object { $_ -ne $null -and $_.from }
+        $validMappings.Count | Should -BeGreaterOrEqual 14
+
+        $froms = $validMappings | ForEach-Object { $_.from }
+        $froms | Should -Contain "AIMP.ini"
+        $froms | Should -Contain "AIMP.ini.bak"
+        $froms | Should -Contain "EQPresetsLibrary.ini"
+        $froms | Should -Contain "AudioLibrary"
+        $froms | Should -Contain "Skins"
+    }
 }

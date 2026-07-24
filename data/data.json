@@ -4,17 +4,33 @@
   "symlinks": [
     {
       "name": "AIMP",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
-      "name": "gramps",
+      "name": "AIMP",
       "archived": true,
       "enabled": false,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:APPDATA\\$name",
+      "mappings": [
+        { "from": "AudioLibrary", "to": "AudioLibrary" },
+        { "from": "Skins", "to": "Skins" },
+        { "from": "aimp_scheduler.xml", "to": "aimp_scheduler.xml" },
+        { "from": "aimp_scrobbler.xml", "to": "aimp_scrobbler.xml" },
+        { "from": "AIMP-ContextMenu.ini", "to": "AIMP-ContextMenu.ini" },
+        { "from": "AIMP-CustomGenres.txt", "to": "AIMP-CustomGenres.txt" },
+        { "from": "AIMP.ini", "to": "AIMP.ini" },
+        { "from": "AIMP.ini.bak", "to": "AIMP.ini.bak" },
+        { "from": "AIMPac.ini", "to": "AIMPac.ini" },
+        { "from": "AIMPate.ini", "to": "AIMPate.ini" },
+        { "from": "AlbumArts.Cache.db", "to": "AlbumArts.Cache.db" },
+        { "from": "CDDB.db", "to": "CDDB.db" },
+        { "from": "Elevator.ini", "to": "Elevator.ini" },
+        { "from": "EQPresetsLibrary.ini", "to": "EQPresetsLibrary.ini" }
+      ]
     },
     {
       "name": "KeePassXC",

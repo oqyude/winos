@@ -58,6 +58,7 @@ switch ($action) {
     "deploy" {
         if ($mappings -and $mappings.Count -gt 0) {
             foreach ($m in $mappings) {
+                if ($null -eq $m -or -not $m.from) { continue }
                 $src = Join-Path $from $m.from
                 $dst = Join-Path $to $m.to
                 Set-Symlink $src $dst
@@ -69,6 +70,7 @@ switch ($action) {
     "clean" {
         if ($mappings -and $mappings.Count -gt 0) {
             foreach ($m in $mappings) {
+                if ($null -eq $m -or -not $m.to) { continue }
                 $dst = Join-Path $to $m.to
                 Remove-ItemLogged $dst
             }
