@@ -27,29 +27,29 @@
     },
     {
       "name": "KeePassXC",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "ludusavi",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "Playnite",
-      "archived": true,
+      "archived": false,
       "enabled": true,
       "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "Powertoys",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name\\$env:COMPUTERNAME",
       "to": "$env:LOCALAPPDATA\\Microsoft\\PowerToys"
     },
@@ -57,23 +57,20 @@
       "name": "SumatraPDF",
       "archived": false,
       "enabled": true,
-      "from": "$persist\\$name",
-      "to": "$env:USERPROFILE\\scoop\\persist\\sumatrapdf",
-      "mappings": [
-        { "from": "SumatraPDF-settings.txt", "to": "SumatraPDF-settings.txt" }
-      ]
+      "from": "$persist\\$name\\SumatraPDF-settings.txt",
+      "to": "$env:USERPROFILE\\scoop\\persist\\sumatrapdf\\SumatraPDF-settings.txt"
     },
     {
       "name": "Syncthing",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name\\$env:COMPUTERNAME",
       "to": "$env:LOCALAPPDATA\\$name"
     },
     {
       "name": "v2rayN",
       "archived": true,
-      "enabled": true,
+      "enabled": false,
       "from": "$persist\\$name",
       "to": "$env:LOCALAPPDATA\\$name"
     },
@@ -86,7 +83,7 @@
     },
     {
       "name": "EqualizerAPO",
-      "archived": true,
+      "archived": false,
       "enabled": true,
       "method": "isolate",
       "from": "$persist\\$name",
@@ -94,80 +91,84 @@
     },
     {
       "name": "deemix",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:APPDATA\\$name",
+      "mappings": [
+        { "from": "config.json", "to": "config.json" },
+        { "from": "spotify\\config.json", "to": "spotify\\config.json" }
+      ]
     },
     {
       "name": "Stretchly",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name\\config.json",
       "to": "$env:APPDATA\\$name\\config.json"
     },
     {
       "name": "SyncTrayzor",
-      "archived": true,
+      "archived": false,
       "enabled": true,
       "from": "$persist\\$name\\$env:COMPUTERNAME",
       "to": "$env:APPDATA\\$name"
     },
     {
       "name": "qBittorrent",
-      "archived": true,
-      "enabled": false,
+      "archived": false,
+      "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:USERPROFILE\\scoop\\persist\\qbittorrent-enhanced\\profile\\qBittorrent\\config"
     },
     {
       "name": "SSH",
-      "archived": true,
-      "enabled": false,
-      "from": "$persist\\ssh",
+      "archived": false,
+      "enabled": true,
+      "from": "$storage\\home\\.ssh",
       "to": "$env:USERPROFILE\\.ssh"
     },
     {
       "name": "bash_rc",
-      "archived": true,
-      "enabled": false,
-      "from": "$persist\\User Folder\\.bashrc",
+      "archived": false,
+      "enabled": true,
+      "from": "$storage\\home\\.bashrc",
       "to": "$env:USERPROFILE\\.bashrc"
     },
     {
       "name": "bash_inputrc",
-      "archived": true,
-      "enabled": false,
-      "from": "$persist\\User Folder\\.inputrc",
+      "archived": false,
+      "enabled": true,
+      "from": "$storage\\home\\.inputrc",
       "to": "$env:USERPROFILE\\.inputrc"
     },
     {
       "name": "bash_gitconfig",
-      "archived": true,
-      "enabled": false,
-      "from": "$persist\\User Folder\\.gitconfig",
+      "archived": false,
+      "enabled": true,
+      "from": "$storage\\home\\.gitconfig",
       "to": "$env:USERPROFILE\\.gitconfig"
     },
     {
       "name": "wslconfig",
-      "archived": true,
-      "enabled": false,
-      "from": "$persist\\User Folder\\.wslconfig",
+      "archived": false,
+      "enabled": true,
+      "from": "$storage\\home\\.wslconfig",
       "to": "$env:USERPROFILE\\.wslconfig"
     },
     {
       "name": "deploy-folder",
-      "archived": true,
+      "archived": false,
       "enabled": true,
       "from": "$root",
       "to": "$env:USERPROFILE\\Winos"
     },
     {
-      "name": "continue",
-      "archived": true,
-      "enabled": false,
-      "from": "$persist\\User Folder\\.continue",
-      "to": "$env:USERPROFILE\\.continue"
+      "name": "storage-folder",
+      "archived": false,
+      "enabled": true,
+      "from": "$root",
+      "to": "$env:USERPROFILE\\Storage\\winos"
     }
   ]
 }

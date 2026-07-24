@@ -20,11 +20,9 @@ Describe "module standalone execution" {
 
     It "essentials.ps1 self-bootstraps $Storage" {
         $script = Join-Path $script:RepoRoot "src/modules/essentials.ps1"
-        # Run with -action install. Either INF is found (success) or INF not found
-        # with a real, non-null path. Either way, the script must NOT crash on
-        # `$InfPath` being null due to missing bootstrap.
+        # Use -action uninstall to avoid triggering INF install (UAC / interactive).
         $proc = Start-Process -FilePath "pwsh" -ArgumentList @(
-            "-NoProfile", "-File", $script, "-action", "install"
+            "-NoProfile", "-File", $script, "-action", "uninstall"
         ) -Wait -PassThru -NoNewWindow -RedirectStandardOutput "$env:TEMP\winos-essentials-stdout.txt" -RedirectStandardError "$env:TEMP\winos-essentials-stderr.txt"
         $stderr = Get-Content "$env:TEMP\winos-essentials-stderr.txt" -Raw
         $stdout = Get-Content "$env:TEMP\winos-essentials-stdout.txt" -Raw
@@ -32,8 +30,8 @@ Describe "module standalone execution" {
         # Must not crash on null Storage
         $stderr | Should -Not -Match "Cannot bind argument"
         $stderr | Should -Not -Match "Value cannot be null"
-        # Must not produce a null-ish path (e.g. "\Windows\...")
-        $stdout | Should -Not -Match "INF file not found: \\Windows"
+        # Should reach the action switch (ie. Storage is bootstrapped)
+        $stdout | Should -Match "Uninstalling|reverted"
 
         Remove-Item "$env:TEMP\winos-essentials-stdout.txt", "$env:TEMP\winos-essentials-stderr.txt" -ErrorAction SilentlyContinue
     }

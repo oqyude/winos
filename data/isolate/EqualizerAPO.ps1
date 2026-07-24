@@ -1,63 +1,39 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [string]$action = "reconnect",
+    [ValidateSet("deploy", "clean", "redeploy")]
+    [string]$action = "deploy",
     [string]$AppName = "EqualizerAPO",
     [string]$From,
     [string]$To
 )
 
-Write-Host "==============================" -ForegroundColor Gray
-
+# === Validate inputs ===
 if (-not $From) {
     Write-Error "No From path - aborting"
-    Exit 1
+    exit 1
 }
-if (-not [System.IO.Path]::IsPathRooted($To)) {
-    $To = Join-Path $env:ProgramFiles $AppName
-    Write-Host "Fixed To: $To" -ForegroundColor Yellow
+if (-not (Test-Path $From -PathType Container)) {
+    Write-Error "From path not found or not a directory: $From"
+    exit 1
+}
+if (-not $To) {
+    Write-Error "No To path - aborting"
+    exit 1
 }
 
-$configDir = Join-Path $To "config"
+# === Paths ===
 $regPath = "HKLM:\SOFTWARE\EqualizerAPO"
-$regKey = "ConfigPath"
-$vstDir = Join-Path $To "VSTPlugins"
+$regKey  = "ConfigPath"
+$vstDir  = Join-Path $To "VSTPlugins"
 $FabFilterLink = Join-Path $vstDir "FabFilter Pro-Q 3.dll"
 $globalDLL = "$env:ProgramFiles\VSTPlugins\FabFilter\FabFilter Pro-Q 3.dll"
 
 Write-Host "Isolate: $AppName ($action) | From: $From | To: $To" -ForegroundColor Yellow
 
-function Disconnect-App {
+# === Registry: point EqualizerAPO at user-managed config dir ===
+function Set-RegistryConfigPath {
     [CmdletBinding(SupportsShouldProcess)]
     param()
-    Write-Host "  Disconnecting..." -ForegroundColor Yellow
-
-    if (Test-Path $configDir) {
-        if ($PSCmdlet.ShouldProcess($configDir, "Remove config directory")) {
-            Remove-Item $configDir -Recurse -Force -ErrorAction SilentlyContinue
-            Write-Host "    Config wiped" -ForegroundColor Red
-        }
-    }
-
-    if (Test-Path $FabFilterLink) {
-        if ($PSCmdlet.ShouldProcess($FabFilterLink, "Remove VST link")) {
-            Remove-Item $FabFilterLink -Force -ErrorAction SilentlyContinue
-            Write-Host "    VST link removed" -ForegroundColor Red
-        }
-    }
-
-    if (Test-Path $regPath) {
-        if ($PSCmdlet.ShouldProcess("$regPath\$regKey", "Remove registry key")) {
-            Remove-ItemProperty -Path $regPath -Name $regKey -ErrorAction SilentlyContinue
-            Write-Host "    Registry cleaned" -ForegroundColor Red
-        }
-    }
-}
-
-function Connect-App {
-    [CmdletBinding(SupportsShouldProcess)]
-    param()
-    Write-Host "  Connecting..." -ForegroundColor Yellow
-
     if (-not (Test-Path $regPath)) {
         if ($PSCmdlet.ShouldProcess($regPath, "Create registry key")) {
             New-Item -Path $regPath -Force | Out-Null
@@ -67,7 +43,23 @@ function Connect-App {
         Set-ItemProperty -Path $regPath -Name $regKey -Value $From -Type String -Force
         Write-Host "    ConfigPath -> $From" -ForegroundColor Blue
     }
+}
 
+function Remove-RegistryConfigPath {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+    if (Test-Path $regPath) {
+        if ($PSCmdlet.ShouldProcess("$regPath\$regKey", "Remove ConfigPath")) {
+            Remove-ItemProperty -Path $regPath -Name $regKey -ErrorAction SilentlyContinue
+            Write-Host "    Registry cleaned" -ForegroundColor Red
+        }
+    }
+}
+
+# === VST plugin symlink (program directory side) ===
+function Set-VSTLink {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
     if (-not (Test-Path $vstDir)) {
         if ($PSCmdlet.ShouldProcess($vstDir, "Create VST dir")) {
             New-Item -ItemType Directory -Path $vstDir -Force | Out-Null
@@ -88,14 +80,37 @@ function Connect-App {
     }
 }
 
-switch ($action) {
-    "disconnect" { Disconnect-App }
-    "connect" { Connect-App }
-    "reconnect" {
-        Disconnect-App
-        Connect-App
+function Remove-VSTLink {
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
+    if (Test-Path $FabFilterLink) {
+        if ($PSCmdlet.ShouldProcess($FabFilterLink, "Remove VST link")) {
+            Remove-Item $FabFilterLink -Force
+            Write-Host "    VST link removed" -ForegroundColor Red
+        }
     }
-    default { Write-Warning "Unknown action: $action" }
+}
+
+# === Action dispatch ===
+function Invoke-Deploy {
+    Set-RegistryConfigPath
+    Set-VSTLink
+}
+
+function Invoke-Clean {
+    Remove-RegistryConfigPath
+    Remove-VSTLink
+}
+
+function Invoke-Redeploy {
+    Invoke-Clean
+    Invoke-Deploy
+}
+
+switch ($action) {
+    "deploy"   { Invoke-Deploy }
+    "clean"    { Invoke-Clean }
+    "redeploy" { Invoke-Redeploy }
 }
 
 Write-Host "Done with $AppName" -ForegroundColor Green
