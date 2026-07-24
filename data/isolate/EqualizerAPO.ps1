@@ -72,7 +72,7 @@ function Set-VSTLink {
     }
     if (Test-Path $globalDLL) {
         if ($PSCmdlet.ShouldProcess($FabFilterLink, "Link to $globalDLL")) {
-            New-Item -SymbolicLink -Path $FabFilterLink -Value $globalDLL -Force | Out-Null
+            New-Item -ItemType SymbolicLink -Path $FabFilterLink -Value $globalDLL -Force | Out-Null
             Write-Host "    VST linked: $FabFilterLink -> $globalDLL" -ForegroundColor Blue
         }
     } else {
