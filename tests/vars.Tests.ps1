@@ -77,7 +77,16 @@ Describe "data.json schema" {
     }
 
     It "from paths expand to directories under persist (with explicit allowlist)" {
-        $allowedNonPersist = @("deploy-folder")
+        $allowedNonPersist = @(
+            "deploy-folder",     # uses $root (winos scripts deployment)
+            "storage-folder",    # uses $root (Storage\winos symlink target)
+            "SSH",               # uses $storage\home\ (shell config, separate from persist)
+            "bash_rc",           # uses $storage\home\
+            "bash_inputrc",      # uses $storage\home\
+            "bash_gitconfig",    # uses $storage\home\
+            "wslconfig",         # uses $storage\home\
+            "continue"           # uses $storage\home\
+        )
         foreach ($entry in $script:RepoConfig.symlinks) {
             if ($allowedNonPersist -contains $entry.name) { continue }
             $raw = $entry.from -replace '\\\$name', ''
