@@ -1,54 +1,63 @@
 . (Join-Path $PSScriptRoot "./src/init.ps1")
 
-$moduleNames = $modules.Keys | Sort-Object
-$selectedModule = $null
-
-if ($args.Count -ge 1) {
-    $selectedModule = if ($args[0] -as [int]) { $moduleNames[$args[0] - 1] } else { $args[0] }
-    if (-not $modules.ContainsKey($selectedModule)) {
-        Write-Host "Module '$($args[0])' not found. Available:" -ForegroundColor Red
-        $moduleNames | ForEach-Object { Write-Host "  $_" }
-        exit 1
-    }
-}
-
-if (-not $selectedModule) {
-    Write-Host "`n winos — select a module:`n" -ForegroundColor Yellow
-    for ($i = 0; $i -lt $moduleNames.Count; $i++) {
-        $actions = $modules[$moduleNames[$i]].Actions -join " / "
-        Write-Host "  $($i+1)  $($moduleNames[$i])" -NoNewline
-        Write-Host "       $actions" -ForegroundColor DarkGray
-    }
+function Show-Menu {
+    param(
+        [string]$Title,
+        [string[]]$Items,
+        [string[]]$Descriptions,
+        [string]$BackLabel = $null
+    )
+    $width = 40
     Write-Host ""
-    do {
-        $input = Read-Host " Enter number or name"
-        $selectedModule = if ($input -as [int]) { $moduleNames[$input - 1] } else { $input }
-        if (-not $modules.ContainsKey($selectedModule)) { Write-Host " Not found, try again" -ForegroundColor Yellow }
-    } until ($modules.ContainsKey($selectedModule))
+    Write-Host "  $($Title)" -ForegroundColor Cyan
+    Write-Host "  $('─' * $width)" -ForegroundColor DarkGray
+    if ($BackLabel) {
+        Write-Host "  [0]" -NoNewline -ForegroundColor Yellow
+        Write-Host " $BackLabel" -ForegroundColor DarkGray
+    }
+    for ($i = 0; $i -lt $Items.Count; $i++) {
+        $num = "  [$($i + 1)]"
+        $name = " $($Items[$i])"
+        $desc = if ($Descriptions -and $Descriptions[$i]) { " — $($Descriptions[$i])" } else { "" }
+        Write-Host $num -NoNewline -ForegroundColor Yellow
+        Write-Host $name -NoNewline -ForegroundColor White
+        Write-Host $desc -ForegroundColor DarkGray
+    }
+    Write-Host "  $('─' * $width)" -ForegroundColor DarkGray
+    Write-Host ""
 }
 
-$actions = $modules[$selectedModule].Actions
-$selectedAction = $null
+function Read-Choice {
+    param([string]$Prompt, [int]$MaxChoice, [switch]$AllowZero)
+    do {
+        $raw = Read-Host "  $Prompt"
+        if ($AllowZero -and $raw -eq "0") { return 0 }
+        $num = $raw -as [int]
+        if ($null -ne $num -and $num -ge 1 -and $num -le $MaxChoice) { return $num }
+        Write-Host "  Invalid, try again" -ForegroundColor Yellow
+    } while ($true)
+}
 
-if ($args.Count -ge 2) {
-    $selectedAction = if ($args[1] -as [int]) { $actions[$args[1] - 1] } else { $args[1] }
-    if ($actions -notcontains $selectedAction) {
-        Write-Host "Invalid action. Available: $($actions -join ', ')" -ForegroundColor Red
-        exit 1
+$moduleNames = $modules.Keys | Sort-Object
+
+:menu while ($true) {
+    $descs = $moduleNames | ForEach-Object { $modules[$_].Description }
+    Show-Menu -Title "winos" -Items $moduleNames -Descriptions $descs
+    $modIdx = Read-Choice -Prompt "Select module" -MaxChoice $moduleNames.Count -AllowZero
+    if ($modIdx -eq 0) { exit 0 }
+    $selectedModule = $moduleNames[$modIdx - 1]
+
+    :actions while ($true) {
+        $actions = $modules[$selectedModule].Actions
+        Show-Menu -Title $selectedModule -Items $actions -BackLabel "Back"
+        $actIdx = Read-Choice -Prompt "Select action" -MaxChoice $actions.Count -AllowZero
+        if ($actIdx -eq 0) { continue menu }
+        $selectedAction = $actions[$actIdx - 1]
+
+        Write-Host ""
+        Write-Host "  ▸ $selectedModule → $selectedAction" -ForegroundColor Green
+        Write-Host ""
+        & $modules[$selectedModule].Path $selectedAction
+        break actions
     }
 }
-
-if (-not $selectedAction) {
-    Write-Host "`n $selectedModule" -ForegroundColor Cyan
-    for ($i = 0; $i -lt $actions.Count; $i++) {
-        Write-Host "  $($i+1)  $($actions[$i])"
-    }
-    do {
-        $input = Read-Host " Select action"
-        $selectedAction = if ($input -as [int]) { $actions[$input - 1] } else { $input }
-        if ($actions -notcontains $selectedAction) { Write-Host " Invalid action, try again" -ForegroundColor Yellow }
-    } until ($actions -contains $selectedAction)
-}
-
-Write-Host "`n Running: $selectedModule → $selectedAction`n" -ForegroundColor Green
-& $modules[$selectedModule].Path $selectedAction

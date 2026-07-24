@@ -18,5 +18,8 @@
 
 ## Конвенции проекта
 
-- Имена классов в PascalCase, функции в snake_case
-- Следовать существующему стилю кода в проекте
+- Имена функций: approved verbs (`Set-`, `Remove-`, `Update-`, `Get-`, `Invoke-`)
+- Имена переменных: PascalCase для модулей, lowerCamelCase для JSON-полей
+- Точка входа: `main.ps1`
+- Скрипты: `scripts/lint.ps1`, `scripts/test.ps1`
+- Тесты: `tests/`, smoke-тесты с Pester 3.4.0

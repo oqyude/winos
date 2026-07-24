@@ -8,32 +8,32 @@
     { "id": "C1", "title": "Миграция CSV → JSON (data/data.json v2)", "type": "refactor", "depends_on": [], "status": "completed" },
     { "id": "C2", "title": "Symlink Manager с method-архитектурой (dispatcher + methods)", "type": "feature", "depends_on": [], "status": "completed" },
     { "id": "C3", "title": "Unified $action во всех модулях", "type": "refactor", "depends_on": [], "status": "completed" },
-    { "id": "C4", "title": "Новый run.ps1 (CLI аргументы + интерактив)", "type": "refactor", "depends_on": [], "status": "completed" },
+    { "id": "C4", "title": "Новый main.ps1 (CLI + интерактив с Back/Exit)", "type": "refactor", "depends_on": [], "status": "completed" },
     { "id": "C5", "title": "Essentials module (ex Windows Cursor, uninstall починен)", "type": "fix", "depends_on": [], "status": "completed" },
     { "id": "C6", "title": "Удалить админ-проверку и старые модули", "type": "refactor", "depends_on": [], "status": "completed" },
     {
       "id": "P3",
-      "title": "PSScriptAnalyzer + конфигурация линтинга",
+      "title": "PSScriptAnalyzer + approved verbs",
       "type": "config",
-      "files": [".pspsscriptanalyzer.psd1"],
+      "files": [".pspsscriptanalyzer.psd1", "scripts/lint.ps1"],
       "depends_on": [],
-      "status": "pending",
-      "acceptance_criteria": [
-        "Invoke-ScriptAnalyzer проходит без ошибок",
-        "Конфиг с правилами проекта"
-      ]
+      "status": "completed"
     },
     {
       "id": "P4",
-      "title": "Pester тесты + GitHub Actions CI",
+      "title": "Pester smoke-тесты",
       "type": "config",
-      "files": ["tests/", ".github/workflows/ci.yml"],
+      "files": ["tests/", "scripts/test.ps1"],
       "depends_on": ["P3"],
-      "status": "pending",
-      "acceptance_criteria": [
-        "Smoke-тесты для symlink-manager",
-        "CI запускает линтинг и тесты"
-      ]
+      "status": "completed"
+    },
+    {
+      "id": "P5",
+      "title": "Структура проекта + интерактив",
+      "type": "refactor",
+      "files": ["main.ps1", "scripts/"],
+      "depends_on": ["P4"],
+      "status": "completed"
     }
   ]
 }

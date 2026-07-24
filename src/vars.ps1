@@ -4,12 +4,14 @@ $essentialsModule = "$PSScriptRoot\modules\essentials.ps1"
 
 $modules = @{
     "Symlink Manager" = @{
-        Path    = $symlinkManagerModule
-        Actions = @("deploy", "clean", "redeploy")
+        Path        = $symlinkManagerModule
+        Actions     = @("deploy", "clean", "redeploy")
+        Description = "Symlinks & isolate"
     }
     "Essentials" = @{
-        Path    = $essentialsModule
-        Actions = @("install", "uninstall")
+        Path        = $essentialsModule
+        Actions     = @("install", "uninstall")
+        Description = "Cursor themes"
     }
 }
 
