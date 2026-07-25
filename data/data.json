@@ -38,10 +38,6 @@
           "to": "AIMP.ini"
         },
         {
-          "from": "AIMP.ini.bak",
-          "to": "AIMP.ini.bak"
-        },
-        {
           "from": "AIMPac.ini",
           "to": "AIMPac.ini"
         },

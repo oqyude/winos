@@ -111,11 +111,10 @@ Describe "data.json schema" {
         $aimp.mappings | Should -Not -BeNullOrEmpty
 
         $validMappings = $aimp.mappings | Where-Object { $_ -ne $null -and $_.from }
-        $validMappings.Count | Should -BeGreaterOrEqual 14
+        $validMappings.Count | Should -BeGreaterOrEqual 13
 
         $froms = $validMappings | ForEach-Object { $_.from }
         $froms | Should -Contain "AIMP.ini"
-        $froms | Should -Contain "AIMP.ini.bak"
         $froms | Should -Contain "EQPresetsLibrary.ini"
         $froms | Should -Contain "AudioLibrary"
         $froms | Should -Contain "Skins"
