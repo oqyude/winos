@@ -9,77 +9,128 @@
       "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name",
       "mappings": [
-        { "from": "AudioLibrary", "to": "AudioLibrary" },
-        { "from": "Skins", "to": "Skins" },
-        { "from": "aimp_scheduler.xml", "to": "aimp_scheduler.xml" },
-        { "from": "aimp_scrobbler.xml", "to": "aimp_scrobbler.xml" },
-        { "from": "AIMP-ContextMenu.ini", "to": "AIMP-ContextMenu.ini" },
-        { "from": "AIMP-CustomGenres.txt", "to": "AIMP-CustomGenres.txt" },
-        { "from": "AIMP.ini", "to": "AIMP.ini" },
-        { "from": "AIMP.ini.bak", "to": "AIMP.ini.bak" },
-        { "from": "AIMPac.ini", "to": "AIMPac.ini" },
-        { "from": "AIMPate.ini", "to": "AIMPate.ini" },
-        { "from": "AlbumArts.Cache.db", "to": "AlbumArts.Cache.db" },
-        { "from": "CDDB.db", "to": "CDDB.db" },
-        { "from": "Elevator.ini", "to": "Elevator.ini" },
-        { "from": "EQPresetsLibrary.ini", "to": "EQPresetsLibrary.ini" }
-      ]
+        {
+          "from": "AudioLibrary",
+          "to": "AudioLibrary"
+        },
+        {
+          "from": "Skins",
+          "to": "Skins"
+        },
+        {
+          "from": "aimp_scheduler.xml",
+          "to": "aimp_scheduler.xml"
+        },
+        {
+          "from": "aimp_scrobbler.xml",
+          "to": "aimp_scrobbler.xml"
+        },
+        {
+          "from": "AIMP-ContextMenu.ini",
+          "to": "AIMP-ContextMenu.ini"
+        },
+        {
+          "from": "AIMP-CustomGenres.txt",
+          "to": "AIMP-CustomGenres.txt"
+        },
+        {
+          "from": "AIMP.ini",
+          "to": "AIMP.ini"
+        },
+        {
+          "from": "AIMP.ini.bak",
+          "to": "AIMP.ini.bak"
+        },
+        {
+          "from": "AIMPac.ini",
+          "to": "AIMPac.ini"
+        },
+        {
+          "from": "AIMPate.ini",
+          "to": "AIMPate.ini"
+        },
+        {
+          "from": "AlbumArts.Cache.db",
+          "to": "AlbumArts.Cache.db"
+        },
+        {
+          "from": "CDDB.db",
+          "to": "CDDB.db"
+        },
+        {
+          "from": "Elevator.ini",
+          "to": "Elevator.ini"
+        },
+        {
+          "from": "EQPresetsLibrary.ini",
+          "to": "EQPresetsLibrary.ini"
+        }
+      ],
+      "method": "symlink"
     },
     {
       "name": "KeePassXC",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:APPDATA\\$name",
+      "method": "symlink"
     },
     {
       "name": "ludusavi",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:APPDATA\\$name",
+      "method": "symlink"
     },
     {
       "name": "Playnite",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:APPDATA\\$name",
+      "method": "symlink"
     },
     {
       "name": "Powertoys",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name\\$env:COMPUTERNAME",
-      "to": "$env:LOCALAPPDATA\\Microsoft\\PowerToys"
+      "to": "$env:LOCALAPPDATA\\Microsoft\\PowerToys",
+      "method": "symlink"
     },
     {
       "name": "SumatraPDF",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name\\SumatraPDF-settings.txt",
-      "to": "$env:USERPROFILE\\scoop\\persist\\sumatrapdf\\SumatraPDF-settings.txt"
+      "to": "$env:USERPROFILE\\scoop\\persist\\sumatrapdf\\SumatraPDF-settings.txt",
+      "method": "symlink"
     },
     {
       "name": "Syncthing",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name\\$env:COMPUTERNAME",
-      "to": "$env:LOCALAPPDATA\\$name"
+      "to": "$env:LOCALAPPDATA\\$name",
+      "method": "symlink"
     },
     {
       "name": "v2rayN",
       "archived": true,
       "enabled": false,
       "from": "$persist\\$name",
-      "to": "$env:LOCALAPPDATA\\$name"
+      "to": "$env:LOCALAPPDATA\\$name",
+      "method": "symlink"
     },
     {
       "name": "VSCodium",
       "archived": true,
       "enabled": false,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:APPDATA\\$name",
+      "method": "symlink"
     },
     {
       "name": "EqualizerAPO",
@@ -96,86 +147,104 @@
       "from": "$persist\\$name",
       "to": "$env:APPDATA\\$name",
       "mappings": [
-        { "from": "config.json", "to": "config.json" },
-        { "from": "spotify\\config.json", "to": "spotify\\config.json" }
-      ]
+        {
+          "from": "config.json",
+          "to": "config.json"
+        },
+        {
+          "from": "spotify\\config.json",
+          "to": "spotify\\config.json"
+        }
+      ],
+      "method": "symlink"
     },
     {
       "name": "Stretchly",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name\\config.json",
-      "to": "$env:APPDATA\\$name\\config.json"
+      "to": "$env:APPDATA\\$name\\config.json",
+      "method": "symlink"
     },
     {
       "name": "SyncTrayzor",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name\\$env:COMPUTERNAME",
-      "to": "$env:APPDATA\\$name"
+      "to": "$env:APPDATA\\$name",
+      "method": "symlink"
     },
     {
       "name": "qBittorrent",
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:USERPROFILE\\scoop\\persist\\qbittorrent-enhanced\\profile\\qBittorrent\\config"
+      "to": "$env:USERPROFILE\\scoop\\persist\\qbittorrent-enhanced\\profile\\qBittorrent\\config",
+      "method": "symlink"
     },
     {
       "name": "starhip.toml",
       "archived": false,
       "enabled": true,
       "from": "$storage\\home\\.config\\starship.toml",
-      "to": "$env:USERPROFILE\\.config\\starship.toml"
+      "to": "$env:USERPROFILE\\.config\\starship.toml",
+      "method": "symlink"
     },
     {
       "name": "SSH",
       "archived": false,
       "enabled": true,
       "from": "$storage\\home\\.ssh",
-      "to": "$env:USERPROFILE\\.ssh"
+      "to": "$env:USERPROFILE\\.ssh",
+      "method": "symlink"
     },
     {
       "name": "bash_rc",
       "archived": false,
       "enabled": true,
       "from": "$storage\\home\\.bashrc",
-      "to": "$env:USERPROFILE\\.bashrc"
+      "to": "$env:USERPROFILE\\.bashrc",
+      "method": "symlink"
     },
     {
       "name": "bash_inputrc",
       "archived": false,
       "enabled": true,
       "from": "$storage\\home\\.inputrc",
-      "to": "$env:USERPROFILE\\.inputrc"
+      "to": "$env:USERPROFILE\\.inputrc",
+      "method": "symlink"
     },
     {
       "name": "bash_gitconfig",
       "archived": false,
       "enabled": true,
       "from": "$storage\\home\\.gitconfig",
-      "to": "$env:USERPROFILE\\.gitconfig"
+      "to": "$env:USERPROFILE\\.gitconfig",
+      "method": "symlink"
     },
     {
       "name": "wslconfig",
       "archived": false,
       "enabled": true,
       "from": "$storage\\home\\.wslconfig",
-      "to": "$env:USERPROFILE\\.wslconfig"
+      "to": "$env:USERPROFILE\\.wslconfig",
+      "method": "symlink"
     },
     {
       "name": "deploy-folder",
       "archived": false,
       "enabled": true,
       "from": "$root",
-      "to": "$env:USERPROFILE\\Winos"
+      "to": "$env:USERPROFILE\\Winos",
+      "method": "symlink"
     },
     {
       "name": "storage-folder",
       "archived": false,
       "enabled": true,
       "from": "$root",
-      "to": "$env:USERPROFILE\\Storage\\winos"
+      "to": "$env:USERPROFILE\\Storage\\winos",
+      "method": "symlink"
     }
   ]
 }

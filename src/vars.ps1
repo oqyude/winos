@@ -5,7 +5,7 @@ $essentialsModule = "$PSScriptRoot\modules\essentials.ps1"
 $modules = @{
     "Symlink Manager" = @{
         Path        = $symlinkManagerModule
-        Actions     = @("deploy", "clean", "redeploy")
+        Actions     = @("plan", "apply", "snapshot")
         Description = "Symlinks & isolate"
     }
     "Essentials" = @{
@@ -22,3 +22,4 @@ $persist = "$storage\persist"
 $data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$root\data" }
 $apps = "$data\isolate"
 $jsonConfig = "$data\data.json"
+$statePath = "$data\state\symlink-snapshot.json"

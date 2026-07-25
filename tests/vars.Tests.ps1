@@ -31,6 +31,15 @@ Describe "vars.ps1 loads" {
         $jsonConfig | Should -Not -BeNullOrEmpty
     }
 
+    It "defines statePath (snapshot output location)" {
+        $statePath | Should -Not -BeNullOrEmpty
+        $statePath | Should -BeLike "*symlink-snapshot.json"
+    }
+
+    It "statePath is under data directory" {
+        $statePath | Should -BeLike "$data*"
+    }
+
     It "defines persist (canonical source-of-truth root)" {
         $persist | Should -Not -BeNullOrEmpty
     }
@@ -85,7 +94,9 @@ Describe "data.json schema" {
             "bash_inputrc",      # uses $storage\home\
             "bash_gitconfig",    # uses $storage\home\
             "wslconfig",         # uses $storage\home\
-            "continue"           # uses $storage\home\
+            "continue",          # uses $storage\home\
+            "starhip.toml"       # uses $storage\home\.config\
+            "qBittorrent"        # uses $persist but to a different scoop persist path
         )
         foreach ($entry in $script:RepoConfig.symlinks) {
             if ($allowedNonPersist -contains $entry.name) { continue }

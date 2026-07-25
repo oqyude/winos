@@ -7,7 +7,7 @@ Describe "module standalone execution" {
     It "symlink-manager.ps1 loads $jsonConfig via self-bootstrap" {
         $script = Join-Path $script:RepoRoot "src/modules/symlink-manager.ps1"
         $proc = Start-Process -FilePath "pwsh" -ArgumentList @(
-            "-NoProfile", "-File", $script, "-action", "clean", "-WhatIf"
+            "-NoProfile", "-File", $script, "-action", "plan"
         ) -Wait -PassThru -NoNewWindow -RedirectStandardOutput "$env:TEMP\winos-symlink-stdout.txt" -RedirectStandardError "$env:TEMP\winos-symlink-stderr.txt"
         $proc.ExitCode | Should -Be 0
 
