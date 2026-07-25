@@ -50,15 +50,17 @@ $config = Get-Content -Raw -Path $JsonConfig | ConvertFrom-Json
 # Strip phantom nulls from PowerShell ConvertFrom-Json bug
 $entries = @()
 foreach ($e in $config.symlinks) {
-    if ($null -ne $e) { $entries += $e }
+    if ($null -ne $e -and -not $e.archived) { $entries += $e }
 }
 
-# Probe state for each entry
+# Probe state for each entry.
+# enabled=true  → desired = 'symlink' (manage/create)
+# enabled=false → desired = 'missing' (break connection / drop)
 $delta = @()
 foreach ($entry in $entries) {
-    if ($entry.archived) { continue }
     $entryState = Get-SymlinkEntryState -Entry $entry
-    $categorized = Compare-State -EntryState $entryState
+    $desired = if ($entry.enabled) { 'symlink' } else { 'missing' }
+    $categorized = Compare-State -EntryState $entryState -Desired $desired
     $delta += $categorized
 }
 
@@ -75,17 +77,19 @@ if ($Apply) {
     $results = @()
     foreach ($entry in $delta) {
         if ($entry.method -ne 'symlink') { continue }
-        $entryResults = Invoke-SafeActions -EntryState $entry -Force:$Force
+        $entryResults = Invoke-SafeAction -EntryState $entry
         $results += $entryResults
     }
 
     $created = ($results | Where-Object { $_.status -eq 'created' }).Count
+    $removed = ($results | Where-Object { $_.status -eq 'removed' }).Count
     $skipped = ($results | Where-Object { $_.status -eq 'skipped' }).Count
     $failed  = ($results | Where-Object { $_.status -eq 'failed' }).Count
 
     Write-Host ""
     Write-Host "=== Result ===" -ForegroundColor Cyan
     Write-Host ("Created: {0}" -f $created) -ForegroundColor Green
+    Write-Host ("Removed: {0}" -f $removed) -ForegroundColor DarkCyan
     Write-Host ("Skipped: {0}" -f $skipped) -ForegroundColor DarkGray
     Write-Host ("Failed:  {0}" -f $failed)  -ForegroundColor Red
 }

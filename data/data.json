@@ -99,7 +99,7 @@
     {
       "name": "SumatraPDF",
       "archived": false,
-      "enabled": true,
+      "enabled": false,
       "from": "$persist\\$name\\SumatraPDF-settings.txt",
       "to": "$env:USERPROFILE\\scoop\\persist\\sumatrapdf\\SumatraPDF-settings.txt",
       "method": "symlink"

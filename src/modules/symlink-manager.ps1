@@ -24,11 +24,14 @@ foreach ($e in $rawConfig.symlinks) {
     }
 }
 
-# Probe state for each entry
+# Probe state for each entry.
+# enabled=true  → desired = 'symlink' (manage/create)
+# enabled=false → desired = 'missing' (break connection / drop)
 $delta = @()
 foreach ($entry in $entries) {
     $entryState = Get-SymlinkEntryState -Entry $entry
-    $categorized = Compare-State -EntryState $entryState
+    $desired = if ($entry.enabled) { 'symlink' } else { 'missing' }
+    $categorized = Compare-State -EntryState $entryState -Desired $desired
     $delta += $categorized
 }
 
@@ -48,12 +51,14 @@ switch ($action) {
                     'noop'     { '✓' }
                     'create'   { '+' }
                     'replace'  { '⚠' }
+                    'drop'     { '−' }
                     'conflict' { '!' }
                 }
                 $color = switch ($r.action) {
                     'noop'     { 'DarkGray' }
                     'create'   { 'Green' }
                     'replace'  { 'Yellow' }
+                    'drop'     { 'DarkCyan' }
                     'conflict' { 'Red' }
                 }
                 $line = "  {0} {1,-10} {2}" -f $icon, $r.status, $r.to

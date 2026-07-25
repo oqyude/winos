@@ -159,26 +159,45 @@ function Get-SymlinkEntryState {
 function Compare-State {
     <#
     .SYNOPSIS
-        Categorize each subentry into an action: noop | create | replace | conflict.
+        Categorize each subentry into an action: noop | create | replace | drop | conflict.
     .DESCRIPTION
-        - noop:     exists=true, kind=symlink, matches=true
-        - create:   exists=false
-        - replace:  exists=true, kind=symlink, matches=false (drift)
-        - replace:  exists=true, kind=broken-symlink
-        - conflict: exists=true, kind=file or kind=directory
+        For desired='symlink' (enabled=true):
+          - noop:     exists=true, kind=symlink, matches=true
+          - create:   exists=false
+          - replace:  exists=true, kind=symlink, matches=false (drift)
+          - replace:  exists=true, kind=broken-symlink
+          - conflict: exists=true, kind=file or kind=directory
+
+        For desired='missing' (enabled=false):
+          - noop:     exists=false (target already absent)
+          - drop:     exists=true (any kind) — break the connection
+    .PARAMETER EntryState
+        Output from Get-SymlinkEntryState.
+    .PARAMETER Desired
+        Desired state of the target:
+          - 'symlink': target should be a symlink to the source
+          - 'missing': target should not exist (break connection)
     #>
     param(
-        [Parameter(Mandatory)] $EntryState
+        [Parameter(Mandatory)] $EntryState,
+        [ValidateSet('symlink', 'missing')]
+        [string]$Desired = 'symlink'
     )
 
     foreach ($sub in $EntryState.subentries) {
-        $action = switch ($sub.state.kind) {
-            'missing'        { 'create' }
-            'symlink'        { if ($sub.state.matches) { 'noop' } else { 'replace' } }
-            'broken-symlink' { 'replace' }
-            'file'           { 'conflict' }
-            'directory'      { 'conflict' }
-            default          { 'conflict' }
+        if ($Desired -eq 'missing') {
+            # enabled=false: target should not exist
+            $action = if ($sub.state.kind -eq 'missing') { 'noop' } else { 'drop' }
+        } else {
+            # enabled=true: target should be a symlink to source
+            $action = switch ($sub.state.kind) {
+                'missing'        { 'create' }
+                'symlink'        { if ($sub.state.matches) { 'noop' } else { 'replace' } }
+                'broken-symlink' { 'replace' }
+                'file'           { 'conflict' }
+                'directory'      { 'conflict' }
+                default          { 'conflict' }
+            }
         }
         $sub | Add-Member -NotePropertyName 'action' -NotePropertyValue $action -Force
     }
@@ -246,6 +265,35 @@ function Invoke-SafeAction {
                     note   = 'drift, --force required'
                 }
             }
+            'drop' {
+                if ($PSCmdlet.ShouldProcess($sub.to, "Remove (enabled=false)")) {
+                    try {
+                        $item = Get-Item -LiteralPath $sub.to -Force -ErrorAction SilentlyContinue
+                        if ($item -and ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) {
+                            # Symlink: remove just the link, do not follow
+                            $item.Delete()
+                        } else {
+                            # Regular file/dir: explicit remove
+                            Remove-Item -LiteralPath $sub.to -Recurse -Force
+                        }
+                        $results += [PSCustomObject]@{
+                            action = 'drop'
+                            from   = $sub.from
+                            to     = $sub.to
+                            status = 'removed'
+                            note   = $null
+                        }
+                    } catch {
+                        $results += [PSCustomObject]@{
+                            action = 'drop'
+                            from   = $sub.from
+                            to     = $sub.to
+                            status = 'failed'
+                            note   = $_.Exception.Message
+                        }
+                    }
+                }
+            }
             'conflict' {
                 $results += [PSCustomObject]@{
                     action = 'conflict'
@@ -272,6 +320,7 @@ function Format-Subentry {
         'noop'     { '✓' }
         'create'   { '+' }
         'replace'  { '⚠' }
+        'drop'     { '−' }
         'conflict' { '!' }
         default    { '?' }
     }
@@ -280,6 +329,7 @@ function Format-Subentry {
         'noop'     { 'DarkGray' }
         'create'   { 'Green' }
         'replace'  { 'Yellow' }
+        'drop'     { 'DarkCyan' }
         'conflict' { 'Red' }
         default    { 'White' }
     }
@@ -301,6 +351,7 @@ function Format-Plan {
         noop     = 0
         create   = 0
         replace  = 0
+        drop     = 0
         conflict = 0
     }
     $totalSubentries = 0
@@ -311,7 +362,9 @@ function Format-Plan {
         Write-Host ("{0} ({1} subentries, {2})" -f $entry.name, $entry.subentries.Count, $entry.method) -ForegroundColor Cyan
         foreach ($sub in $entry.subentries) {
             Format-Subentry -Sub $sub
-            $summary[$sub.action]++
+            if ($summary.ContainsKey($sub.action)) {
+                $summary[$sub.action]++
+            }
             $totalSubentries++
         }
     }
@@ -322,6 +375,7 @@ function Format-Plan {
     Write-Host ("  ✓ noop:     {0}" -f $summary.noop)   -ForegroundColor DarkGray
     Write-Host ("  + create:   {0}" -f $summary.create) -ForegroundColor Green
     Write-Host ("  ⚠ replace:  {0}" -f $summary.replace) -ForegroundColor Yellow
+    Write-Host ("  − drop:     {0}" -f $summary.drop)   -ForegroundColor DarkCyan
     Write-Host ("  ! conflict: {0}" -f $summary.conflict) -ForegroundColor Red
 
     return $summary

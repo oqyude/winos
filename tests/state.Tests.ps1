@@ -152,6 +152,93 @@ Describe "State.ps1" {
         }
     }
 
+    Context "Compare-State with Desired=missing (enabled=false)" {
+        It "missing + desired=missing → noop" {
+            $entry = [PSCustomObject]@{
+                name      = "TestApp"
+                method    = "symlink"
+                from      = "X:\src"
+                to        = "X:\dst"
+                subentries = @(
+                    [PSCustomObject]@{
+                        from  = "X:\src\a"
+                        to    = "X:\dst\a"
+                        state = [PSCustomObject]@{ exists = $false; kind = 'missing'; target = $null; matches = $false }
+                    }
+                )
+            }
+            $result = Compare-State -EntryState $entry -Desired 'missing'
+            $result.subentries[0].action | Should -Be 'noop'
+        }
+
+        It "symlink + desired=missing → drop" {
+            $entry = [PSCustomObject]@{
+                name      = "TestApp"
+                method    = "symlink"
+                from      = "X:\src"
+                to        = "X:\dst"
+                subentries = @(
+                    [PSCustomObject]@{
+                        from  = "X:\src\a"
+                        to    = "X:\dst\a"
+                        state = [PSCustomObject]@{ exists = $true; kind = 'symlink'; target = "X:\src\a"; matches = $true }
+                    }
+                )
+            }
+            $result = Compare-State -EntryState $entry -Desired 'missing'
+            $result.subentries[0].action | Should -Be 'drop'
+        }
+
+        It "regular file + desired=missing → drop" {
+            $entry = [PSCustomObject]@{
+                name      = "TestApp"
+                method    = "symlink"
+                from      = "X:\src"
+                to        = "X:\dst"
+                subentries = @(
+                    [PSCustomObject]@{
+                        from  = "X:\src\a"
+                        to    = "X:\dst\a"
+                        state = [PSCustomObject]@{ exists = $true; kind = 'file'; target = $null; matches = $false }
+                    }
+                )
+            }
+            $result = Compare-State -EntryState $entry -Desired 'missing'
+            $result.subentries[0].action | Should -Be 'drop'
+        }
+
+        It "drop actually removes the symlink" {
+            $src = Join-Path $script:TestDir "src-for-drop"
+            $dst = Join-Path $script:TestDir "link-for-drop"
+            New-Item -ItemType Directory -Path $src -Force | Out-Null
+            "x" | Out-File -FilePath (Join-Path $src "f.txt") -Encoding utf8
+            New-Item -ItemType SymbolicLink -Path $dst -Value $src -Force | Out-Null
+
+            Test-Path $dst | Should -Be $true
+
+            $entry = [PSCustomObject]@{
+                name      = "DropTest"
+                method    = "symlink"
+                from      = $src
+                to        = $dst
+                subentries = @(
+                    [PSCustomObject]@{
+                        from  = $src
+                        to    = $dst
+                        state = Get-SymlinkSubState -From $src -To $dst
+                    }
+                )
+            }
+            $categorized = Compare-State -EntryState $entry -Desired 'missing'
+            $results = Invoke-SafeAction -EntryState $categorized
+
+            $results[0].status | Should -Be 'removed'
+            Test-Path $dst | Should -Be $false
+            # Source directory must NOT be touched
+            Test-Path (Join-Path $src "f.txt") | Should -Be $true
+        }
+    }
+
     Context "Resolve-EntryPath" {
         BeforeAll {
             . (Join-Path $PSScriptRoot "../src/init.ps1")
