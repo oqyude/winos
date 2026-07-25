@@ -122,6 +122,13 @@
       "to": "$env:USERPROFILE\\scoop\\persist\\qbittorrent-enhanced\\profile\\qBittorrent\\config"
     },
     {
+      "name": "starhip.toml",
+      "archived": false,
+      "enabled": true,
+      "from": "$storage\\home\\.config\\starship.toml",
+      "to": "$env:USERPROFILE\\.config\\starship.toml"
+    },
+    {
       "name": "SSH",
       "archived": false,
       "enabled": true,
