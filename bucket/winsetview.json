@@ -1,0 +1,24 @@
+{
+    "version": "3.1.8",
+    "description": "Globally set Windows File Explorer default folder views",
+    "homepage": "https://github.com/LesFerch/WinSetView",
+    "license": "MIT",
+    "url": "https://github.com/LesFerch/WinSetView/releases/download/3.1.8/WinSetView.zip",
+    "hash": "sha256:61a1a337bb9f62150dd04c8c77c148480602d473f762e0accd4f5ac9a91a807f",
+    "bin": "WinSetView.exe",
+    "shortcuts": [
+        [
+            "WinSetView.exe",
+            "WinSetView"
+        ]
+    ],
+    "checkver": {
+        "github": "https://github.com/LesFerch/WinSetView"
+    },
+    "autoupdate": {
+        "url": "https://github.com/LesFerch/WinSetView/releases/download/$version/WinSetView.zip",
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
