@@ -2,9 +2,7 @@
 
 **Session:** 00000000-0000-0000-0000-000000000001
 **Target:** S:\Git\winos
-**Depth:** 4 (Light)
-**Project type:** existing
-**Date:** 2026-07-24
+**Date:** 2026-07-25
 
 ## Configuration
 
@@ -22,36 +20,43 @@
 | Phase | Status |
 |---|---|
 | ANALYSIS | completed |
-| DESIGN | skipped (existing) |
+| DESIGN | skipped (existing project) |
 | RED_TEAM | skipped |
 | DECOMPOSITION | completed |
 | SETUP | completed |
 | HANDOFF | completed |
 
-## Tasks
+## Current State
 
-| Total | Archived | Pending |
+- **Refactor scope:** "quick wins" + Pester 5.x migration + state-aware symlink-manager
+- **Tests:** 52 passed, 0 failed (Pester 6.0.1)
+- **Lint:** 0 warnings (PSSA 1.1.1)
+- **Commits:** 13 ahead of origin (3 from this session)
+- **Branch:** `dev`
+
+## What was done
+
+### Refactor (this session)
+
+| ID | Title | Status |
 |---|---|---|
-| 9 | 9 | 0 |
+| R1 | Fix `.pspsscriptanalyzer.psd1` typo (`Assignment` → `Assignments`) | done |
+| R2 | Standardize `action` parameter to lowercase | done |
+| R4 | Hoist `Add-Type` from `Update-Cursor` to module level | done |
+| R3 | Add `[CmdletBinding(SupportsShouldProcess)]` for state-changing functions | done |
+| R9 | Upgrade Pester 3.4.0 → 6.0.1, migrate test syntax | done |
+| State | Snapshot/plan/apply with per-(from,to) probing | done |
+| Drop | Break connection (`drop` action for `enabled: false`) | done |
+| Init-fix | Normalize `$root` via `Split-Path -Parent` | done |
+| Self-bootstrap | Modules source `init.ps1` when run directly | done |
+| Builder | `scripts/build-mappings.ps1` for AIMP, etc. | done |
+| ACL | Grant SYSTEM + LOCAL SERVICE read access on EqualizerAPO deploy | done |
+| EqualizerAPO | New `deploy/clean/redeploy` actions, registry + VST link + ACL | done |
 
-## Quick Links
+### Documentation
 
-- Task Manifest: `.agent/task-manifest.json`
-- Handoff Summary: `.agent/handoff-summary.md`
-- Analysis Report: `.agent/analysis-report.md`
-- Project Rules: `.agent/rules/project-rules.md`
-- Setup Report: `.agent/setup-report.log`
-- Baseline Test Report: `.agent/baseline-test-report.log`
-- Archive Index: `.agent/archive/index.json`
-- MetaAgent Sources: `.agent/src/`
+- `docs/symlink-manager.md`: state model, action matrix, path resolution
 
-## Cleanup Session (2026-07-24T14:30:00Z)
+## Next steps (roadmap)
 
-Пост-handoff чистка артефактов. Tasks: M1–M7.
-- M1: Архивированы 9 completed-задач (C1–C6, P3–P5)
-- M2: Синхронизирован task-manifest.md
-- M3: Обновлён setup-report.log (data.json v2, PSScriptAnalyzer installed)
-- M4: Обновлён baseline-test-report.log (11 smoke-тестов)
-- M5: Обновлён project-rules.md (Pester 5.x, актуальные модули)
-- M6: Создан session-summary.md (этот файл)
-- M7: checkpoints.json перезаписан с archived one-liners
+See `docs/roadmap.md` for forward-looking tasks.
