@@ -5,7 +5,7 @@
     "license": "AGPL-3.0",
     "architecture": {
         "64bit": {
-            "url": "https://gitlab.com/towdow/towdow-flutter/-/jobs/13710009097/artifacts/file/build/windows/x64/runner/Release/towdow_app-1.4.2.zip",
+            "url": "https://gitlab.com/towdow/towdow-flutter/-/jobs/artifacts/1.4.2/raw/build/windows/x64/runner/Release/towdow_app-1.4.2.zip?job=build_windows#/towdow_app-1.4.2.zip",
             "hash": "6541401F21E99E5FD45D054099D289B852C62CBD2933F7EA3696F24C4E37BCF4"
         }
     },
@@ -18,12 +18,12 @@
     ],
     "checkver": {
         "url": "https://gitlab.com/api/v4/projects/towdow%2Ftowdow-flutter/releases?per_page=1",
-        "regex": "\"tag_name\":\"([\\d.]+)\".*?\"name\":\"Towdow Windows zip\",\"url\":\"(https://[^\"]+?)\""
+        "regex": "\"tag_name\":\"([\\d.]+)\""
     },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "$match2",
+                "url": "https://gitlab.com/towdow/towdow-flutter/-/jobs/artifacts/$version/raw/build/windows/x64/runner/Release/towdow_app-$version.zip?job=build_windows#/towdow_app-$version.zip",
                 "hash": {
                     "mode": "download"
                 }
