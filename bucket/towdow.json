@@ -1,0 +1,30 @@
+{
+    "version": "1.4.2",
+    "description": "TowDow — open-source time tracking and invoicing app built with Flutter",
+    "homepage": "https://towdow.app",
+    "license": "AGPL-3.0",
+    "architecture": {
+        "64bit": {
+            "url": "https://gitlab.com/towdow/towdow-flutter/-/jobs/artifacts/1.4.2/raw/build/windows/x64/runner/Release/towdow_app-1.4.2.zip?job=build_windows",
+            "hash": "6541401F21E99E5FD45D054099D289B852C62CBD2933F7EA3696F24C4E37BCF4"
+        }
+    },
+    "bin": "towdow_app.exe",
+    "shortcuts": [
+        [
+            "towdow_app.exe",
+            "TowDow"
+        ]
+    ],
+    "checkver": {
+        "url": "https://gitlab.com/api/v4/projects/towdow%2Ftowdow-flutter/releases",
+        "regex": "\"tag_name\":\\s*\"([\\d.]+)\""
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://gitlab.com/towdow/towdow-flutter/-/jobs/artifacts/$version/raw/build/windows/x64/runner/Release/towdow_app-$version.zip?job=build_windows"
+            }
+        }
+    }
+}
