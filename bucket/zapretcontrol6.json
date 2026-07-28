@@ -6,11 +6,13 @@
     "architecture": {
         "64bit": {
             "url": "https://github.com/Virenbar/ZapretControl/releases/download/v1.6.0/ZapretControl-6.0.zip",
-            "hash": "sha256:acc7c2b0fc7f1a05420a442c426707bdc65abdce77028a00838d24d114db9379"
+            "hash": "sha256:acc7c2b0fc7f1a05420a442c426707bdc65abdce77028a00838d24d114db9379",
+            "pre_install": "if (!(Test-Path \"$persist_dir\\Config.xml\")) { New-Item \"$dir\\Config.xml\" -ItemType File | Out-Null }"
         }
     },
     "extract_dir": "ZapretControl(net6.0-windows)",
     "bin": "ZapretControl.exe",
+    "persist": "Config.xml",
     "shortcuts": [
         [
             "ZapretControl.exe",

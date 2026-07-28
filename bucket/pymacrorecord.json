@@ -1,0 +1,33 @@
+{
+    "version": "1.4.5",
+    "description": "Free and open source macro recorder with a modern GUI using Python",
+    "homepage": "https://github.com/LOUDO56/PyMacroRecord",
+    "license": "GPL-3.0",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/LOUDO56/PyMacroRecord/releases/download/v1.4.5/PyMacroRecord-1.4.5-portable.exe",
+            "hash": "sha256:555b271ad96323a33936a138b34283808a2027471d955ce2d49668452cba6cd6",
+            "pre_install": "Rename-Item \"$dir\\PyMacroRecord-$version-portable.exe\" 'PyMacroRecord.exe'"
+        }
+    },
+    "bin": "PyMacroRecord.exe",
+    "shortcuts": [
+        [
+            "PyMacroRecord.exe",
+            "PyMacroRecord"
+        ]
+    ],
+    "checkver": {
+        "github": "https://github.com/LOUDO56/PyMacroRecord"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/LOUDO56/PyMacroRecord/releases/download/v$version/PyMacroRecord-$version-portable.exe"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}

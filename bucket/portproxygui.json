@@ -1,0 +1,32 @@
+{
+    "version": "1.4.2",
+    "description": "A manager for netsh interface portproxy (TCP/IP port redirect on Windows)",
+    "homepage": "https://github.com/zmjack/PortProxyGUI",
+    "license": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/zmjack/PortProxyGUI/releases/download/v1.4.2/ppgui-net8-x64-1.4.2.zip",
+            "hash": "sha256:727d005c6b85223f7a3cb1ff7c9508efa9414b464876440786ccb3952027beba"
+        }
+    },
+    "bin": "PPGUI.exe",
+    "shortcuts": [
+        [
+            "PPGUI.exe",
+            "PortProxyGUI"
+        ]
+    ],
+    "checkver": {
+        "github": "https://github.com/zmjack/PortProxyGUI"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/zmjack/PortProxyGUI/releases/download/v$version/ppgui-net8-x64-$version.zip"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
