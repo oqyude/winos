@@ -1,4 +1,22 @@
+﻿param(
+    [ValidateSet("plan","apply","snapshot","install","uninstall")]
+    [string]$action
+)
+
 . (Join-Path $PSScriptRoot "./src/init.ps1")
+
+if ($action) {
+    $moduleMap = @{
+        "plan"     = "Symlink Manager"
+        "apply"    = "Symlink Manager"
+        "snapshot" = "Symlink Manager"
+        "install"  = "Essentials"
+        "uninstall" = "Essentials"
+    }
+    $moduleName = $moduleMap[$action]
+    & $modules[$moduleName].Path $action
+    exit
+}
 
 function Show-Menu {
     param(
