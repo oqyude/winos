@@ -228,3 +228,5 @@ Thumbs.db
 # Symlink manager state (per-machine)
 data/state/
 .omo/
+
+data/opencode-serve/.env
