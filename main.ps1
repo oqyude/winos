@@ -127,7 +127,12 @@ function Show-Menu {
 function Read-Choice {
     param([string]$Prompt, [int]$MaxChoice, [switch]$AllowZero)
     do {
-        $raw = Read-Host "  $Prompt"
+        try {
+            $raw = Read-Host "  $Prompt"
+        } catch {
+            Write-Error "Non-interactive console. Use 'winos --help' for usage."
+            exit 1
+        }
         if ($AllowZero -and $raw -eq "0") { return 0 }
         $num = $raw -as [int]
         if ($null -ne $num -and $num -ge 1 -and $num -le $MaxChoice) { return $num }
