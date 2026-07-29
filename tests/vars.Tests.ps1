@@ -7,8 +7,8 @@ Describe "vars.ps1 loads" {
         $modules | Should -Not -BeNullOrEmpty
     }
 
-    It "has 2 module entries" {
-        $modules.Count | Should -Be 2
+    It "has 3 module entries" {
+        $modules.Count | Should -Be 3
     }
 
     It "contains Symlink Manager" {

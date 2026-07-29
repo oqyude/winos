@@ -1,6 +1,7 @@
 # Modules
 $symlinkManagerModule = "$PSScriptRoot\modules\symlink-manager.ps1"
 $essentialsModule = "$PSScriptRoot\modules\essentials.ps1"
+$opencodeServeModule = "$PSScriptRoot\modules\opencode-serve.ps1"
 
 $modules = @{
     "Symlink Manager" = @{
@@ -12,6 +13,11 @@ $modules = @{
         Path        = $essentialsModule
         Actions     = @("install", "uninstall")
         Description = "Cursor themes"
+    }
+    "OpenCode Serve" = @{
+        Path        = $opencodeServeModule
+        Actions     = @("setup", "remove", "status", "start", "stop")
+        Description = "opencode serve service manager"
     }
 }
 
