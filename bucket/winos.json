@@ -4,7 +4,7 @@
     "homepage": "https://github.com/oqyude/winos",
     "license": "MIT",
     "url": "https://github.com/oqyude/winos/archive/refs/tags/v0.1.0.zip",
-    "hash": "SHA256:0000000000000000000000000000000000000000000000000000000000000000",
+    "hash": "SHA256:B9E3CCA9DC8E6AAFC148B73027D40C635D99454FE7DAE619BCEAE74D85627F96",
     "extract_dir": "winos-0.1.0",
     "bin": "winos.cmd",
     "persist": [
