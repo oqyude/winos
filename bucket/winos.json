@@ -6,7 +6,7 @@
     "url": "https://github.com/oqyude/winos/archive/refs/tags/v0.1.1.zip",
     "hash": "SHA256:25DFBDD703D722C456737ECEC711419F227430D9C0A319BE103A69BA95E0CCDF",
     "extract_dir": "winos-0.1.1",
-    "bin": ["main.ps1", "winos"],
+    "bin": ["main.ps1", ["winos.cmd", "winos"]],
     "persist": [
         "data",
         "data/isolate"
