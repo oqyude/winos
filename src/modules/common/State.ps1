@@ -1,4 +1,4 @@
-# State.ps1 — Probe actual state of symlink-manager targets
+﻿# State.ps1 — Probe actual state of symlink-manager targets
 # Pure functions; no side effects.
 
 function Get-SymlinkSubState {
@@ -317,10 +317,10 @@ function Format-Subentry {
     param($Sub)
 
     $icon = switch ($Sub.action) {
-        'noop'     { '✓' }
+        'noop'     { '~' }
         'create'   { '+' }
-        'replace'  { '⚠' }
-        'drop'     { '−' }
+        'replace'  { '*' }
+        'drop'     { '-' }
         'conflict' { '!' }
         default    { '?' }
     }
@@ -372,10 +372,10 @@ function Format-Plan {
     Write-Host ""
     Write-Host "=== Summary ===" -ForegroundColor Cyan
     Write-Host ("Total sub-entries: {0}" -f $totalSubentries)
-    Write-Host ("  ✓ noop:     {0}" -f $summary.noop)   -ForegroundColor DarkGray
+    Write-Host ("  ~ noop:     {0}" -f $summary.noop)   -ForegroundColor DarkGray
     Write-Host ("  + create:   {0}" -f $summary.create) -ForegroundColor Green
-    Write-Host ("  ⚠ replace:  {0}" -f $summary.replace) -ForegroundColor Yellow
-    Write-Host ("  − drop:     {0}" -f $summary.drop)   -ForegroundColor DarkCyan
+    Write-Host ("  * replace:  {0}" -f $summary.replace) -ForegroundColor Yellow
+    Write-Host ("  - drop:     {0}" -f $summary.drop)   -ForegroundColor DarkCyan
     Write-Host ("  ! conflict: {0}" -f $summary.conflict) -ForegroundColor Red
 
     return $summary

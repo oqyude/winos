@@ -1,4 +1,4 @@
-[CmdletBinding(SupportsShouldProcess)]
+﻿[CmdletBinding(SupportsShouldProcess)]
 param(
     [ValidateSet("plan", "apply", "snapshot")]
     [string]$action = "plan"
@@ -25,8 +25,8 @@ foreach ($e in $rawConfig.symlinks) {
 }
 
 # Probe state for each entry.
-# enabled=true  → desired = 'symlink' (manage/create)
-# enabled=false → desired = 'missing' (break connection / drop)
+# enabled=true  -> desired = 'symlink' (manage/create)
+# enabled=false -> desired = 'missing' (break connection / drop)
 $delta = @()
 foreach ($entry in $entries) {
     $entryState = Get-SymlinkEntryState -Entry $entry
@@ -47,13 +47,13 @@ switch ($action) {
             if ($entry.method -ne 'symlink') { continue }
             $entryResults = Invoke-SafeAction -EntryState $entry
             foreach ($r in $entryResults) {
-                $icon = switch ($r.action) {
-                    'noop'     { '✓' }
-                    'create'   { '+' }
-                    'replace'  { '⚠' }
-                    'drop'     { '−' }
-                    'conflict' { '!' }
-                }
+$icon = switch ($r.action) {
+    'noop'     { '~' }
+    'create'   { '+' }
+    'replace'  { '*' }
+    'drop'     { '-' }
+    'conflict' { '!' }
+}
                 $color = switch ($r.action) {
                     'noop'     { 'DarkGray' }
                     'create'   { 'Green' }
