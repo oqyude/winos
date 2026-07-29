@@ -1,0 +1,24 @@
+{
+    "version": "0.1.0",
+    "description": "Symlink orchestrator and Windows configuration manager",
+    "homepage": "https://github.com/oqyude/winos",
+    "license": "MIT",
+    "url": "https://github.com/oqyude/winos/archive/refs/tags/v0.1.0.zip",
+    "hash": "SHA256:0000000000000000000000000000000000000000000000000000000000000000",
+    "extract_dir": "winos-0.1.0",
+    "bin": "winos.cmd",
+    "persist": [
+        "data",
+        "data/isolate"
+    ],
+    "checkver": {
+        "github": "https://github.com/oqyude/winos"
+    },
+    "autoupdate": {
+        "url": "https://github.com/oqyude/winos/archive/refs/tags/v$version.zip",
+        "extract_dir": "winos-$version",
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
