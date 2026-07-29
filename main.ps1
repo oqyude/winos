@@ -38,7 +38,7 @@ param(
 
 # Help / Version (handle both -File and -Command invocation modes)
 if ($Help -or $Module -eq '--help' -or $Module -eq '-?') { Get-Help $PSCommandPath -Detailed; exit 0 }
-if ($Version -or $Module -eq '--version') { Write-Output "winos v0.1.0"; exit 0 }
+if ($Version -or $Module -eq '--version') { Write-Output "winos v0.1.1"; exit 0 }
 
 # CLI mode
 if ($Module) {
