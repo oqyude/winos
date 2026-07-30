@@ -31,7 +31,8 @@ param(
     [string]$SubAction,
 
     [switch]$Help,
-    [switch]$Version
+    [switch]$Version,
+    [switch]$Force
 )
 
 . (Join-Path $PSScriptRoot "./src/init.ps1")
@@ -64,7 +65,7 @@ if ($Module) {
             Write-Error "Invalid action '$SubAction' for service '$Name'. Valid: $($validServiceActions[$serviceKey] -join ', ')"
             exit 1
         }
-        & $modules[$serviceKey].Path $SubAction
+        & $modules[$serviceKey].Path $SubAction -Force:$Force
         exit 0
     }
 
@@ -91,7 +92,7 @@ if ($Module) {
         Write-Error "Invalid action '$Name' for '$Module'. Valid: $($validActions[$moduleKey] -join ', ')"
         exit 1
     }
-    & $modules[$moduleKey].Path $Name
+    & $modules[$moduleKey].Path $Name -Force:$Force
     exit 0
 }
 
@@ -156,7 +157,7 @@ $moduleNames = $modules.Keys | Sort-Object
         Write-Host ""
         Write-Host "  ▸ $selectedModule → $selectedAction" -ForegroundColor Green
         Write-Host ""
-        & $modules[$selectedModule].Path $selectedAction
+        & $modules[$selectedModule].Path $selectedAction -Force:$Force
         break actions
     }
 }

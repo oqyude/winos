@@ -1,7 +1,8 @@
 ﻿[CmdletBinding(SupportsShouldProcess)]
 param(
     [ValidateSet("plan", "apply", "snapshot")]
-    [string]$action = "plan"
+    [string]$action = "plan",
+    [switch]$Force
 )
 
 # Self-bootstrap: if vars.ps1 hasn't been sourced (run directly), source it.
@@ -45,7 +46,7 @@ switch ($action) {
         $results = @()
         foreach ($entry in $delta) {
             if ($entry.method -ne 'symlink') { continue }
-            $entryResults = Invoke-SafeAction -EntryState $entry
+            $entryResults = Invoke-SafeAction -EntryState $entry -Force:$Force
             foreach ($r in $entryResults) {
 $icon = switch ($r.action) {
     'noop'     { '~' }
@@ -68,12 +69,14 @@ $icon = switch ($r.action) {
             $results += $entryResults
         }
 
-        $created = ($results | Where-Object { $_.status -eq 'created' }).Count
-        $skipped = ($results | Where-Object { $_.status -eq 'skipped' }).Count
-        $failed  = ($results | Where-Object { $_.status -eq 'failed' }).Count
+        $created  = ($results | Where-Object { $_.status -eq 'created' }).Count
+        $replaced = ($results | Where-Object { $_.status -eq 'replaced' }).Count
+        $resolved = ($results | Where-Object { $_.status -eq 'resolved' }).Count
+        $skipped  = ($results | Where-Object { $_.status -eq 'skipped' }).Count
+        $failed   = ($results | Where-Object { $_.status -eq 'failed' }).Count
 
         Write-Host ""
-        Write-Host ("Created: {0}  Skipped: {1}  Failed: {2}" -f $created, $skipped, $failed) -ForegroundColor Cyan
+        Write-Host ("Created: {0}  Replaced: {1}  Resolved: {2}  Skipped: {3}  Failed: {4}" -f $created, $replaced, $resolved, $skipped, $failed) -ForegroundColor Cyan
     }
     "snapshot" {
         Write-Host "=== Snapshot ===" -ForegroundColor Cyan

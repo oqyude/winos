@@ -208,14 +208,19 @@ function Compare-State {
 function Invoke-SafeAction {
     <#
     .SYNOPSIS
-        Apply only safe actions: create, noop (noop = skip).
-        Skip replace and conflict (require --force, not yet implemented).
+        Apply safe (or forced) actions for symlink entries.
+    .DESCRIPTION
+        Without -Force: skip replace and conflict (safe mode).
+        With -Force: execute replace (drifted symlink) and conflict (file/dir in the way).
     .PARAMETER EntryState
         Output from Compare-State.
+    .PARAMETER Force
+        Overwrite existing targets that differ or are regular files/directories.
     #>
     [CmdletBinding(SupportsShouldProcess)]
     param(
-        [Parameter(Mandatory)] $EntryState
+        [Parameter(Mandatory)] $EntryState,
+        [switch]$Force
     )
 
     $results = @()
@@ -237,7 +242,7 @@ function Invoke-SafeAction {
                         if (-not (Test-Path $parent)) {
                             New-Item -ItemType Directory -Path $parent -Force | Out-Null
                         }
-                        New-Item -ItemType SymbolicLink -Path $sub.to -Value $sub.from -Force | Out-Null
+                        New-Item -ItemType SymbolicLink -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
                         $results += [PSCustomObject]@{
                             action = 'create'
                             from   = $sub.from
@@ -257,12 +262,38 @@ function Invoke-SafeAction {
                 }
             }
             'replace' {
-                $results += [PSCustomObject]@{
-                    action = 'replace'
-                    from   = $sub.from
-                    to     = $sub.to
-                    status = 'skipped'
-                    note   = 'drift, --force required'
+                if ($Force -and $PSCmdlet.ShouldProcess($sub.to, "Force-replace symlink to $($sub.from)")) {
+                    try {
+                        Remove-Item -LiteralPath $sub.to -Recurse -Force
+                        $parent = Split-Path -Parent $sub.to
+                        if (-not (Test-Path $parent)) {
+                            New-Item -ItemType Directory -Path $parent -Force | Out-Null
+                        }
+                        New-Item -ItemType SymbolicLink -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
+                        $results += [PSCustomObject]@{
+                            action = 'replace'
+                            from   = $sub.from
+                            to     = $sub.to
+                            status = 'replaced'
+                            note   = $null
+                        }
+                    } catch {
+                        $results += [PSCustomObject]@{
+                            action = 'replace'
+                            from   = $sub.from
+                            to     = $sub.to
+                            status = 'failed'
+                            note   = $_.Exception.Message
+                        }
+                    }
+                } else {
+                    $results += [PSCustomObject]@{
+                        action = 'replace'
+                        from   = $sub.from
+                        to     = $sub.to
+                        status = 'skipped'
+                        note   = 'drift, --force required'
+                    }
                 }
             }
             'drop' {
@@ -295,12 +326,38 @@ function Invoke-SafeAction {
                 }
             }
             'conflict' {
-                $results += [PSCustomObject]@{
-                    action = 'conflict'
-                    from   = $sub.from
-                    to     = $sub.to
-                    status = 'skipped'
-                    note   = 'target is regular file/dir, --force required'
+                if ($Force -and $PSCmdlet.ShouldProcess($sub.to, "Force-overwrite with symlink to $($sub.from)")) {
+                    try {
+                        Remove-Item -LiteralPath $sub.to -Recurse -Force
+                        $parent = Split-Path -Parent $sub.to
+                        if (-not (Test-Path $parent)) {
+                            New-Item -ItemType Directory -Path $parent -Force | Out-Null
+                        }
+                        New-Item -ItemType SymbolicLink -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
+                        $results += [PSCustomObject]@{
+                            action = 'conflict'
+                            from   = $sub.from
+                            to     = $sub.to
+                            status = 'resolved'
+                            note   = $null
+                        }
+                    } catch {
+                        $results += [PSCustomObject]@{
+                            action = 'conflict'
+                            from   = $sub.from
+                            to     = $sub.to
+                            status = 'failed'
+                            note   = $_.Exception.Message
+                        }
+                    }
+                } else {
+                    $results += [PSCustomObject]@{
+                        action = 'conflict'
+                        from   = $sub.from
+                        to     = $sub.to
+                        status = 'skipped'
+                        note   = 'target is regular file/dir, --force required'
+                    }
                 }
             }
         }
