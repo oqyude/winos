@@ -1,0 +1,25 @@
+=== Baseline Test Report ===
+Date: 2026-07-24 (обновлено в рамках cleanup-сессии)
+Project: S:\Git\winos
+
+Test command: .\scripts\test.ps1
+Test runner: Pester 5.x
+Test files:
+  - tests/vars.Tests.ps1
+  - tests/modules/symlink-manager.Tests.ps1
+  - tests/modules/essentials.Tests.ps1
+
+Total tests: 11
+Passed: 11
+Failed: 0
+Skipped: 0
+Duration: <1s
+
+Failed tests: (none)
+
+Coverage: smoke-тесты (загрузка файлов + парсинг). Реальные unit-тесты бизнес-логики не реализованы.
+
+Notes:
+- Smoke-тесты проверяют: существование файлов, parseability (ParserErrors = 0)
+- Не покрывают: поведение Set-Symlink, isolate.ps1, state в data.json
+- Рекомендация: добавить unit-тесты с моками (Pester 5.x Describe/Context/Mock)

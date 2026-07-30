@@ -1,0 +1,65 @@
+=== Setup Report ===
+Date: 2026-07-24 (обновлено в рамках cleanup-сессии)
+Project: S:\Git\winos
+Type: existing (PowerShell 7.6.3)
+
+=== 4A.1. Зависимости ===
+- Язык: PowerShell 7.6.3 (pwsh)
+- PSScriptAnalyzer: установлен (Invoke-ScriptAnalyzer доступен)
+- Pester 5.x: установлен
+- Пакетный менеджер: winget (доступен), Scoop (через bucket/)
+
+=== 4A.2. Конфигурация ===
+- .env / config файлы: отсутствуют
+- Конфиг данных: data/data.json (version 2, schema: { symlinks: [{ name, archived, enabled, from, to, method?, mappings? }] })
+- data/isolate/: 1 скрипт (EqualizerAPO.ps1)
+- data/autorun/: пусто (syncthing.lnk удалён в C6)
+- Линтер-конфиг: .pspsscriptanalyzer.psd1
+
+=== 4A.3. Линтеры и форматтеры ===
+- PSScriptAnalyzer: установлен, конфиг .pspsscriptanalyzer.psd1
+- ExcludeRules: PSAvoidUsingWriteHost, PSUseShouldProcessForStateChangingFunctions, PSUseDeclaredVarsMoreThanAssignment, PSUseBOMForUnicodeEncodedFile
+- Команда: .\scripts\lint.ps1  →  Invoke-ScriptAnalyzer -Path src/ -Recurse -Settings .pspsscriptanalyzer.psd1
+
+=== 4A.4. Baseline-тесты ===
+- Тесты: 11 smoke-тестов (Pester 5.x)
+- Команда: .\scripts\test.ps1  →  Invoke-Pester -Path tests/
+- Файлы тестов:
+  - tests/vars.Tests.ps1
+  - tests/modules/symlink-manager.Tests.ps1
+  - tests/modules/essentials.Tests.ps1
+
+=== 4A.5. Сборка ===
+- PowerShell — интерпретируемый язык, сборка не требуется
+- init.ps1: загружается успешно (exit code 0)
+- main.ps1: валиден, интерактив + CLI (.\main.ps1 "Module" action)
+
+=== Структура ===
+winos/
+  main.ps1                       # CLI + интерактив (Back/Exit)
+  src/
+    init.ps1                     # bootstrap
+    vars.ps1                     # модули, пути
+    modules/
+      symlink-manager.ps1        # dispatcher: deploy/clean/redeploy
+      essentials.ps1             # install/uninstall (cursor themes)
+      methods/
+        symlink.ps1              # Set-Symlink, Remove-ItemLogged
+        isolate.ps1              # per-app скрипты
+  scripts/
+    lint.ps1                     # Invoke-ScriptAnalyzer
+    test.ps1                     # Invoke-Pester
+  tests/
+    vars.Tests.ps1
+    modules/
+      symlink-manager.Tests.ps1
+      essentials.Tests.ps1
+  data/
+    data.json                    # version 2, symlinks[]
+    isolate/                     # per-app скрипты
+    autorun/                     # (пусто)
+  bucket/                        # Scoop-манифесты
+  .pspsscriptanalyzer.psd1       # конфиг линтинга
+
+=== Общий статус ===
+Окружение работоспособно. Проект готов к работе.
