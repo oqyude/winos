@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
+  "version": "2.1.0",
   "archived_at": "2026-07-24T14:30:00.000Z",
   "tasks": [
     { "id": "C1", "title": "Миграция CSV → JSON", "archived_at": "2026-07-24T00:00:00.000Z" },

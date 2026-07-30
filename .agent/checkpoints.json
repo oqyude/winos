@@ -1,5 +1,5 @@
 {
-  "metaagent_version": "1.1.1",
+  "metaagent_version": "2.1.0",
   "session_id": "00000000-0000-0000-0000-000000000001",
   "target_repo": "S:\\Git\\winos",
   "goal": "Cleanup-сессия: привести артефакты MetaAgent в консистентное состояние после рефакторинга winos (M1-M7).",
@@ -9,15 +9,16 @@
     "design": { "adr": false, "alternative_arch": false },
     "red_team": false,
     "risk_register": false,
-    "decomposition": { "invariant_tests": false },
-    "handoff": { "layer_structure": false }
+    "decomposition": { "invariant_tests": false }
   },
   "phases": {
     "analysis": "completed",
+    "roadmap": "completed",
     "design": "skipped",
     "red_team": "skipped",
     "decomposition": "completed",
-    "environment": "completed",
+    "execution": "completed",
+    "metastate": "completed",
     "handoff": "completed"
   },
   "tasks": [
@@ -31,5 +32,5 @@
     { "id": "P4", "title": "Pester smoke-тесты", "status": "archived" },
     { "id": "P5", "title": "Структура проекта + интерактив", "status": "archived" }
   ],
-  "last_updated": "2026-07-24T14:30:00.000Z"
+  "last_updated": "2026-07-30T00:00:00.000Z"
 }

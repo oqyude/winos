@@ -7,11 +7,13 @@
 |---|---|---|
 | ANALYSIS | ✓ | — |
 | DESIGN | ✗ | project_type=existing |
+| ROADMAP | ✓ | — |
 | RED_TEAM | ✗ | — |
 | RISK_REGISTER | ✗ | — |
 | DECOMPOSITION | ✓ | invariant_tests=false |
-| SETUP | ✓ | — |
-| HANDOFF | ✓ | layer_structure=false |
+| EXECUTION | ✓ | — |
+| METASTATE | ✓ | — |
+| HANDOFF | ✓ | — |
 
 ## Глубина проработки
 
