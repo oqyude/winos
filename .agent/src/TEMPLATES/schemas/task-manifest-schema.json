@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "metaagent/task-manifest/2.0.0",
+  "title": "MetaAgent Task Manifest",
+  "description": "Schema for .agent/tasks/manifest.json — the global task manifest",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "enum": ["2.0"]
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Session ID that created this manifest"
+    },
+    "goal": {
+      "type": "string",
+      "description": "Overall goal of the session"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of creation"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "List of tasks",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^T[0-9]+$",
+            "description": "Unique task identifier (T1, T2, ...)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Task title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["feature", "refactor", "test", "fix", "config", "design", "docs", "invariant"],
+            "description": "Task type"
+          },
+          "files": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Files affected by this task"
+          },
+          "depends_on": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Task IDs this task depends on"
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Measurable criteria for completion"
+          },
+          "context": {
+            "type": "string",
+            "description": "Additional context or references"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "in_progress", "completed", "failed", "archived"],
+            "description": "Current task status"
+          },
+          "claimed_by": {
+            "type": "string",
+            "description": "Worker ID if claimed"
+          },
+          "claimed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the task was claimed"
+          }
+        },
+        "required": ["id", "title", "type", "status"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["version", "tasks"],
+  "additionalProperties": false
+}

@@ -6,7 +6,7 @@
 
 ## Вход
 
-- `.agent/analysis-report.md` (project_type: greenfield или scaffold)
+- `.agent/context/analysis-report.md` (project_type: greenfield или scaffold)
 - `.agent/metaagent-request.md` (конфигурация сессии: adr, alternative_arch, risk_register)
 - `.agent/checkpoints.json` (фаза design: pending)
 
@@ -120,16 +120,16 @@
 Для каждого ключевого архитектурного решения (стек, БД, паттерн, структура модулей) создать отдельный ADR-файл:
 
 ```
-.agent/layer-1/adr/001-технологический-стек.md
-.agent/layer-1/adr/002-модульный-монолит.md
-.agent/layer-1/adr/003-json-хранение.md
+.agent/decisions/001-технологический-стек.md
+.agent/decisions/002-модульный-монолит.md
+.agent/decisions/003-json-хранение.md
 ```
 
 Формат — по шаблону `TEMPLATES/adr-NNNN.md`.
 
 ### 2.10. Risk Register (если config.risk_register = yes)
 
-Создать `.agent/layer-1/risk-register.md` по шаблону `TEMPLATES/risk-register.md`:
+Создать `.agent/context/risk-register.md` по шаблону `TEMPLATES/risk-register.md`:
 
 | # | Assumption | Impact if wrong | Mitigation | Review trigger |
 |---|---|---|---|---|
@@ -150,9 +150,9 @@ T4: API endpoints
 
 ## Выход
 
-- `.agent/design-report.md` по шаблону `TEMPLATES/design-report.md`
-- `.agent/layer-1/adr/*.md` (если adr=yes)
-- `.agent/layer-1/risk-register.md` (если risk_register=yes)
+- `.agent/context/design-report.md` по шаблону `TEMPLATES/design-report.md`
+- `.agent/decisions/*.md` (если adr=yes)
+- `.agent/context/risk-register.md` (если risk_register=yes)
 - Предварительная группировка задач (для передачи в DECOMPOSITION)
 
 Обновить checkpoints.json: `phases.design = "completed"`.
@@ -169,5 +169,5 @@ T4: API endpoints
 - [ ] ADR созданы (если config требует)
 - [ ] Risk Register создан (если config требует)
 - [ ] Задачи предварительно сгруппированы
-- [ ] `.agent/design-report.md` создан
+- [ ] `.agent/context/design-report.md` создан
 - [ ] checkpoints.json обновлён

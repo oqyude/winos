@@ -14,7 +14,6 @@
 | Red Team | {{ red_team_enabled }} |
 | Risk Register | {{ risk_register_enabled }} |
 | Invariant Tests | {{ invariant_tests_enabled }} |
-| Layer Structure | {{ layer_structure_enabled }} |
 
 ## Phase Status
 
@@ -29,7 +28,7 @@
 
 ## Quick Links
 
-- Task Manifest: `.agent/task-manifest.json`
+- Task Manifest: `.agent/tasks/manifest.json`
 - Handoff Summary: `.agent/handoff-summary.md`
-- Design Report: `.agent/analysis-report.md`
-- ADR: `.agent/layer-1/adr/` (если есть)
+- Design Report: `.agent/context/design-report.md`
+- ADR: `.agent/decisions/` (если есть)

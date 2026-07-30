@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "metaagent/checkpoints/2.0.0",
+  "title": "MetaAgent Checkpoints",
+  "description": "Schema for .agent/checkpoints.json — session state",
+  "type": "object",
+  "properties": {
+    "metaagent_version": {
+      "type": "string",
+      "description": "MetaAgent version that created this checkpoint",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Unique session identifier"
+    },
+    "target_repo": {
+      "type": "string",
+      "description": "Path to the target repository"
+    },
+    "goal": {
+      "type": "string",
+      "description": "Session goal"
+    },
+    "project_type": {
+      "type": "string",
+      "enum": ["pending", "existing", "greenfield", "scaffold"],
+      "description": "Type of the target project"
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Depth of the session (1-10)"
+        },
+        "design": {
+          "type": "object",
+          "properties": {
+            "adr": { "type": "boolean" },
+            "alternative_arch": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "red_team": { "type": "boolean" },
+        "risk_register": { "type": "boolean" },
+        "decomposition": {
+          "type": "object",
+          "properties": {
+            "invariant_tests": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "phases": {
+      "type": "object",
+      "properties": {
+        "analysis": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
+        "design": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
+        "red_team": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
+        "decomposition": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
+        "environment": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] },
+        "handoff": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "skipped"] }
+      },
+      "additionalProperties": false
+    },
+    "tasks": {
+      "type": "array",
+      "description": "List of tasks (one-liners after archiving)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "in_progress", "completed", "failed", "archived"] }
+        },
+        "required": ["id", "title", "status"],
+        "additionalProperties": false
+      }
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last update"
+    }
+  },
+  "required": ["metaagent_version", "session_id", "goal", "config", "phases", "last_updated"],
+  "additionalProperties": false
+}

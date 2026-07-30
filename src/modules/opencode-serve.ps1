@@ -52,7 +52,7 @@ switch ($action) {
 
         # 5. Register Scheduled Task
         $action_task = New-ScheduledTaskAction -Execute "powershell.exe" -Argument @"
--NoProfile -ExecutionPolicy Bypass -File "$runnerScript"
+-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$runnerScript"
 "@
 
         $trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME

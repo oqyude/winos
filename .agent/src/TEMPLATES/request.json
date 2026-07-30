@@ -1,0 +1,29 @@
+{
+  "$schema": ".agent/src/TEMPLATES/schemas/request-schema.json",
+  "template_version": "1.0",
+  "request_id": "req-{{ task_id }}",
+  "task_id": "{{ task_id }}",
+  "title": "{{ task_title }}",
+  "status": "ready_for_review",
+  "created_at": "{{ timestamp }}",
+  "goal": "{{ task_goal }}",
+
+  "changes": {
+    "summary": "{{ changes_summary }}",
+    "commits": [
+      "{{ commit_hash }}"
+    ],
+    "files_changed": [
+      "path/to/file.py"
+    ]
+  },
+
+  "verification": {
+    "tests_passed": "{{ test_results }}",
+    "lsp_clean": true
+  },
+
+  "fulfills_ac": [
+    "{{ acceptance_criterion }}"
+  ]
+}

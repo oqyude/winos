@@ -1,141 +1,101 @@
-# Протокол 05: Передача исполнительному агенту (HANDOFF)
+# Протокол 07: Завершение сессии (HANDOFF)
 
 ## Цель
 
-Подготовить и передать исполнительному агенту полный контекст для работы: задачи, окружение, правила.
+Легковесное завершение сессии: валидация структуры `.agent/`, финализация чекпоинтов, формирование сводки. Архивация и обновление project-state выполняются фазой METASTATE.
+
+> **Важно:** если перед HANDOFF была выполнена фаза METASTATE (06) — архивация, project-state и handoff-summary уже готовы.
+> HANDOFF в этом случае только валидирует и финализирует.
 
 ## Вход
 
-- `.agent/analysis-report.md`
-- `.agent/design-report.md` (опционально, для greenfield)
-- `.agent/layer-1/adr/*.md` (опционально)
-- `.agent/layer-1/risk-register.md` (опционально)
-- `.agent/layer-1/red-team-report.md` (опционально)
-- `.agent/task-manifest.json`
-- `.agent/task-manifest.md`
-- `.agent/baseline-test-report.log`
 - `.agent/checkpoints.json` (все предыдущие фазы: completed)
+- `.agent/context/project-state.md` (опционально, создан в ANALYSIS, обновлён в METASTATE)
+- `.agent/handoff-summary.md` (опционально, создан в METASTATE)
+- `.agent/tasks/manifest.json`
+- `.agent/roadmap/sources.md` (опционально)
+- Все артефакты `.agent/`
 
 ## Шаги
 
-### 5.1. Архивация завершённых артефактов
+### 5.1. Проверка: была ли METASTATE?
 
-Перед валидацией и передачей выполнить архивирование.
+Если существует `.agent/handoff-summary.md` и `.agent/context/project-state.md`:
+- METASTATE уже выполнен
+- Перейти к шагу 5.3 (Валидация)
 
-**Архивировать завершённые задачи:**
+Если нет:
+- METASTATE не выполнялся (например, сессия завершается до execution)
+- Перейти к шагу 5.2 (Лёгкая архивация)
 
-Для каждой задачи в `task-manifest.json` со статусом `completed`:
-1. Создать `.agent/archive/tasks/<id>.json` — перенести полное описание задачи (все поля)
-2. В `task-manifest.json` заменить задачу на one-liner:
-   ```json
-   { "id": "<id>", "title": "<title>", "status": "archived" }
-   ```
+### 5.2. Лёгкая архивация (если METASTATE не было)
 
-**Архивировать чекпоинты:**
+Если есть completed задачи в manifest.json:
+- Архивировать их в `.agent/archive/tasks/{id}.json`
+- Заменить в manifest.json на one-liner
+- Создать `.agent/archive/index.json`
 
-Если `checkpoints.json` уже существует — сохранить предыдущую версию в `.agent/archive/checkpoints/<last_updated>.json`.
+Если нет completed задач — пропустить.
 
-**Создать индекс архива:**
+### 5.3. Валидация
 
-```json
-{
-  "version": "1.1.0",
-  "archived_at": "<timestamp>",
-  "tasks": [
-    { "id": "T1", "title": "...", "archived_at": "<timestamp>" }
-  ],
-  "checkpoints": [
-    { "file": "checkpoints/2026-07-15T10-00-00.json", "archived_at": "<timestamp>" }
-  ]
-}
-```
+Проверить:
 
-### 5.2. Валидация
-
-Перед передачей проверить:
-
-- [ ] Все фазы отмечены как `completed` в checkpoints.json
-- [ ] `.agent/` содержит все обязательные файлы:
+- [ ] Все фазы отмечены как `completed` или `skipped` в checkpoints.json
+- [ ] `.agent/` содержит обязательные файлы:
   - `checkpoints.json`
-  - `analysis-report.md`
-  - `task-manifest.json` + `task-manifest.md`
-  - `baseline-test-report.log`
-  - `setup-report.log`
+  - `context/analysis-report.md`
+  - `context/project-state.md`
+  - `tasks/manifest.json` + `tasks/manifest.md`
   - `src/META_AGENT_GUIDE.md`
   - `src/BOUNDARIES.md`
   - `src/VERSION`
   - `src/PROTOCOLS/`
   - `src/TEMPLATES/`
   - `rules/project-rules.md`
-  - `archive/index.json`
-- [ ] Для greenfield: `design-report.md` присутствует
-- [ ] В task-manifest.json нет циклических зависимостей
+- [ ] В `.agent/tasks/manifest.json` нет циклических зависимостей
 - [ ] Все acceptance criteria сформулированы измеримо
-- [ ] Для каждой задачи указаны affected files
-- [ ] В репозитории нет незакоммиченных изменений (кроме `.agent/`)
-- [ ] `.agent/src/` содержит актуальные исходники MetaAgent (META_AGENT_GUIDE.md, PROTOCOLS/, TEMPLATES/, BOUNDARIES.md, VERSION)
+- [ ] Для каждой задачи указаны affected files и origin
+- [ ] `.agent/src/` содержит актуальные исходники
 - [ ] `AGENTS.md` присутствует в корне репозитория
-- [ ] `.agent/rules/` содержит `project-rules.md`
 
-**Дополнительные проверки (если config включает):**
-- [ ] ADR присутствуют (если adr=yes)
-- [ ] Risk Register заполнен (если risk_register=yes)
-- [ ] Red Team Report есть (если red_team=yes)
-- [ ] Invariant-задачи в манифесте (если invariant_tests=yes)
+### 5.4. Создание session-summary.md
 
-### 5.3. Layer-структура .agent/
+Создать `.agent/session-summary.md` — краткая сводка сессии:
 
-Если `config.layer_structure = yes`, организовать артефакты по слоям:
+```markdown
+# Session Summary
 
+**Session:** <id>
+**MetaAgent version:** 2.1.0
+**Date:** <timestamp>
+**Goal:** <goal>
+
+## Phases Executed
+- [x] INIT
+- [x] ANALYSIS
+- [x] ROADMAP
+- [x] DESIGN
+- [x] DECOMPOSITION
+- [x] EXECUTION (N tasks)
+- [x] METASTATE
+- [x] HANDOFF
+
+## Results
+- Tasks completed: N
+- Requests approved: N
+- Files changed: [list]
+
+## Next
+Следующий агент: читай .agent/handoff-summary.md
 ```
-.agent/
-  layer-0/
-    checkpoints.json          # всегда (ядро)
-    session-summary.md        # краткая сводка сессии (создаётся здесь)
-  layer-1/
-    adr/                      # ADR (опционально)
-    risk-register.md          # (опционально)
-    red-team-report.md        # (опционально)
-  layer-2/
-    analysis-report.md
-    design-report.md
-    design-report.md
-  layer-3/
-    handoff-summary.md
-    task-manifest.json
-    task-manifest.md
-    baseline-test-report.log
-    setup-report.log
-```
 
-Если `layer_structure = no` — артефакты остаются плоскими в `.agent/`, как раньше.
-
-### 5.4. Создать handoff-summary.md
-
-Заполнить по шаблону `TEMPLATES/handoff-summary.md`:
-
-- **Session Info** — ID, цель, дата
-- **Configuration** — какие функции были включены, глубина
-- **Repo Summary** — краткая выжимка из analysis-report
-- **Environment Status** — результат сборки и тестов
-- **Design Summary** (если есть design-report) — ключевые архитектурные решения
-- **ADR Summary** (если adr=yes) — какие решения задокументированы
-- **Risk Register** (если risk_register=yes) — основные допущения
-- **Task Overview** — количество задач, типы, список
-- **Next Steps** — с какой задачи начинать исполнительному агенту
-- **Project Rules** — ссылка на `.agent/rules/project-rules.md` (передаётся exec-агенту)
-- **Archive** — ссылка на `.agent/archive/index.json` (история завершённых задач)
-- **Caveats** — известные проблемы, ограничения, неясные моменты
-- **Checkpoints** — актуальное состояние чекпоинтов
-
-### 5.5. Финализировать checkpoints
+### 5.5. Финализация checkpoints
 
 - Отметить `phases.handoff = "completed"`
 - Записать финальный `last_updated`
 
 ### 5.6. Сигнал
-
-Сообщить пользователю/оркестратору:
 
 ```
 HANDOFF COMPLETE
@@ -143,46 +103,21 @@ HANDOFF COMPLETE
 Session: <session_id>
 Target: <target_repo>
 Type: <existing | greenfield | scaffold>
-Config: depth=<N>, adr=<yes|no>, red_team=<yes|no>, ...
-Tasks: <count> tasks ready
+Tasks: <N> total, <M> completed, <K> pending
 
-Исполнительный агент может начинать с задачи <T1>.
-Контекст: .agent/handoff-summary.md
-Манифест: .agent/task-manifest.json
+Следующий агент начинает с .agent/handoff-summary.md
 ```
-
-## Что получает исполнительный агент
-
-1. **Целевой репозиторий** — полностью настроенный, с установленными зависимостями
-2. **`.agent/`** — директория со всеми артефактами (layer-структура или плоская)
-3. **`task-manifest.json`** — машиночитаемый список задач
-4. **`task-manifest.md`** — человекочитаемый список задач
-5. **`handoff-summary.md`** — итоговая сводка
-6. **`checkpoints.json`** — актуальное состояние (исполнительный агент будет его обновлять)
-7. **`layer-1/adr/*.md`** (опционально) — ключевые решения
-8. **`layer-1/risk-register.md`** (опционально) — допущения
-9. **`layer-2/analysis-report.md`** — полный анализ репозитория (справочно)
-10. **`layer-2/design-report.md`** (только для greenfield) — архитектурный план
-11. **`layer-3/baseline-test-report.log`** — baseline тестов (чтобы не сломать существующее)
-12. **`.agent/src/`** — полные исходники MetaAgent (справочно, всегда присутствуют)
-13. **`.agent/rules/`** — пользовательские правила проекта
-14. **`AGENTS.md`** — инструкция для AI-агента в корне проекта (всегда присутствует)
-15. **`.agent/archive/`** — архив завершённых задач, чекпоинтов и устаревших артефактов
 
 ## Выход
 
-- `.agent/layer-0/session-summary.md` (если layer_structure=yes)
-- `.agent/layer-3/handoff-summary.md`
-- `.agent/layer-0/checkpoints.json` (финальный)
-- `.agent/archive/index.json` (создаётся при архивации)
+- `.agent/session-summary.md`
+- `.agent/checkpoints.json` (финальный)
+- Если METASTATE не было: `.agent/archive/index.json`
 
 ## Критерии завершения
 
-- [ ] Все артефакты на месте (с учётом layer-структуры)
-- [ ] `.agent/src/` содержит актуальные исходники MetaAgent
-- [ ] `.agent/rules/` содержит `project-rules.md`
-- [ ] `AGENTS.md` присутствует в корне репозитория
-- [ ] `.agent/archive/index.json` создан, завершённые задачи архивированы
-- [ ] handoff-summary.md заполнен (включая config, design summary, ADR summary, archive)
+- [ ] Все артефакты на месте (согласно структуре .agent/)
+- [ ] Если METASTATE не было — completed задачи архивированы
+- [ ] session-summary.md создан
 - [ ] checkpoints.json финализирован
-- [ ] Сигнал отправлен пользователю/оркестратору
+- [ ] Сигнал отправлен пользователю

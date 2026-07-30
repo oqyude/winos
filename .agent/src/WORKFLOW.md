@@ -28,8 +28,7 @@
     "design": { "adr": false, "alternative_arch": false },
     "red_team": false,
     "risk_register": false,
-    "decomposition": { "invariant_tests": false },
-    "handoff": { "layer_structure": false }
+    "decomposition": { "invariant_tests": false }
   },
   "phases": {
     "analysis": "pending",
@@ -50,7 +49,7 @@
 
 Мета-агент выполняет `PROTOCOLS/01_ANALYSIS.md`. Определяет тип проекта: `existing`.
 
-Результат `.agent/analysis-report.md`:
+Результат `.agent/context/analysis-report.md`:
 
 ```markdown
 ## 2. Стек технологий
@@ -91,7 +90,7 @@
 | T2 | Подключить router в main.py | config | T1 | Ручка доступна по /health |
 | T3 | Написать тесты для /health | test | T2 | Тесты проверяют 200 и структуру ответа |
 
-Создан `.agent/task-manifest.json` и `.agent/task-manifest.md`.
+Создан `.agent/tasks/manifest.json` и `.agent/tasks/manifest.md`.
 
 Чекпоинт обновлён: `decomposition = "completed"`. Tasks: T1-T3 со статусом `pending`.
 
@@ -103,7 +102,7 @@
 
 - `pip install -r requirements.txt` — OK
 - Запуск pytest — OK, 12 passed (базовый тест)
-- Результат в `.agent/baseline-test-report.log`
+- Результат в `.agent/context/baseline-test-report.log`
 
 Чекпоинт обновлён: `environment = "completed"`.
 
@@ -138,8 +137,7 @@
     "design": { "adr": false, "alternative_arch": false },
     "red_team": false,
     "risk_register": false,
-    "decomposition": { "invariant_tests": false },
-    "handoff": { "layer_structure": false }
+    "decomposition": { "invariant_tests": false }
   },
   "phases": {
     "analysis": "completed",
@@ -199,8 +197,7 @@ Tasks: 3 tasks ready
     "design": { "adr": true, "alternative_arch": true },
     "red_team": false,
     "risk_register": true,
-    "decomposition": { "invariant_tests": true },
-    "handoff": { "layer_structure": true }
+    "decomposition": { "invariant_tests": true }
   },
   "phases": {
     "analysis": "pending",
@@ -243,7 +240,7 @@ Tasks: 3 tasks ready
 
 Мета-агент выполняет `PROTOCOLS/02_DESIGN.md`.
 
-Результат `.agent/design-report.md`:
+Результат `.agent/context/design-report.md`:
 
 ```markdown
 ## 1. Технологический стек
@@ -313,7 +310,7 @@ T6: tests — тесты
 - Установка fastapi, uvicorn, sqlalchemy, matplotlib, pytest
 - Создание scaffold-структуры: `app/models/`, `app/services/`, `app/schemas/`, `tests/`
 - Пустые заглушки модулей
-- `.agent/baseline-test-report.log`: "0 tests — greenfield, scaffold готов"
+- `.agent/context/baseline-test-report.log`: "0 tests — greenfield, scaffold готов"
 
 ---
 
@@ -328,15 +325,15 @@ Config: depth=7, adr=yes, risk_register=yes, invariant_tests=yes
 Tasks: 6 tasks ready
 
 Исполнительный агент может начинать с задачи T1 (init).
-Архитектурный план: .agent/design-report.md
-ADR: .agent/layer-1/adr/
+Архитектурный план: .agent/context/design-report.md
+ADR: .agent/decisions/
 ```
 
 ---
 
 ## После HANDOFF: работа исполнительного агента
 
-Исполнительный агент читает `.agent/handoff-summary.md`, `.agent/task-manifest.json`, выполняет задачи по порядку, обновляя checkpoints.json после каждой.
+Исполнительный агент читает `.agent/handoff-summary.md`, `.agent/tasks/manifest.json`, выполняет задачи по порядку, обновляя checkpoints.json после каждой.
 
 После завершения всех задач:
 
@@ -353,4 +350,195 @@ T5: API endpoints ✓
 T6: Тесты ✓
 
 Все тесты проходят: 24/24 passed.
+```
+
+---
+
+## Сценарий C: v2.1 — Координирующий агент + requests + METASTATE
+
+**Цель:** Рефакторинг модуля авторизации: вынести логику из монолитного файла в отдельные модули.
+
+**Целевой репозиторий:** `github.com/example/fastapi-app`
+
+**Пользователь:** "Вынеси авторизацию в отдельные модули: auth/router.py, auth/schemas.py, auth/deps.py"
+
+**Версия MetaAgent: 2.1.0**
+
+---
+
+### PROJECT LOOP
+
+#### Фаза INIT
+
+Агент создаёт `.agent/`, инициализирует чекпоинт:
+
+```json
+{
+  "metaagent_version": "2.1.0",
+  "session_id": "ses_v21_001",
+  "goal": "Рефакторинг авторизации: вынести в модули auth/",
+  "project_type": "existing",
+  "phases": {
+    "analysis": "pending",
+    "roadmap": "pending",
+    "design": "skipped",
+    "decomposition": "pending",
+    "execution": "pending",
+    "metastate": "pending",
+    "handoff": "pending"
+  }
+}
+```
+
+#### Фаза ANALYSIS
+
+Агент сканирует проект:
+- Стек: Python, FastAPI, SQLAlchemy
+- auth/login.py — 450 строк, монолит (цель рефакторинга)
+- Создаёт `.agent/context/analysis-report.md`
+- Создаёт `.agent/context/project-state.md` — начальный слепок
+
+#### Фаза ROADMAP
+
+Сканирование FUTURE/ — пусто. ADR — нет. Единственный источник — пользовательский запрос.
+
+Создаётся `.agent/roadmap/sources.md`:
+```markdown
+## Sources
+### User Requests
+| Вынести авторизацию | P0 | user:direct |
+### Consolidated Priority Queue
+1. Вынести auth/ (user:direct) — P0
+```
+
+#### Фаза DECOMPOSITION
+
+Задачи с origin:
+```json
+{
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Создать auth/router.py",
+      "origin": "user:direct",
+      "status": "pending",
+      "files": ["app/auth/router.py"]
+    },
+    {
+      "id": "T2",
+      "title": "Создать auth/schemas.py",
+      "origin": "user:direct",
+      "status": "pending",
+      "files": ["app/auth/schemas.py"],
+      "depends_on": ["T1"]
+    },
+    {
+      "id": "T3",
+      "title": "Создать auth/deps.py",
+      "origin": "user:direct",
+      "status": "pending",
+      "files": ["app/auth/deps.py"],
+      "depends_on": ["T1"]
+    }
+  ]
+}
+```
+
+---
+
+### WORK LOOP (первая итерация)
+
+#### Фаза EXECUTION — задача T1
+
+1. Берёт T1 (`pending`, нет зависимостей)
+2. Отмечает `in_progress`
+3. Создаёт `app/auth/router.py` — переносит логику роутов из `auth/login.py`
+4. Пишет тесты
+5. Тесты проходят: 48/48
+6. Коммит: `abc1234 — feat: extract auth router`
+7. Создаёт request:
+
+```json
+{
+  "request_id": "req-T1",
+  "task_id": "T1",
+  "title": "Создать auth/router.py",
+  "status": "ready_for_review",
+  "changes": {
+    "summary": "Вынесены роуты авторизации из auth/login.py в auth/router.py. Добавлены тесты.",
+    "commits": ["abc1234"],
+    "files_changed": ["app/auth/router.py", "app/auth/__init__.py", "tests/test_auth_router.py"]
+  },
+  "verification": { "tests_passed": "48/48", "lsp_clean": true },
+  "fulfills_ac": ["Роуты авторизации доступны через app/auth/router.py", "Старые тесты проходят"]
+}
+```
+
+8. T1 → completed
+
+#### Фаза EXECUTION — задача T2 (аналогично)
+
+Создаёт `auth/schemas.py`, request `req-T2`.
+
+#### Фаза EXECUTION — задача T3 (аналогично)
+
+Создаёт `auth/deps.py`, request `req-T3`.
+
+Задачи закончились. Агент ждёт команду.
+
+---
+
+### METASTATE (по команде пользователя)
+
+**Пользователь:** "обнови метасостояние"
+
+1. **Ревью requests:** три request-а, все approved
+   - req-T1 → `.agent/requests/archive/req-T1.json`
+   - req-T2 → `.agent/requests/archive/req-T2.json`
+   - req-T3 → `.agent/requests/archive/req-T3.json`
+
+2. **Архивация задач:**
+   - T1 в manifest → one-liner, детали в `.agent/archive/tasks/T1.json`
+   - T2, T3 — аналогично
+
+3. **Обновление project-state.md:**
+   ```markdown
+   ## Key Modules
+   | Module | Status | Description |
+   |--------|--------|-------------|
+   | app/auth/router.py | new | Вынесенные роуты авторизации |
+   | app/auth/schemas.py | new | Pydantic схемы |
+   | app/auth/deps.py | new | Dependency injection |
+   ```
+
+4. **Обновление roadmap:** задачи выполнены → moved to done
+
+5. **Создание handoff-summary.md:**
+   ```markdown
+   ## Session Summary
+   **Goal:** Рефакторинг авторизации
+   **Completed:** 3/3 tasks
+   **Approved requests:** req-T1, req-T2, req-T3
+   
+   ## Project State
+   Модуль auth разбит на router+schema+deps.
+   Исходный auth/login.py: 450 → 120 строк.
+   
+   ## Next Steps
+   - Проверить, не осталось ли прямых импортов из старого login.py
+   - Обновить main.py если нужно
+   ```
+
+---
+
+### HANDOFF
+
+```text
+HANDOFF COMPLETE
+
+Session: ses_v21_001
+Type: existing
+Tasks: 3/3 completed
+
+Следующий агент начинает с .agent/handoff-summary.md
 ```

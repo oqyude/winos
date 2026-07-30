@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "metaagent/decisions-index/2.0.0",
+  "title": "MetaAgent Decisions Index",
+  "description": "Schema for .agent/decisions/index.json — machine-readable index of ADRs",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "enum": ["2.0"]
+    },
+    "decisions": {
+      "type": "array",
+      "description": "List of architecture decision records",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9]{3,}$",
+            "description": "ADR number (001, 002, ...)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Short title of the decision"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["proposed", "accepted", "deprecated", "superseded"],
+            "description": "ADR status"
+          },
+          "file": {
+            "type": "string",
+            "description": "Filename in .agent/decisions/ (e.g. 001-stack.md)"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Decision date (ISO 8601)"
+          }
+        },
+        "required": ["id", "title", "file"],
+        "additionalProperties": false
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of index creation"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last update"
+    }
+  },
+  "required": ["version", "decisions"],
+  "additionalProperties": false
+}

@@ -6,8 +6,8 @@
 
 ## Вход
 
-- `.agent/design-report.md`
-- `.agent/layer-1/adr/*.md` (если созданы)
+- `.agent/context/design-report.md`
+- `.agent/decisions/*.md` (если созданы)
 - `.agent/metaagent-request.md` (глубина проработки >= 9)
 
 ## Когда выполняется
@@ -56,7 +56,7 @@
 
 ## Выход
 
-`.agent/layer-1/red-team-report.md` с секциями:
+`.agent/context/red-team-report.md` с секциями:
 
 ```
 ## Найденные проблемы

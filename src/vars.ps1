@@ -14,7 +14,7 @@ $modules = @{
         Actions     = @("install", "uninstall")
         Description = "Cursor themes"
     }
-    "OpenCode Serve" = @{
+    "Service Manager" = @{
         Path        = $opencodeServeModule
         Actions     = @("setup", "remove", "status", "start", "stop")
         Description = "opencode serve service manager"

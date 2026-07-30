@@ -45,10 +45,10 @@ if ($Module) {
     # --- Service routing: winos service <name> <action> ---
     if ($Module -eq "service") {
         $serviceAliases = @{
-            "opencode-serve" = "OpenCode Serve"
+            "opencode-serve" = "Service Manager"
         }
         $validServiceActions = @{
-            "OpenCode Serve" = @("setup", "remove", "status", "start", "stop")
+            "Service Manager" = @("setup", "remove", "status", "start", "stop")
         }
 
         $serviceKey = $serviceAliases[$Name]

@@ -1,5 +1,5 @@
 {
-  "$schema": "metaagent-task-manifest",
+  "$schema": ".agent/src/TEMPLATES/schemas/task-manifest-schema.json",
   "version": "1.0",
   "session_id": "{{ session_id }}",
   "goal": "{{ goal }}",

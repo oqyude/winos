@@ -24,8 +24,7 @@
   "design": { "adr": false, "alternative_arch": false },
   "red_team": false,
   "risk_register": false,
-  "decomposition": { "invariant_tests": false },
-  "handoff": { "layer_structure": false }
+  "decomposition": { "invariant_tests": false }
 }
 ```
 
@@ -36,8 +35,7 @@
   "design": { "adr": true, "alternative_arch": true },
   "red_team": false,
   "risk_register": false,
-  "decomposition": { "invariant_tests": true },
-  "handoff": { "layer_structure": true }
+  "decomposition": { "invariant_tests": true }
 }
 ```
 
@@ -125,15 +123,27 @@
 - Вопросы, которые нужно задать пользователю перед проектированием
 - Противоречия в README
 
+### 1.8. Initial project state snapshot
+
+После завершения анализа создать `.agent/context/project-state.md` — начальный слепок проекта по шаблону `TEMPLATES/project-state.md`:
+- Тип проекта
+- Текущая архитектура (кратко, из p.1.3)
+- Ключевые модули и их статус (existing/stub/nonexistent)
+- Tech stack (из p.1.2)
+- Статус тестов (из p.1.5)
+- Этот файл будет обновляться фазой METASTATE по мере эволюции проекта
+
 ## Выход
 
-`.agent/analysis-report.md` по шаблону `TEMPLATES/analysis-report.md`.
+- `.agent/context/analysis-report.md` по шаблону `TEMPLATES/analysis-report.md`
+- `.agent/context/project-state.md` — начальный слепок проекта
 
 Обновить checkpoints.json: `phases.analysis = "completed"`. Если проект `greenfield`, также установить `project_type = "greenfield"`.
 
 ## Критерии завершения фазы
 
 - [ ] Тип проекта определён (existing / greenfield / scaffold)
-- [ ] Все соответствующие разделы (1.1–1.7) выполнены
-- [ ] `.agent/analysis-report.md` создан и заполнен
+- [ ] Все соответствующие разделы (1.1–1.8) выполнены
+- [ ] `.agent/context/analysis-report.md` создан и заполнен
+- [ ] `.agent/context/project-state.md` создан с начальным слепком
 - [ ] checkpoints.json обновлён

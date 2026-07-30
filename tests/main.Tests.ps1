@@ -69,7 +69,7 @@ Add-Content -LiteralPath $env:WINOS_MAIN_TEST_LOG -Value "OpenCode Serve|$action
         Actions     = @("install", "uninstall")
         Description = "Essentials"
     }
-    "OpenCode Serve" = @{
+    "Service Manager" = @{
         Path        = '$openCodeServePath'
         Actions     = @("setup", "remove", "status", "start", "stop")
         Description = "OpenCode service"

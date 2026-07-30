@@ -1,23 +1,40 @@
-# META_AGENT_GUIDE — Главная инструкция
+# META_AGENT_GUIDE — Главная инструкция v2.1
 
 ## Жизненный цикл сессии
 
 ```
-.agent/metaagent-request.md
-        │
-        ▼
-INIT → ANALYSE → [DESIGN] → [RED_TEAM] → DECOMPOSITION → SETUP → (CHECKPOINT)* → HANDOFF → EXIT
-                       │                        │
-                       ▼                        ▼
-                  ADR (опц.)            Invariant Tasks (опц.)
-                  Alt.Arch (опц.)
-                  Risk Register (опц.)
+                    .agent/metaagent-request.md
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────┐
+│                 PROJECT LOOP (однократно)             │
+│                                                     │
+│  INIT → ANALYSE → ROADMAP → DESIGN → DECOMPOSITION  │
+│                                                     │
+│  Выход: .agent/tasks/manifest.json                  │
+└──────────────────────┬──────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│                 WORK LOOP (циклически)                │
+│                                                     │
+│  EXECUTION → (request) → METASTATE (по команде)     │
+│                                                     │
+│  Цикл повторяется: беру задачу → делаю →            │
+│  создаю request → накопилось → METASTATE            │
+└──────────────────────┬──────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│                 HANDOFF (завершение)                  │
+└─────────────────────────────────────────────────────┘
 ```
 
-Фазы выполняются **строго последовательно**. Фаза DESIGN — только если project_type = greenfield/scaffold.
-Фаза RED_TEAM — только если config.red_team = yes.
+Фазы выполняются **строго последовательно** внутри PROJECT LOOP.
+WORK LOOP может повторяться многократно.
+HANDOFF — легковесное завершение.
 
-Все артефакты размещаются в `.agent/` целевого репозитория (с layer-структурой или плоские, в зависимости от config).
+Все артефакты размещаются в `.agent/` целевого репозитория.
 
 ---
 
@@ -32,12 +49,12 @@ INIT → ANALYSE → [DESIGN] → [RED_TEAM] → DECOMPOSITION → SETUP → (CH
 | Уровень | Название | Что выполняется |
 |---|---|---|
 | 1-2 | Scaffold | INIT → ANALYSIS → SETUP (только структура, без реализации) |
-| 3-4 | Light | + DESIGN (без ADR/альтернатив), DECOMPOSITION (без инвариантов), HANDOFF — **(default)** |
+| 3-4 | Light | + ROADMAP, DESIGN (без ADR/альтернатив), DECOMPOSITION — **(default)** |
 | 5-6 | Standard | полный цикл с базовым DESIGN и DECOMPOSITION |
 | 7-8 | Deep | + ADR, Alternative Architecture, Risk Register, Invariant Tests |
 | 9-10 | Maximum | + Red Team Review, Executable Invariants для всех ADR |
 
-### Функции (таблица вкл/выкл)
+### Функции
 
 | Функция | Фаза | Глубина | Описание |
 |---|---|---|---|
@@ -46,13 +63,10 @@ INIT → ANALYSE → [DESIGN] → [RED_TEAM] → DECOMPOSITION → SETUP → (CH
 | red_team | DESIGN (после) | >=9 | Red Team Review — попытка разрушить архитектуру |
 | risk_register | DESIGN | >=7 | Явный реестр допущений |
 | invariant_tests | DECOMPOSITION | >=7 | Задачи-инварианты для каждого ADR |
-| layer_structure | HANDOFF | любая | Организация .agent/ по слоям (layer-0..3) |
 
 ---
 
 ## Фаза 0: INIT
-
-**Вход:** целевой репозиторий + опционально `.agent/metaagent-request.md`.
 
 **Протокол:** `PROTOCOLS/00_CONFIG.md`
 
@@ -60,168 +74,179 @@ INIT → ANALYSE → [DESIGN] → [RED_TEAM] → DECOMPOSITION → SETUP → (CH
 - Прочитать `VERSION` — текущая версия MetaAgent
 - Склонировать/открыть целевой репозиторий
 - Создать директорию `.agent/` в корне целевого репозитория (если нет)
-- **Создать `.temp/` в корне целевого репозитория** (если нет) — для временных файлов агента
-- **Добавить `.temp/` в `.gitignore`** целевого репозитория (если нет записи)
-- **Установить исходники MetaAgent в `.agent/src/`:**
-  - Скопировать `META_AGENT_GUIDE.md`, `BOUNDARIES.md`, `WORKFLOW.md`, `VERSION` в `.agent/src/`
-  - Скопировать `PROTOCOLS/` и `TEMPLATES/` в `.agent/src/`
-  - Скопировать `install.sh` и `install.ps1` в `.agent/src/` (для возможности обновления)
-  - Если файлы уже существуют — пропустить (не перезаписывать)
-- **Создать `.agent/rules/`** — директорию для пользовательских правил
-  - Если `.agent/rules/project-rules.md` не существует — создать из шаблона `.agent/src/TEMPLATES/project-rules.md`
-- **Создать/обновить `AGENTS.md` в корне целевого репозитория** (если нет — создать, если есть — не трогать)
-- Прочитать `PROTOCOLS/00_CONFIG.md`
-- Выполнить 00_CONFIG:
-  - Если `.agent/metaagent-request.md` существует — прочитать config из него
-  - Если нет — провести интервью с пользователем (или принять `default`)
-  - Валидировать config относительно depth
-  - Если не было файла — создать `.agent/metaagent-request.md` с пометкой Auto-generated
-- **Проверить версию:** если `.agent/checkpoints.json` существует → выполнить `PROTOCOLS/00_MIGRATE.md` (сравнить metaagent_version, применить миграцию при необходимости)
-- Прочитать `PROTOCOLS/01_ANALYSIS.md`
-- Инициализировать `.agent/checkpoints.json` с `metaagent_version` (если не существовал)
+- Создать `.temp/` в корне целевого репозитория (если нет), добавить в `.gitignore`
+- Установить исходники MetaAgent в `.agent/src/`
+- Создать структуру `.agent/`: `rules/`, `decisions/`, `tasks/` (с `backlog/`), `context/`, `requests/` (с `active/`, `archive/`), `roadmap/` (с `archive/`), `archive/` (с `tasks/`, `decisions/`, `checkpoints/`)
+- Создать/обновить `AGENTS.md` в корне
+- Прочитать/создать `.agent/metaagent-request.md` (интервью или default)
+- Проверить версию, инициализировать `checkpoints.json`
 
-```json
-{
-  "metaagent_version": "1.1.0",
-  "session_id": "<uuid>",
-  "target_repo": "<path>",
-  "goal": "<цель от пользователя>",
-  "project_type": "pending",
-  "config": {
-    "depth": 4,
-    "design": { "adr": false, "alternative_arch": false },
-    "red_team": false,
-    "risk_register": false,
-    "decomposition": { "invariant_tests": false },
-    "handoff": { "layer_structure": false }
-  },
-  "phases": {
-    "analysis": "pending",
-    "design": "pending",
-    "red_team": "pending",
-    "decomposition": "pending",
-    "environment": "pending",
-    "handoff": "pending"
-  },
-  "tasks": [],
-  "last_updated": "<timestamp>"
-}
-```
-
-**Выход:** готовая `.agent/` + checkpoints.json с metaagent_version и config.
+**Выход:** готовая `.agent/` + checkpoints.json.
 
 ---
 
-## Фаза 1: ANALYSE
-
-**Вход:** целевой репозиторий, `.agent/metaagent-request.md` (или auto-generated), checkpoints.json (analysis: pending, config: from INIT).
+## Фаза 1: ANALYSIS
 
 **Протокол:** `PROTOCOLS/01_ANALYSIS.md`
 
 **Действия:**
-- **Прочитать `.agent/rules/project-rules.md`** — учесть пользовательские правила
-- Прочитать config из checkpoints.json (уже получен на INIT через 00_CONFIG)
-- Если config отсутствует — применить default config (depth=4) как fallback
-- Выполнить анализ репозитория по протоколу (определяет тип проекта)
-- Записать результат в `.agent/analysis-report.md`
-- Обновить checkpoints.json: `phases.analysis = "completed"`, `project_type = "existing" | "greenfield" | "scaffold"`
-
-**Выход:** `.agent/analysis-report.md`
+- Прочитать `.agent/rules/project-rules.md`
+- Прочитать config из checkpoints.json
+- Выполнить анализ репозитория:
+  - Определить тип проекта (existing / greenfield / scaffold)
+  - Зафиксировать стек, архитектуру, конвенции, тесты
+  - Для greenfield — извлечь требования из README
+- Создать начальный `.agent/context/project-state.md` — слепок проекта
+- Записать `.agent/context/analysis-report.md`
+- Обновить checkpoints.json
 
 **Ветвление:**
-- `project_type = "greenfield"` или `"scaffold"` → далее фаза DESIGN
-- `project_type = "existing"` → DESIGN пропускается, сразу DECOMPOSITION
+- `project_type = "greenfield"` или `"scaffold"` → далее ROADMAP → DESIGN
+- `project_type = "existing"` → далее ROADMAP (DESIGN пропускается)
+
+**Выход:** `.agent/context/analysis-report.md`, `.agent/context/project-state.md`
 
 ---
 
-## Фаза 2: DESIGN (условная)
+## Фаза 2: ROADMAP
 
-**Вход:** analysis-report.md, checkpoints.json (analysis: completed, project_type: greenfield/scaffold).
+**Протокол:** `PROTOCOLS/02_ROADMAP.md`
+
+**Действия:**
+- Прочитать `.agent/rules/project-rules.md`
+- Сканировать FUTURE/ — долгосрочные планы
+- Сканировать `.agent/decisions/index.json` — ADR, требующие реализации
+- Учесть пользовательские запросы и выявленные улучшения
+- Приоритизировать все источники (P0-P3)
+- Создать `.agent/roadmap/sources.md`
+
+**Выход:** `.agent/roadmap/sources.md`
+
+---
+
+## Фаза 3: DESIGN (условная)
 
 **Протокол:** `PROTOCOLS/02_DESIGN.md`
 
+Выполняется только для greenfield/scaffold.
+
 **Действия:**
-- **Прочитать `.agent/rules/project-rules.md`** — учесть пользовательские правила
 - Спроектировать архитектуру, модули, данные, интерфейсы
-- Если config.design.alternative_arch: описать альтернативную архитектуру
-- Если config.design.adr: создать ADR для каждого ключевого решения → `.agent/layer-1/adr/`
-- Если config.risk_register: создать `.agent/layer-1/risk-register.md`
-- Записать результат в `.agent/design-report.md`
-- Обновить checkpoints.json: `phases.design = "completed"`
+- Если config.design.adr: создать ADR → `.agent/decisions/`
+- Если config.risk_register: создать `.agent/context/risk-register.md`
+- Записать `.agent/context/design-report.md`
 
-**Ветвление:**
-- Если config.red_team = yes → следующая фаза RED_TEAM
-- Иначе → сразу DECOMPOSITION
-
-**Выход:** `.agent/design-report.md`, опционально `.agent/layer-1/adr/*.md`, `.agent/layer-1/risk-register.md`
+**Выход:** `.agent/context/design-report.md`, опционально ADR, risk-register
 
 ---
 
-## Фаза 2b: RED_TEAM (опциональная)
-
-**Вход:** design-report.md, ADR (опционально), checkpoints.json (design: completed).
+## Фаза 3b: RED_TEAM (опциональная)
 
 **Протокол:** `PROTOCOLS/02b_REDTEAM.md`
 
-**Действия:**
-- **Прочитать `.agent/rules/project-rules.md`** — учесть пользовательские правила
-- Выполнить Red Team Review по протоколу
-- Записать результат в `.agent/layer-1/red-team-report.md`
-- Дополнить risk-register.md (если существует)
-- Если найдены критические проблемы — исправить design-report
-- Обновить checkpoints.json: `phases.red_team = "completed"`
+Только если config.red_team = yes (depth >= 9).
 
-**Выход:** `.agent/layer-1/red-team-report.md`
+**Выход:** `.agent/context/red-team-report.md`
 
 ---
 
-## Фаза 3: DECOMPOSITION
-
-**Вход:** analysis-report.md + design-report.md (опционально) + ADR (опционально) + checkpoints.json.
+## Фаза 4: DECOMPOSITION
 
 **Протокол:** `PROTOCOLS/03_DECOMPOSITION.md`
 
 **Действия:**
-- **Прочитать `.agent/rules/project-rules.md`** — учесть пользовательские правила
+- Прочитать `.agent/rules/project-rules.md`
 - Разбить цель (и дизайн) на атомарные задачи
-- Если config.decomposition.invariant_tests: создать задачи-инварианты для каждого ADR
-- Записать манифест в `.agent/task-manifest.json` и `.agent/task-manifest.md`
-- Обновить checkpoints.json: `phases.decomposition = "completed"`, заполнить `tasks`
+- Каждой задаче присвоить `origin` (источник: roadmap, ADR, user, agent)
+- Если есть `.agent/roadmap/sources.md` — сверить приоритеты
+- Если config.invariant_tests: создать задачи-инварианты для ADR
+- Записать `.agent/tasks/manifest.json` и `.agent/tasks/manifest.md`
 
-**Выход:** `.agent/task-manifest.json`, `.agent/task-manifest.md`
+**Выход:** `.agent/tasks/manifest.json` + `.agent/tasks/manifest.md`
 
 ---
 
-## Фаза 4: SETUP
+## Фаза 5: EXECUTION (циклическая)
 
-**Вход:** analysis-report.md, design-report.md (опционально), task-manifest.json, checkpoints.json (decomposition: completed).
-
-**Протокол:** `PROTOCOLS/04_ENVIRONMENT_SETUP.md`
+**Протокол:** `PROTOCOLS/04_EXECUTION.md`
 
 **Действия:**
-- **Прочитать `.agent/rules/project-rules.md`** — учесть пользовательские правила
-- Выполнить настройку окружения по протоколу (ветка A для existing, ветка B для greenfield)
-- Записать результат проверки в `.agent/baseline-test-report.log` и `.agent/setup-report.log`
-- Обновить checkpoints.json: `phases.environment = "completed"`
+1. Выбрать следующую задачу из manifest.json (pending, все depends_on выполнены)
+2. Отметить `in_progress`
+3. Реализовать (код, тесты, конфиги)
+4. Верифицировать (тесты, LSP diagnostics)
+5. Закоммитить
+6. Создать request в `.agent/requests/active/req-{id}.json`
+7. Отметить `completed` в manifest.json
+8. Повторить, пока есть задачи
+9. Если задач нет — ожидать команду пользователя
 
-**Выход:** рабочее окружение + `.agent/baseline-test-report.log`
+**Request — единица результата:**
+```json
+{
+  "request_id": "req-T1",
+  "task_id": "T1",
+  "title": "Human-readable title",
+  "status": "ready_for_review",
+  "changes": {
+    "summary": "Суть изменений",
+    "commits": ["abc1234"],
+    "files_changed": ["path/to/file.py"]
+  },
+  "verification": {
+    "tests_passed": "24/24",
+    "lsp_clean": true
+  },
+  "fulfills_ac": ["AC1"]
+}
+```
+
+**Выход:** выполненные задачи в manifest + request-ы в `.agent/requests/active/`
 
 ---
 
-## Фаза 5: CHECKPOINT (сквозная)
+## Фаза 6: METASTATE (по команде пользователя)
 
-**Вход:** любая фаза.
+**Протокол:** `PROTOCOLS/06_METASTATE.md`
 
-**Протокол:** обновлять checkpoints.json после каждого значимого шага.
+Запускается по команде: «обнови метасостояние», «update metastate», «подведи итог».
 
-**Архивирование перед сохранением чекпоинта:**
-- Если checkpoints.json уже существует — сохранить предыдущую версию в `.agent/archive/checkpoints/<last_updated>.json`
+**Действия:**
+1. **Ревью requests** — проверить каждый `ready_for_review`:
+   - ✅ approved → в `.agent/requests/archive/`, задача confirmed
+   - ❌ rejected → задача reopened, комментарий
+2. **Архивация** — completed задачи → one-liner в manifest, детали в `.agent/archive/tasks/`
+3. **Обновление project-state.md** — актуальный слепок проекта
+4. **Обновление roadmap** — отметить выполненное, пересчитать приоритеты
+5. **Создание handoff-summary.md** — полная сводка для следующего агента
+6. **Индекс архива** — `.agent/archive/index.json`
 
-**Формат:**
+**Выход:** обновлённый `.agent/` — полный слепок проекта. Следующий агент читает только `.agent/`.
+
+---
+
+## Фаза 7: HANDOFF
+
+**Протокол:** `PROTOCOLS/05_HANDOFF.md`
+
+**Действия:**
+- Если METASTATE был — просто валидировать и финализировать
+- Если METASTATE не было — лёгкая архивация completed задач
+- Валидация структуры `.agent/`
+- Создание `.agent/session-summary.md`
+- Финализация checkpoints.json
+
+**Выход:** `.agent/session-summary.md`, финальный checkpoints.json
+
+---
+
+## Checkpoint (сквозная)
+
+checkpoints.json обновляется после каждой фазы:
 
 ```json
 {
-  "metaagent_version": "1.1.0",
+  "metaagent_version": "2.1.0",
   "session_id": "<uuid>",
   "target_repo": "<path>",
   "goal": "<цель>",
@@ -231,119 +256,125 @@ INIT → ANALYSE → [DESIGN] → [RED_TEAM] → DECOMPOSITION → SETUP → (CH
     "design": { "adr": true, "alternative_arch": true },
     "red_team": false,
     "risk_register": false,
-    "decomposition": { "invariant_tests": true },
-    "handoff": { "layer_structure": true }
+    "decomposition": { "invariant_tests": true }
   },
   "phases": {
     "analysis": "completed",
+    "roadmap": "completed",
     "design": "completed",
     "red_team": "skipped",
-    "decomposition": "in_progress",
-    "environment": "pending",
-    "handoff": "pending"
+    "decomposition": "completed",
+    "execution": "completed",
+    "metastate": "completed",
+    "handoff": "completed"
   },
   "tasks": [
-    { "id": "T1", "title": "...", "status": "completed",
-      "depends_on": [], "acceptance_criteria": ["..."] },
-    { "id": "T2", "title": "...", "status": "pending",
-      "depends_on": ["T1"], "acceptance_criteria": ["..."] }
+    { "id": "T1", "title": "...", "status": "archived", "origin": "user:direct" },
+    { "id": "T2", "title": "...", "status": "pending", "origin": "roadmap:010" }
   ],
   "last_updated": "<timestamp>"
 }
 ```
 
-`status` может быть: `pending`, `in_progress`, `completed`, `failed`, `skipped`.
-Фаза `red_team` может быть `skipped` если config.red_team = false.
-
----
-
-## Фаза 6: HANDOFF
-
-**Вход:** все предыдущие фазы completed.
-
-**Протокол:** `PROTOCOLS/05_HANDOFF.md`
-
-**Действия:**
-- **Прочитать `.agent/rules/project-rules.md`** — учесть пользовательские правила
-- **Архивировать завершённые задачи:**
-  - Для каждой задачи со статусом `completed` в `task-manifest.json`:
-    - Перенести полное описание в `.agent/archive/tasks/<id>.json`
-    - Заменить в манифесте на one-liner: `{ "id": "<id>", "title": "<title>", "status": "archived" }`
-  - Создать `.agent/archive/index.json` со списком архивированных задач
-  - Заархивировать предыдущий `checkpoints.json` в `.agent/archive/checkpoints/`
-- Выполнить валидацию всех артефактов
-- Если config.handoff.layer_structure: организовать `.agent/` по слоям
-- Записать `.agent/handoff-summary.md` (в layer-3 при layer_structure=yes)
-- Создать `.agent/session-summary.md` (в layer-0 при layer_structure=yes)
-- Обновить checkpoints.json: `phases.handoff = "completed"`
-- Сообщить пользователю/оркестратору
-
-**Выход:** `.agent/handoff-summary.md` — итоговый документ для исполнительного агента.
-
----
-
-## Фаза 7: EXIT
-
-Мета-агент завершает работу. Управление переходит к исполнительному агенту.
-
 ---
 
 ## Структура .agent/
 
-.agent/ всегда содержит служебную директорию `src/` с исходниками MetaAgent (см. фазу INIT).
-`.temp/` в корне проекта — временные файлы агента (всегда, на одном уровне с `.agent/`).
-При layer_structure=yes артефакты сессии раскладываются по слоям layer-0..3.
-
 ```
 .agent/
-  src/                          # исходники MetaAgent (всегда)
-    META_AGENT_GUIDE.md         #   главная инструкция
-    PROTOCOLS/                  #   протоколы фаз
-    TEMPLATES/                  #   шаблоны артефактов
-    BOUNDARIES.md               #   границы
-    WORKFLOW.md                 #   примеры работы
-    VERSION                     #   версия MetaAgent
-    install.sh                  #   скрипт установки/обновления (Unix)
-    install.ps1                 #   скрипт установки/обновления (Windows)
-  rules/                        # пользовательские правила (всегда)
-    project-rules.md            #   правила проекта — читать перед каждой фазой
-  archive/                      # архив завершённых артефактов (создаётся при HANDOFF)
-    index.json                  #   мета-индекс архива
-    tasks/                      #   детали завершённых задач
-    checkpoints/                #   исторические чекпоинты
-    adr/                        #   заменённые ADR
-    reports/                    #   устаревшие отчёты
-  layer-0/                      # ядро сессии (только при layer_structure=yes)
-    checkpoints.json            # всегда (ядро)
-    session-summary.md          # краткая сводка сессии
-  layer-1/                      # архитектурные решения (справочно)
-    adr/
-      001-технологический-стек.md
-      002-архитектурный-паттерн.md
-      ...
+  checkpoints.json                  # состояние сессии (ядро)
+  session-summary.md                # краткая сводка сессии
+  handoff-summary.md                # сводка для следующего агента (создаётся METASTATE)
+
+  src/                              # исходники MetaAgent (всегда)
+    META_AGENT_GUIDE.md
+    PROTOCOLS/
+    TEMPLATES/
+    BOUNDARIES.md
+    WORKFLOW.md
+    VERSION
+    install.sh / install.ps1
+
+  rules/
+    project-rules.md
+
+  roadmap/                          # ИСТОЧНИКИ ЗАДАЧ (новое в v2.1)
+    sources.md                      #   консолидированный список с приоритетами
+    archive/                        #   устаревшие roadmap-планы
+
+  decisions/                        # архитектурные решения (ADR)
+    index.json
+    001-*.md
+
+  tasks/                            # задачи
+    manifest.json                   #   + поле origin
+    manifest.md
+    backlog/
+
+  requests/                         # ЕДИНИЦЫ РЕЗУЛЬТАТА (новое в v2.1)
+    active/                         #   req-T1.json (ready_for_review)
+    archive/                        #   req-T1.json (approved/rejected)
+
+  context/
+    analysis-report.md              # замороженный анализ на старте
+    project-state.md                # динамический слепок проекта (обновляется METASTATE)
+    design-report.md
     risk-register.md
     red-team-report.md
-  layer-2/                      # дизайн и анализ (справочно)
-    analysis-report.md
-    design-report.md
-  layer-3/                      # состояние исполнения
-    handoff-summary.md
-    task-manifest.json
-    task-manifest.md
     baseline-test-report.log
-    setup-report.log
+
+  archive/
+    index.json
+    tasks/
+    decisions/
+    requests/
+    checkpoints/
 ```
 
-`.temp/` структура:
+`.temp/` в корне проекта:
 
 ```
 .temp/
-  downloads/            # временно скачанные файлы
-  patches/              # временные патчи и diff
-  cache/                # кеш анализа, промежуточные результаты
-  agent-session-xxx/    # временные файлы конкретной сессии
+  downloads/
+  patches/
+  cache/
+  agent-session-xxx/
 ```
 
-Исполнительный агент всегда начинает с layer-0 (checkpoints + session-summary),
-затем при необходимости обращается к layer-1 (ADR для понимания "почему"),
-layer-2 (детали дизайна), layer-3 (что было сделано).
+---
+
+## Принципы работы
+
+### Два контура
+
+**Project Loop** (однократно): INIT → ANALYSIS → ROADMAP → DESIGN → DECOMPOSITION.
+Настраивает проект, определяет задачи.
+
+**Work Loop** (циклически): EXECUTION → (request) → METASTATE (по команде).
+Агент работает, создаёт requests, по команде пользователя подводит итог.
+
+### Request — единица результата
+
+Каждая выполненная задача завершается созданием request. Не просто «сделано», а документированный результат:
+- суть изменений (не diff, а именно суть)
+- ссылки на коммиты
+- верификация (тесты, LSP)
+- какие acceptance criteria закрыты
+
+Request проходит ревью в METASTATE.
+
+### .agent/ как слепок проекта
+
+После METASTATE `.agent/` содержит полную картину. Следующий агент читает `.agent/` и не лезет в исходники проекта.
+
+### Depth scale
+
+Определяет глубину проработки:
+
+| Depth | PROJECT LOOP | WORK LOOP |
+|-------|-------------|-----------|
+| 1-2 | INIT → ANALYSIS → DECOMP | EXECUTION (scaffold only) |
+| 3-4 | + ROADMAP, DESIGN (light) | EXECUTION → METASTATE |
+| 5-6 | + DESIGN (full), invariants | EXECUTION → METASTATE |
+| 7-8 | + ADR, risk_register | EXECUTION → METASTATE |
+| 9-10 | + Red Team | EXECUTION → METASTATE |

@@ -17,7 +17,7 @@
 ## Project Type
 
 - **Type:** {{ project_type }}
-- **Design report:** {% if project_type == "greenfield" or project_type == "scaffold" %}`.agent/design-report.md`{% else %}—{% endif %}
+- **Design report:** {% if project_type == "greenfield" or project_type == "scaffold" %}`.agent/context/design-report.md`{% else %}—{% endif %}
 
 ## ADR Summary (если применимо)
 
@@ -39,7 +39,7 @@
 
 - **Build:** {{ build_status }}
 - **Tests:** {{ tests_passed }}/{{ tests_total }} passed
-- **Baseline log:** `.agent/baseline-test-report.log`
+- **Baseline log:** `.agent/context/baseline-test-report.log`
 - **Dependencies:** {{ deps_status }}
 
 ## Task Overview

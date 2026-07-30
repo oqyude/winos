@@ -14,7 +14,7 @@
 | RISK_REGISTER | ✗ | — |
 | DECOMPOSITION | ✓ | invariant_tests=yes |
 | SETUP | ✓ | — |
-| HANDOFF | ✓ | layer_structure=yes |
+| HANDOFF | ✓ | — |
 
 ## Глубина проработки
 

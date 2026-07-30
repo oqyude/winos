@@ -66,9 +66,6 @@ Q5 (если глубина >= 9): Нужен Red Team Review?
   "risk_register": false,
   "decomposition": {
     "invariant_tests": false
-  },
-  "handoff": {
-    "layer_structure": false
   }
 }
 ```
@@ -78,7 +75,7 @@ Depth=4 (Light) означает:
 - DESIGN — выполняется (если greenfield), но **без** ADR, Alternative Architecture, Risk Register
 - DECOMPOSITION — задачи с acceptance criteria, **без** invariant-тестов
 - SETUP — полный
-- HANDOFF — плоский `.agent/` (без layer-структуры)
+- HANDOFF — `.agent/` организован по семантическим группам (decisions, tasks, context, rules)
 
 ### 0.4. Запись .agent/metaagent-request.md
 
@@ -98,7 +95,7 @@ Depth=4 (Light) означает:
 | RISK_REGISTER | {{ risk_register }} | — |
 | DECOMPOSITION | ✓ | invariant_tests={{ invariant_tests }} |
 | SETUP | ✓ | — |
-| HANDOFF | ✓ | layer_structure={{ layer_structure }} |
+| HANDOFF | ✓ | — |
 
 ## Глубина проработки
 
