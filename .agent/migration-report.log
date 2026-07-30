@@ -1,0 +1,17 @@
+[MIGRATE] 2026-07-30T00:00:00.000Z
+  From: 1.1.1
+  To: 2.1.0
+  Steps applied:
+    - M6.1: Remove config.handoff from checkpoints.json
+    - M6.9: Move task-manifest.json → tasks/manifest.json
+    - M6.9: Move task-manifest.md → tasks/manifest.md
+    - Move .agent/analysis-report.md → .agent/context/analysis-report.md
+    - Move .agent/baseline-test-report.log → .agent/context/baseline-test-report.log
+    - Move .agent/setup-report.log → .agent/context/setup-report.log
+    - Update checkpoints.json metaagent_version: 1.1.1 → 2.1.0
+    - Update checkpoints.json phases: add roadmap, execution, metastate; remove environment
+    - Create roadmap/sources.md
+    - Create context/project-state.md
+    - Update metaagent-request.md to v2.1 schema
+    - Update archive/index.json version: 1.1.1 → 2.1.0
+  Status: OK
