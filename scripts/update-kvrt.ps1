@@ -15,6 +15,12 @@
     runners) do not return it for HEAD requests. When it is missing, the stamp is taken from
     the download response headers or, as a last resort, from the download time.
 
+    The Last-Modified header is only an optimization: some networks (e.g. GitHub-hosted
+    runners) may not return it or may challenge the request. The download therefore mimics a
+    browser (User-Agent, cookie jar) and retries once after the server's bot-protection
+    cookie handshake. When no Last-Modified is available, the stamp falls back to the
+    download time.
+
     No hash is pinned on purpose: the "latest" URL content changes far more often than the
     FileVersion, so a pinned hash would make updates fail in between workflow runs.
 
@@ -49,6 +55,9 @@ Set-StrictMode -Version Latest
 if (-not $ManifestPath) {
     $scriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Get-Location }
     $ManifestPath = Join-Path $scriptRoot '..\bucket\kvrt.json'
+}
+if ($env:KVRT_URL) {
+    $KvrtUrl = $env:KVRT_URL
 }
 
 function Set-OutputValue {
@@ -97,14 +106,20 @@ if (-not $versionMatch.Success) {
 $currentVersion = $versionMatch.Groups[1].Value
 $currentStamp = if ($currentVersion -match '-(\d{12})$') { $Matches[1] } else { $null }
 
+# Browser-like fingerprint: the server's bot protection sets a klid cookie and may
+# challenge datacenter IPs (e.g. GitHub-hosted runners) otherwise.
+$cookieJar = Join-Path $env:TEMP 'KVRT.cookies.txt'
+$browserUa = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+
 # Fast path: detect build changes via the Last-Modified header (avoids the 121 MB download).
 # The header may be absent on some networks, in which case we fall through to the download.
 $remoteStamp = $null
 if (-not $Force) {
-    $headers = & curl.exe -sI --max-time 30 $KvrtUrl 2>$null
+    $headers = & curl.exe -sI --max-time 30 -A $browserUa -c $cookieJar -b $cookieJar $KvrtUrl 2>$null
     $remoteStamp = Get-BuildStamp $headers
     if ($remoteStamp -and $remoteStamp -eq $currentStamp) {
         Write-Host "kvrt: build unchanged ($remoteStamp), nothing to do"
+        Remove-Item $cookieJar -Force -ErrorAction SilentlyContinue
         Set-OutputValue 'changed' 'false'
         Set-OutputValue 'version' $currentVersion
         exit 0
@@ -114,9 +129,34 @@ if (-not $Force) {
 # Download and read the real product version, keeping the response headers for the build stamp
 $kvrtExe = Join-Path $env:TEMP 'KVRT.exe'
 $headerDump = Join-Path $env:TEMP 'KVRT.headers.txt'
-& curl.exe -L --fail --silent --show-error --retry 2 --retry-delay 2 --max-time 900 --dump-header $headerDump --output $kvrtExe $KvrtUrl 2>$null
+$curlArgs = @(
+    '-L', '--fail', '--silent', '--show-error',
+    '--retry', '2', '--retry-delay', '2',
+    '-A', $browserUa,
+    '-c', $cookieJar, '-b', $cookieJar,
+    '--write-out', '%{http_code}',
+    '--max-time', '900',
+    '--dump-header', $headerDump,
+    '--output', $kvrtExe,
+    $KvrtUrl
+)
+
+$httpStatus = & curl.exe @curlArgs 2>$null
 if ($LASTEXITCODE -ne 0) {
-    throw "Failed to download KVRT (curl exit code $LASTEXITCODE)"
+    # Retry once: the bot protection may require the cookie it set in the failed response
+    $httpStatus = & curl.exe @curlArgs 2>$null
+}
+if ($LASTEXITCODE -ne 0) {
+    $bodySample = ''
+    if ((Test-Path $kvrtExe) -and ((Get-Item $kvrtExe).Length -lt 10000)) {
+        try {
+            $bodyText = ([string](Get-Content $kvrtExe -Raw -ErrorAction Stop)) -replace '\s+', ' '
+            $bodySample = ' body: ' + $bodyText.Substring(0, [Math]::Min(150, $bodyText.Length))
+        } catch {
+            $bodySample = ''
+        }
+    }
+    throw "Failed to download KVRT (HTTP $httpStatus, curl exit $LASTEXITCODE)$bodySample"
 }
 
 try {
@@ -127,7 +167,7 @@ try {
         Write-Warning "Last-Modified header unavailable, using download time ($buildStamp)"
     }
 } finally {
-    Remove-Item $kvrtExe, $headerDump -Force -ErrorAction SilentlyContinue
+    Remove-Item $kvrtExe, $headerDump, $cookieJar -Force -ErrorAction SilentlyContinue
 }
 if ([string]::IsNullOrWhiteSpace($fileVersion)) {
     throw 'Failed to read FileVersion from the downloaded KVRT.exe'
