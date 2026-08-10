@@ -65,11 +65,17 @@ function Get-KvrtMetadata {
     # (e.g. GitHub-hosted runners) otherwise. The cookie jar mirrors the old download flow.
     $cookieJar = Join-Path $env:TEMP 'KVRT.cookies.txt'
     $browserUa = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
-    $text = & curl.exe -sL --silent --show-error --max-time $TimeoutSeconds -A $browserUa -c $cookieJar -b $cookieJar $Url 2>$null
-    if ($LASTEXITCODE -ne 0 -or -not $text) {
+    $curlExe = if ($env:OS -eq 'Windows_NT') { 'curl.exe' } else { 'curl' }
+    $tmp = Join-Path $env:TEMP ("kvrt-{0}.xml" -f [guid]::NewGuid().ToString('N'))
+    $script:LastHttpStatus = & $curlExe -sL --silent --show-error --max-time $TimeoutSeconds -A $browserUa -c $cookieJar -b $cookieJar --write-out '%{http_code}' --output $tmp $Url 2>$null
+    $body = $null
+    if ($LASTEXITCODE -eq 0 -and (Test-Path $tmp)) {
+        $body = [System.IO.File]::ReadAllText($tmp)
+    }
+    Remove-Item $tmp -Force -ErrorAction SilentlyContinue
+    if (-not $body) {
         return $null
     }
-    $body = [string]$text
     $versionMatch = [regex]::Match($body, 'version\s*=\s*"([^"]+)"')
     $stampMatch = [regex]::Match($body, 'databases_timestamp\s*=\s*"([^"]+)"')
     if (-not $versionMatch.Success -or -not $stampMatch.Success) {
@@ -96,20 +102,34 @@ if (-not $versionMatch.Success) {
 $currentVersion = $versionMatch.Groups[1].Value
 
 # Fetch the build metadata: directly first (fast path), then through the Wayback Machine.
-# Kaspersky blocks GitHub-hosted runner IPs with HTTP 403, while web.archive.org's crawler
-# is allowed and its /save endpoint re-crawls the URL so the returned content stays fresh.
+# Kaspersky blocks GitHub-hosted runner IPs with HTTP 403 (intermittently), while
+# web.archive.org's /save endpoint re-crawls the URL so the returned content stays fresh.
+# Each leg reports its HTTP status so failures are diagnosable from the action log.
+$diag = [System.Collections.Generic.List[string]]::new()
+
 $metadata = Get-KvrtMetadata $XmlUrl -TimeoutSeconds 60
+$diag.Add("direct: HTTP $script:LastHttpStatus")
 if ($metadata) {
     Write-Host "kvrt: metadata fetched directly ($($metadata.Version)-$($metadata.Stamp))"
 } else {
-    Write-Host 'kvrt: direct fetch failed, trying the Wayback Machine...'
-    $metadata = Get-KvrtMetadata ('https://web.archive.org/save/' + $XmlUrl) -TimeoutSeconds 180
+    # The /save endpoint is flaky (queue/rate limits): try it up to three times.
+    $attempt = 1
+    while ($attempt -le 3 -and -not $metadata) {
+        Write-Host "kvrt: direct fetch failed, trying the Wayback Machine (attempt $attempt/3)..."
+        $metadata = Get-KvrtMetadata ('https://web.archive.org/save/' + $XmlUrl) -TimeoutSeconds 180
+        $diag.Add("wayback-save($attempt): HTTP $script:LastHttpStatus")
+        if (-not $metadata -and $attempt -lt 3) {
+            Start-Sleep -Seconds 10
+        }
+        $attempt++
+    }
 }
 if (-not $metadata) {
     $metadata = Get-KvrtMetadata ('https://web.archive.org/web/2id_/' + $XmlUrl) -TimeoutSeconds 120
+    $diag.Add("wayback-snapshot: HTTP $script:LastHttpStatus")
 }
 if (-not $metadata) {
-    throw "Failed to fetch kvrt.xml from Kaspersky or the Wayback Machine ($XmlUrl)"
+    throw "Failed to fetch kvrt.xml from Kaspersky or the Wayback Machine ($XmlUrl). Legs: $($diag -join '; ')"
 }
 
 $version = "$($metadata.Version)-$($metadata.Stamp)"

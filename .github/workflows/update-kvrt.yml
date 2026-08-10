@@ -16,7 +16,10 @@ permissions:
 jobs:
   update-kvrt:
     name: Update kvrt manifest
-    runs-on: windows-latest
+    # ubuntu-latest uses a different GitHub runner IP pool than windows-latest:
+    # Kaspersky's bot protection intermittently 403s the Windows pool, so this
+    # increases the chance the direct fetch passes. See scripts/update-kvrt.ps1.
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +27,7 @@ jobs:
       - name: Fetch latest KVRT build
         id: kvrt
         shell: pwsh
-        run: .\scripts\update-kvrt.ps1
+        run: ./scripts/update-kvrt.ps1
 
       - name: Commit and push
         if: steps.kvrt.outputs.changed == 'true'
