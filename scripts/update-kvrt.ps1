@@ -63,10 +63,11 @@ function Get-KvrtMetadata {
     )
     # Browser-like fingerprint: the server's bot protection may challenge datacenter IPs
     # (e.g. GitHub-hosted runners) otherwise. The cookie jar mirrors the old download flow.
-    $cookieJar = Join-Path $env:TEMP 'KVRT.cookies.txt'
+    $tempDir = [System.IO.Path]::GetTempPath()
+    $cookieJar = Join-Path $tempDir 'KVRT.cookies.txt'
     $browserUa = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
     $curlExe = if ($env:OS -eq 'Windows_NT') { 'curl.exe' } else { 'curl' }
-    $tmp = Join-Path $env:TEMP ("kvrt-{0}.xml" -f [guid]::NewGuid().ToString('N'))
+    $tmp = Join-Path $tempDir ("kvrt-{0}.xml" -f [guid]::NewGuid().ToString('N'))
     $script:LastHttpStatus = & $curlExe -sL --silent --show-error --max-time $TimeoutSeconds -A $browserUa -c $cookieJar -b $cookieJar --write-out '%{http_code}' --output $tmp $Url 2>$null
     $body = $null
     if ($LASTEXITCODE -eq 0 -and (Test-Path $tmp)) {
