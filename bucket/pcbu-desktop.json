@@ -1,0 +1,49 @@
+{
+    "version": "3.3.4",
+    "description": "Unlock your PC with your Android phone using fingerprint or face confirmation",
+    "homepage": "https://github.com/MeisApps/pcbu-desktop",
+    "license": "GPL-3.0",
+    "notes": "The app requires administrator privileges and shows a UAC prompt on every launch: it manages the Windows login component (win-pcbiounlock.dll in System32). VC++ runtime is installed via the 'vcredist' dependency.",
+    "depends": "vcredist",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v3.3.4/PCBioUnlock-Setup-x64.exe",
+            "hash": "sha256:ec51c3bc347ea4cf4c3d08d51d7570054048350b3e05fe68ce91dc9cec8e1677",
+            "pre_install": [
+                "Expand-InnoArchive \"$dir\\PCBioUnlock-Setup-x64.exe\" \"$dir\" -Removal",
+                "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
+            ]
+        },
+        "arm64": {
+            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v3.3.4/PCBioUnlock-Setup-arm64.exe",
+            "hash": "sha256:2cc85670f66092da193cbab82b07e62f4268025b3b8143c5fce42fd10ca811c2",
+            "pre_install": [
+                "Expand-InnoArchive \"$dir\\PCBioUnlock-Setup-arm64.exe\" \"$dir\" -Removal",
+                "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
+            ]
+        }
+    },
+    "bin": "pcbu_desktop.exe",
+    "shortcuts": [
+        [
+            "pcbu_desktop.exe",
+            "PC Bio Unlock"
+        ]
+    ],
+    "checkver": {
+        "github": "https://github.com/MeisApps/pcbu-desktop"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v$version/PCBioUnlock-Setup-x64.exe"
+            },
+            "arm64": {
+                "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v$version/PCBioUnlock-Setup-arm64.exe"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
