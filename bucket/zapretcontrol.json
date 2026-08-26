@@ -1,12 +1,12 @@
 {
-    "version": "1.6.1",
+    "version": "1.6.2",
     "description": "GUI for Zapret. Анти-DPI для Windows.",
     "homepage": "https://github.com/Virenbar/ZapretControl",
     "license": "MIT",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/Virenbar/ZapretControl/releases/download/v1.6.1/ZapretControl-8.0.zip",
-            "hash": "c6e7c1729262f4c58b22a1f94b05c0d0f6521c0d4ed92a9c66d85066b888a9d8",
+            "url": "https://github.com/Virenbar/ZapretControl/releases/download/v1.6.2/ZapretControl-8.0.zip",
+            "hash": "8a714ae0a48479afafcb0ad3af960dc0fba8d07ccbd1f48bcde4eb5ca049c2ab",
             "pre_install": "if (!(Test-Path \"$persist_dir\\Config.xml\")) { New-Item \"$dir\\Config.xml\" -ItemType File | Out-Null }"
         }
     },
