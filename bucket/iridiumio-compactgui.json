@@ -1,10 +1,10 @@
 {
-    "version": "4.0.0-beta.9",
+    "version": "4.0.0-beta.10",
     "description": "Compress unused files and folders in your drive to save space using Windows 10+ compact.exe",
     "homepage": "https://github.com/IridiumIO/CompactGUI",
     "license": "MIT",
-    "url": "https://github.com/IridiumIO/CompactGUI/releases/download/v4.0.0-beta.9/CompactGUI.exe",
-    "hash": "43141ee25b392eca42cccd2a3b89627b122b709d1c769706e08ef9ac41560fb9",
+    "url": "https://github.com/IridiumIO/CompactGUI/releases/download/v4.0.0-beta.10/CompactGUI.exe",
+    "hash": "f490bd29aab36a4e8fe222d284fc6ea0ea53533b13416d2ac8be3d756f96c6e0",
     "suggest": {
         ".NET 9 Runtime": "windowsdesktop-runtime"
     },
