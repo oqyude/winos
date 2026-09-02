@@ -7,7 +7,7 @@
       "archived": false,
       "enabled": true,
       "from": "$persist\\$name",
-      "to": "$env:APPDATA\\$name",
+      "to": "$env:USERPROFILE\\scoop\\persist\\aimp\\Profile",
       "mappings": [
         {
           "from": "AudioLibrary",
