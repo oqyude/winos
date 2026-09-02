@@ -1,29 +1,37 @@
 {
-    "version": "2025.09.30",
-    "description": "A cross-platform GUI wrapper for yt-dlp written in PySide6",
-    "homepage": "https://github.com/dsymbol/yt-dlp-gui",
-    "license": "Unlicense",
+    "version": "0.7.0",
+    "description": "A modern cross-platform GUI for yt-dlp built with Tauri and Vue",
+    "homepage": "https://github.com/imsyy/yt-dlp-gui",
+    "license": "MIT",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/dsymbol/yt-dlp-gui/releases/download/2025.09.30/yt-dlp-gui-win64.zip",
-            "hash": "ac0d5ed0e754bb2dfd82db7c7a3f49499a0740cb2ef76e5218fc851e5f5ed619"
+            "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v0.7.0/YDL.GUI_0.7.0_x64_en-US.msi",
+            "hash": "sha256:8427f2aacddab7d7dcbfb829af10aede333ce676ff848730033fd475da8cd4f1"
+        },
+        "arm64": {
+            "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v0.7.0/YDL.GUI_0.7.0_arm64_en-US.msi",
+            "hash": "sha256:220daa099c3f5bf72144bd6132931bf07f16b4a5bd0824a5131beb0ab2187612"
         }
     },
-    "extract_dir": "yt-dlp-gui",
+    "extract_dir": "PFiles/YDL GUI",
     "bin": "yt-dlp-gui.exe",
     "shortcuts": [
         [
             "yt-dlp-gui.exe",
-            "yt-dlp-gui"
+            "YDL GUI"
         ]
     ],
     "checkver": {
-        "github": "https://github.com/dsymbol/yt-dlp-gui"
+        "github": "https://github.com/imsyy/yt-dlp-gui",
+        "regex": "v([\\d.]+)"
     },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/dsymbol/yt-dlp-gui/releases/download/$version/yt-dlp-gui-win64.zip"
+                "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v$version/YDL.GUI_$version_x64_en-US.msi"
+            },
+            "arm64": {
+                "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v$version/YDL.GUI_$version_arm64_en-US.msi"
             }
         },
         "hash": {

@@ -1,0 +1,33 @@
+{
+    "version": "2025.09.30",
+    "description": "A cross-platform GUI wrapper for yt-dlp written in PySide6 (LEGACY — superseded by the 'yt-dlp-gui' package from imsyy/yt-dlp-gui)",
+    "homepage": "https://github.com/dsymbol/yt-dlp-gui",
+    "license": "Unlicense",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/dsymbol/yt-dlp-gui/releases/download/2025.09.30/yt-dlp-gui-win64.zip",
+            "hash": "ac0d5ed0e754bb2dfd82db7c7a3f49499a0740cb2ef76e5218fc851e5f5ed619"
+        }
+    },
+    "extract_dir": "yt-dlp-gui",
+    "bin": "yt-dlp-gui.exe",
+    "shortcuts": [
+        [
+            "yt-dlp-gui.exe",
+            "yt-dlp-gui"
+        ]
+    ],
+    "checkver": {
+        "github": "https://github.com/dsymbol/yt-dlp-gui"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/dsymbol/yt-dlp-gui/releases/download/$version/yt-dlp-gui-win64.zip"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
