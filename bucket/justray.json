@@ -1,0 +1,42 @@
+{
+    "version": "1.2.1",
+    "description": "A modern VPN client that lives in your terminal",
+    "homepage": "https://github.com/luynrs/justray",
+    "license": "GPL-3.0",
+    "notes": [
+        "Use 'jray' to open the TUI.",
+        "Use 'jray up <node> [--tun | --proxy]' to start the daemon.",
+        "Use 'jray down' to disconnect."
+    ],
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/luynrs/justray/releases/download/v1.2.1/justray_1.2.1_windows_amd64.zip",
+            "hash": "sha256:a44dbb8d70d5ee1082cce3e43668008d9119ddfd498f97c0f89db093737effbd"
+        },
+        "arm64": {
+            "url": "https://github.com/luynrs/justray/releases/download/v1.2.1/justray_1.2.1_windows_arm64.zip",
+            "hash": "sha256:1476145bf186dcd1ceb590d16da6a61d0c87dde705b5341bd40d031becd4ebfc"
+        }
+    },
+    "bin": [
+        "justray.exe",
+        ["justray.exe", "jray"],
+        "justrayd.exe"
+    ],
+    "checkver": {
+        "github": "https://github.com/luynrs/justray"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/luynrs/justray/releases/download/v$version/justray_$version_windows_amd64.zip"
+            },
+            "arm64": {
+                "url": "https://github.com/luynrs/justray/releases/download/v$version/justray_$version_windows_arm64.zip"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
