@@ -1,16 +1,16 @@
 {
-    "version": "0.7.0",
+    "version": "0.8.0",
     "description": "A modern cross-platform GUI for yt-dlp built with Tauri and Vue",
     "homepage": "https://github.com/imsyy/yt-dlp-gui",
     "license": "MIT",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v0.7.0/YDL.GUI_0.7.0_x64_en-US.msi",
-            "hash": "sha256:8427f2aacddab7d7dcbfb829af10aede333ce676ff848730033fd475da8cd4f1"
+            "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v0.8.0/YDL.GUI_0.8.0_x64_en-US.msi",
+            "hash": "e9e1f88c3e25780c30b6bcececd56f3294e7911f134d4745d19e7c26c337ecfe"
         },
         "arm64": {
-            "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v0.7.0/YDL.GUI_0.7.0_arm64_en-US.msi",
-            "hash": "sha256:220daa099c3f5bf72144bd6132931bf07f16b4a5bd0824a5131beb0ab2187612"
+            "url": "https://github.com/imsyy/yt-dlp-gui/releases/download/v0.8.0/YDL.GUI_0.8.0_arm64_en-US.msi",
+            "hash": "85b9afee44b4fa5dd74adaf0b57e5c2fc22447d8cc6cb6fd4b20e78f7c61ff6d"
         }
     },
     "extract_dir": "PFiles/YDL GUI",
