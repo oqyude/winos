@@ -1,16 +1,16 @@
 {
-    "version": "15.11",
+    "version": "15.12",
     "description": "Tasks.org — open-source task manager (formerly Astrid Tasks). Syncs with CalDAV, Google Tasks, and more.",
     "homepage": "https://tasks.org",
     "license": "GPL-3.0",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/tasks/tasks/releases/download/15.11/tasks-org-15.11-windows-amd64.zip",
-            "hash": "164bf1af6577928bf5b8e5049cc119cd995b500544eb28ace62f89cc341e5ebb"
+            "url": "https://github.com/tasks/tasks/releases/download/15.12/tasks-org-15.12-windows-amd64.zip",
+            "hash": "6fffbb75ad1bd84a24ab1af470faba3a3d0c99bf9b68214de09e5e4b7e7923bc"
         },
         "arm64": {
-            "url": "https://github.com/tasks/tasks/releases/download/15.11/tasks-org-15.11-windows-aarch64.zip",
-            "hash": "2b3f3542fe26085d110ada1f6c29d90d7c48d9f15101392c824bbba02fe87fee"
+            "url": "https://github.com/tasks/tasks/releases/download/15.12/tasks-org-15.12-windows-aarch64.zip",
+            "hash": "28a4c7b252d63d0b49e4b6a2fe40446df73cc683c0ef727df0e764a00a6031b8"
         }
     },
     "bin": "bin/Tasks.org.exe",
