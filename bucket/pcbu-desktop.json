@@ -1,24 +1,24 @@
 {
-    "version": "3.3.4",
-    "description": "Unlock your PC with your Android phone using fingerprint or face confirmation",
+    "version": "4.0.0",
+    "description": "PulseUnlock: unlock your PC with your Android phone using fingerprint or face confirmation",
     "homepage": "https://github.com/MeisApps/pcbu-desktop",
     "license": "GPL-3.0",
-    "notes": "The app requires administrator privileges and shows a UAC prompt on every launch: it manages the Windows login component (win-pcbiounlock.dll in System32). VC++ runtime is installed via the 'vcredist' dependency.",
+    "notes": "PulseUnlock (formerly PC Bio Unlock) requires administrator privileges and shows a UAC prompt on every launch: it manages the Windows login component (win_pulseunlock.dll in System32). VC++ runtime is installed via the 'vcredist' dependency.",
     "depends": "vcredist",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v3.3.4/PCBioUnlock-Setup-x64.exe",
-            "hash": "sha256:ec51c3bc347ea4cf4c3d08d51d7570054048350b3e05fe68ce91dc9cec8e1677",
+            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v4.0.0/PulseUnlock-Setup-x64.exe",
+            "hash": "sha256:efcc08cab3605cb41f84c2777285d748100292ec39fed3a7bb9af5026335785b",
             "pre_install": [
-                "Expand-InnoArchive \"$dir\\PCBioUnlock-Setup-x64.exe\" \"$dir\" -Removal",
+                "Expand-InnoArchive \"$dir\\PulseUnlock-Setup-x64.exe\" \"$dir\" -Removal",
                 "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
             ]
         },
         "arm64": {
-            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v3.3.4/PCBioUnlock-Setup-arm64.exe",
-            "hash": "sha256:2cc85670f66092da193cbab82b07e62f4268025b3b8143c5fce42fd10ca811c2",
+            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v4.0.0/PulseUnlock-Setup-arm64.exe",
+            "hash": "sha256:9b56b971914536f91ca21b94d721bc7dacf115db1715a24bfad2fc4f33da1329",
             "pre_install": [
-                "Expand-InnoArchive \"$dir\\PCBioUnlock-Setup-arm64.exe\" \"$dir\" -Removal",
+                "Expand-InnoArchive \"$dir\\PulseUnlock-Setup-arm64.exe\" \"$dir\" -Removal",
                 "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
             ]
         }
@@ -27,7 +27,7 @@
     "shortcuts": [
         [
             "pcbu_desktop.exe",
-            "PC Bio Unlock"
+            "PulseUnlock"
         ]
     ],
     "checkver": {
@@ -36,10 +36,10 @@
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v$version/PCBioUnlock-Setup-x64.exe"
+                "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v$version/PulseUnlock-Setup-x64.exe"
             },
             "arm64": {
-                "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v$version/PCBioUnlock-Setup-arm64.exe"
+                "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v$version/PulseUnlock-Setup-arm64.exe"
             }
         },
         "hash": {
