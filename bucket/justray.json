@@ -1,5 +1,5 @@
 {
-    "version": "1.6.5",
+    "version": "1.6.6",
     "description": "A modern VPN client that lives in your terminal",
     "homepage": "https://github.com/luynrs/justray",
     "license": "GPL-3.0",
@@ -10,12 +10,12 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://github.com/luynrs/justray/releases/download/v1.6.5/justray_1.6.5_windows_amd64.zip",
-            "hash": "2c5a045e76c8910105c785db9adef9601fed54729ad9fd49b6363f9ff0ebd51d"
+            "url": "https://github.com/luynrs/justray/releases/download/v1.6.6/justray_1.6.6_windows_amd64.zip",
+            "hash": "8880803aadbb0e3b93f9cead9d42953d9b670ba40d63726a3c13421e6f32c38e"
         },
         "arm64": {
-            "url": "https://github.com/luynrs/justray/releases/download/v1.6.5/justray_1.6.5_windows_arm64.zip",
-            "hash": "e18fdf4247d4a9a0554ecae60a81c237590c5c738433ddd6d280d2f2a4808fe6"
+            "url": "https://github.com/luynrs/justray/releases/download/v1.6.6/justray_1.6.6_windows_arm64.zip",
+            "hash": "e5599ff883a95b9a9a4332ea64f25aecd66c4a3da6f059cc1af431655cb4c51b"
         }
     },
     "bin": [
