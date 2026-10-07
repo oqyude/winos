@@ -1,5 +1,5 @@
 {
-    "version": "4.0.0",
+    "version": "4.1.0",
     "description": "PulseUnlock: unlock your PC with your Android phone using fingerprint or face confirmation",
     "homepage": "https://github.com/MeisApps/pcbu-desktop",
     "license": "GPL-3.0",
@@ -7,16 +7,16 @@
     "depends": "vcredist",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v4.0.0/PulseUnlock-Setup-x64.exe",
-            "hash": "sha256:efcc08cab3605cb41f84c2777285d748100292ec39fed3a7bb9af5026335785b",
+            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v4.1.0/PulseUnlock-Setup-x64.exe",
+            "hash": "8dd13fd25981da092f9b56409009257230b3f69cdca546d90b98a03e462bbdfb",
             "pre_install": [
                 "Expand-InnoArchive \"$dir\\PulseUnlock-Setup-x64.exe\" \"$dir\" -Removal",
                 "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
             ]
         },
         "arm64": {
-            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v4.0.0/PulseUnlock-Setup-arm64.exe",
-            "hash": "sha256:9b56b971914536f91ca21b94d721bc7dacf115db1715a24bfad2fc4f33da1329",
+            "url": "https://github.com/MeisApps/pcbu-desktop/releases/download/v4.1.0/PulseUnlock-Setup-arm64.exe",
+            "hash": "0a615c3566e1deab45aa2ced6c9859b2767f3fe38f9283929265e5e7cabba4e9",
             "pre_install": [
                 "Expand-InnoArchive \"$dir\\PulseUnlock-Setup-arm64.exe\" \"$dir\" -Removal",
                 "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
