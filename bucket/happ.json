@@ -1,20 +1,20 @@
 {
-    "version": "4.5.3",
+    "version": "4.5.4",
     "description": "Proxy server manager powered by Xray core",
     "homepage": "https://github.com/Happ-proxy/happ-desktop",
     "license": "Freeware",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/Happ-proxy/happ-desktop/releases/download/4.5.3/setup-Happ.x64.exe",
-            "hash": "1456be0388361eb9a40cec229660afe5f8648d0cedf2e2beef060b444ac82679",
+            "url": "https://github.com/Happ-proxy/happ-desktop/releases/download/4.5.4/setup-Happ.x64.exe",
+            "hash": "de5674b27c3cb196690f1a9d4b268a03ab15f99fb858e6b76b9020561805b3cb",
             "pre_install": [
                 "Expand-InnoArchive \"$dir\\setup-Happ.x64.exe\" \"$dir\" -Removal",
                 "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
             ]
         },
         "arm64": {
-            "url": "https://github.com/Happ-proxy/happ-desktop/releases/download/4.5.3/setup-Happ.arm64.exe",
-            "hash": "6cbb1c3abfad034b6aa9555246171c1e967fa17d5a0d86de367b956869f0b973",
+            "url": "https://github.com/Happ-proxy/happ-desktop/releases/download/4.5.4/setup-Happ.arm64.exe",
+            "hash": "25eca198c602571484bcf6529093b5b3e634e678c3f242d97bcaeb1db000a332",
             "pre_install": [
                 "Expand-InnoArchive \"$dir\\setup-Happ.arm64.exe\" \"$dir\" -Removal",
                 "if (Test-Path \"$dir\\{app}\") { Move-Item \"$dir\\{app}\\*\" \"$dir\" -Force; Remove-Item \"$dir\\{app}\" -Recurse -Force }"
