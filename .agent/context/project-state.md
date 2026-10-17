@@ -13,8 +13,8 @@
 | Type | existing |
 | Language | PowerShell 7 |
 | Entry point | `main.ps1` (CLI + интерактив) |
-| Branch | `merge-powerlinks` (за `master`, 0 ahead/behind коммитов в `master`, 4 коммита ahead на ветке) |
-| Last commits | `36a744a` test: plugin suite + menu tests; `748ac17` feat(plugins): merge powerlinks; `f8ac12b` ci: gate lint/test; `6664dda` chore(metaagent): v3.0.0 |
+| Branch | `dev` (5 ahead of `master`; `merge-powerlinks` сохранён как marker-ветка для ревью) |
+| Last commits | `783b79f` docs(merge): meta-state refresh; `36a744a` test: plugin suite + menu tests; `748ac17` feat(plugins): merge powerlinks; `f8ac12b` ci: gate lint/test; `6664dda` chore(metaagent): v3.0.0 |
 | Current session | Слияние powerlinks в winos (`e41df406-4a8b-45b2-a38d-efd3c78f1859`) |
 
 ## Architecture
