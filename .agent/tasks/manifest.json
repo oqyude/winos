@@ -387,6 +387,28 @@
       ],
       "context": "РЕШЕНИЕ ПО УДАЛЕНИЮ ПРИНЯТО ВЛАДЕЛЬЦЕМ (2026-10-17). Критерии зелёные -- тесты 232/232, линт 0, audit orphans 0 и blocking 0, инструменты на месте, документация перенесена.\n\nФИЗИЧЕСКОЕ УДАЛЕНИЕ ВЛАДЕЛЕЦ ДЕЛАЕТ РУКАМИ ПОСЛЕ РЕВЬЮ изменений с ветки merge-powerlinks (или diff merge-powerlinks..dev) на dev. S:\\Git\\powerlinks будет удалён/архивирован самим владельцем; winos никаких действий в S:\\Git\\powerlinks не предпринимает. Эта задача остаётся pending до фактического удаления.\n\nПОСЛЕ УДАЛЕНИЯ: убрать из project-rules.md строку 'Изменения в S:\\Git\\powerlinks во время слияния не делать -- он источник для W1, коммит 9c1f8a3' (правило устареет). Решение -- следующий проход по правилам.\n\nКОСМЕТИКА, ОСТАВШАЯСЯ ПОСЛЕ СЛИЯНИЯ: имя powerlinks в комментариях перенесённого кода, в путях временных каталогов тестов и в баннере 'powerlinks :: <verb>' в plugin-manager.ps1. Ничего не ломает, баннер 'powerlinks ::' будет переименован в 'Plugin Deployment ::' как часть финального W-прохода.",
       "status": "pending"
+    },
+    {
+      "id": "W14",
+      "title": "NeuralNote: portable manifest по анализу из S:\\Git\\work",
+      "type": "feature",
+      "origin": "user:direct",
+      "files": [
+        "docs/neural-note-portable-plan.md",
+        "docs/neural-note-portable-symlinks-report.md",
+        "manifests/NeuralNote.json",
+        "state/powerlinks.json"
+      ],
+      "depends_on": [],
+      "acceptance_criteria": [
+        "manifests/NeuralNote.json создан по образцу manifests/FabFilter - Total Bundle.json",
+        "from-пути ведут на S:\\Plugins\\NeuralNote, to-пути на C:\\Program Files (для Standalone) и C:\\Program Files\\Common Files\\VST3 (для VST3 bundle)",
+        "Plugin Deployment: plan для NeuralNote даёт ожидаемые ссылки без ошибок",
+        "audit-plugins.ps1: blocking 0, orphans 0",
+        "Полный набор тестов зелёный"
+      ],
+      "context": "ВНЕШНИЙ ИСТОЧНИК. Два отчёта агента в S:\\Git\\work/output (отдельный репозиторий, не winos):\n\n- docs/neural-note-portable-plan.md — общие данные о NeuralNote v2.1.0 (Apache-2.0 код, CC BY-NC 4.0 веса — коммерческое использование ЗАПРЕЩЕНО), состав инсталлятора Inno Setup, куда он пишет файлы, почему %APPDATA%\\NeuralNote\\ делят Standalone и VST3.\n- docs/neural-note-portable-symlinks-report.md — точная раскладка S:\\Plugins\\NeuralNote\\ и готовые junction-схемы для манифеста: VST3 bundle (минимальный набор), Standalone (отдельно), модели (отдельно, опционально).\n\nЛИЦЕНЗИОННАЯ ОСОБЕННОСТЬ. Веса MuScriptor под CC BY-NC 4.0. Это критично для portable-сборки: в коммерческом контексте (студия звукозаписи) использовать нельзя. Манифест это не меняет -- winos не лицензирует, лицензирует выбранный плагин; но owner должен знать, что adopting NeuralNote без проверки лицензии для коммерческого использования недопустим. Конкретное предупреждение добавить в манифест.\n\nВРЕМЕННОЕ ХРАНИЛИЩЕ. docs/neural-note-portable-*.md — work-in-progress: после создания manifests/NeuralNote.json они удаляются (по решению владельца). Это фиксируется здесь, чтобы случайный поиск не оставил их как постоянную документацию.\n\nЧТО НЕ ВХОДИТ В W14.\n1. Самой записи в state/powerlinks.json (allowlist) — это действие owner'а через adopt, не автоматическое.\n2. Загрузка файлов плагина в S:\\Plugins\\NeuralNote — это copy-операция, не задача кода.\n3. Решение по лицензии NC для коммерческого использования — owner decision, не агентский.",
+      "status": "pending"
     }
   ]
 }

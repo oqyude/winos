@@ -26,6 +26,7 @@
 | **W11** | Перенос оставшихся скриптов `powerlinks` | ✅ completed (`748ac17`) |
 | **W12** | Перенос документации + ADR | ✅ completed (`783b79f`) |
 | **W13** | Архивирование `S:\Git\powerlinks` | ⏳ pending (владелец удалит руками после ревью) |
+| **W14** | NeuralNote: portable manifest по анализу из `S:\Git\work` | ⏳ pending (создать `manifests/NeuralNote.json`; отчёты в `docs/` временные) |
 
 ## Зависимости
 
