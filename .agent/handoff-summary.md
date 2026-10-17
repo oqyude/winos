@@ -25,7 +25,8 @@
 | **W7** | Объединение двух `State.ps1` | ✅ `748ac17` |
 | **W8** | Линтерная политика powerlinks | ✅ `f8ac12b` |
 | **W9** | Потеряна работа в `.temp/new-features` | ⏸ **ждёт владельца** |
-| W10 | Автозапуск herdr по образцу opencode-serve | ⏸ |
+| W10 | Автозапуск herdr по образцу opencode-serve | ✅ `57276a1` |
+| W14 | Косметика: баннер `powerlinks ::` → `Plugin Deployment ::` | ✅ `57276a1` (в том же коммите) |
 | W11 | Перенос оставшихся скриптов powerlinks | ✅ `748ac17` |
 | W12 | Документация + ADR | ✅ (commits `6664dda`/`748ac17`/`36a744a`, ADR в `.agent/decisions/0001`) |
 | W13 | Архивирование `S:\Git\powerlinks` | ⏸ критерии зелёные, ждёт владельца |

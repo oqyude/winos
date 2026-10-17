@@ -22,7 +22,7 @@
 | **W7** | Объединение двух `State.ps1` | ✅ completed (`748ac17`) |
 | **W8** | Линтерная политика объединённого репо | ✅ completed (`f8ac12b`) |
 | **W9** | Потеря `.temp/new-features` | ✅ completed (резолюция: утрата; восстановление не нужно) |
-| **W10** | Модуль `herdr-serve` | ⏳ in progress |
+| **W10** | Модуль `herdr-serve` | ✅ completed (`57276a1`) |
 | **W11** | Перенос оставшихся скриптов `powerlinks` | ✅ completed (`748ac17`) |
 | **W12** | Перенос документации + ADR | ✅ completed (`783b79f`) |
 | **W13** | Архивирование `S:\Git\powerlinks` | ⏳ pending (владелец удалит руками после ревью) |
