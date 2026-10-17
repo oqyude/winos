@@ -7,8 +7,8 @@ Describe "vars.ps1 loads" {
         $modules | Should -Not -BeNullOrEmpty
     }
 
-    It "has 4 module entries" {
-        $modules.Count | Should -Be 4
+    It "has 5 module entries" {
+        $modules.Count | Should -Be 5
     }
 
     It "contains Config Persistence" {
@@ -26,12 +26,19 @@ Describe "vars.ps1 loads" {
         $modules.Keys | Should -Not -Contain "Plugin Manager"
     }
 
-    It "gives every flat module an Alias, and no Alias to Service Manager" {
-        foreach ($name in @("Config Persistence", "Plugin Deployment", "Essentials")) {
+    It "gives every flat module an Alias (no menu-only entries left)" {
+        # After W10 (herdr-serve), every registered module carries its own Alias:
+        # the menu, the direct CLI grammar and the `service <name> <action>` two-level
+        # grammar all derive their routing from the same Alias field. A module
+        # without one would only be reachable through one of the three surfaces,
+        # silently dropping it from the others.
+        foreach ($name in $modules.Keys) {
             $modules[$name].ContainsKey("Alias") | Should -Be $true -Because "$name is CLI-reachable"
         }
-        # Service Manager is reached through `service <name> <action>` only.
-        $modules["Service Manager"].ContainsKey("Alias") | Should -Be $false
+        # Sanity: the legacy 'Service Manager' placeholder (a single entry that
+        # pointed at opencode-serve.ps1 and had no Alias of its own) is gone --
+        # its job is split between opencode-serve and herdr-serve, each with one.
+        $modules.ContainsKey("Service Manager") | Should -Be $false
     }
 
     It "registers Plugin Deployment with all seven verbs" {

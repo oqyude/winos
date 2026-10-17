@@ -59,6 +59,7 @@ Describe "main.ps1 entry point" {
         $script:PluginStub = Join-Path $TestDrive "plugin-manager.ps1"
         $script:EssentialsStub = Join-Path $TestDrive "essentials.ps1"
         $script:OpenCodeServeStub = Join-Path $TestDrive "opencode-serve.ps1"
+        $script:HerdrServeStub = Join-Path $TestDrive "herdr-serve.ps1"
         $script:BootstrapScript = Join-Path $TestDrive "invoke-main.ps1"
 
         @'
@@ -85,6 +86,11 @@ param([string]$action)
 Add-Content -LiteralPath $env:WINOS_MAIN_TEST_LOG -Value "OpenCode Serve|$action"
 '@ | Set-Content -LiteralPath $script:OpenCodeServeStub -Encoding utf8
 
+        @'
+param([string]$action)
+Add-Content -LiteralPath $env:WINOS_MAIN_TEST_LOG -Value "Herdr Serve|$action"
+'@ | Set-Content -LiteralPath $script:HerdrServeStub -Encoding utf8
+
         $mainPath = $script:MainScript.Replace("'", "''")
         $varsPath = (Join-Path (Split-Path -Parent $script:MainScript) "src/vars.ps1").Replace("'", "''")
         $logPath = $script:InvocationLog.Replace("'", "''")
@@ -92,6 +98,7 @@ Add-Content -LiteralPath $env:WINOS_MAIN_TEST_LOG -Value "OpenCode Serve|$action
         $pluginPath = $script:PluginStub.Replace("'", "''")
         $essentialsPath = $script:EssentialsStub.Replace("'", "''")
         $openCodeServePath = $script:OpenCodeServeStub.Replace("'", "''")
+        $herdrServePath = $script:HerdrServeStub.Replace("'", "''")
 
         @"
 `$forwardArguments = @(`$args)
@@ -118,11 +125,19 @@ Add-Content -LiteralPath $env:WINOS_MAIN_TEST_LOG -Value "OpenCode Serve|$action
         Destructive = @("uninstall")
         Description = "Essentials"
     }
-    "Service Manager" = @{
+    "opencode-serve" = @{
+        Alias       = "opencode-serve"
         Path        = '$openCodeServePath'
         Actions     = @("setup", "remove", "status", "start", "stop")
         Destructive = @("remove")
         Description = "OpenCode service"
+    }
+    "herdr-serve" = @{
+        Alias       = "herdr-serve"
+        Path        = '$herdrServePath'
+        Actions     = @("setup", "remove", "status", "start", "stop")
+        Destructive = @("remove")
+        Description = "Herdr service"
     }
 }
 
@@ -218,10 +233,10 @@ try {
         $result.Output | Should -Match "Invalid action"
     }
 
-    It "keeps Service Manager out of the flat module namespace" {
-        # Service Manager carries no Alias in the registry, so the two-level
-        # `service <name> <action>` grammar stays the only way in. If it were
-        # reachable as a flat module, the alias->name mapping would be skipped.
+    It "keeps the flat module namespace Aligned with $modules.Alias" {
+        # Every entry that carries an Alias is reachable as `winos <alias> <action>`;
+        # anything else (a typo, a previous-leak like the old 'service-manager' alias)
+        # must come back as 'Unknown module' rather than silently fall through.
         $result = Invoke-MainUnderTest -CliArguments @("service-manager", "setup")
 
         $result.ExitCode | Should -Be 1
@@ -313,8 +328,9 @@ try {
     }
 
     # --- interactive menu -----------------------------------------------------
-    # Module order is Sort-Object on the display names, so:
-    #   1 Config Persistence | 2 Essentials | 3 Plugin Deployment | 4 Service Manager
+    # Module order is Sort-Object on the display names, which under en-US puts
+    # lowercase service entries between the uppercase multi-word ones:
+    #   1 Config Persistence | 2 Essentials | 3 herdr-serve | 4 opencode-serve | 5 Plugin Deployment
     # Plugin Deployment verbs: 1 plan, 2 apply, 3 revert, 4 snapshot, 5 status,
     #                          6 adopt, 7 verify.  Destructive: revert, adopt.
 
@@ -342,8 +358,9 @@ try {
     }
 
     It "refuses to run a destructive verb when confirmation is declined" {
-        # revert is the third Plugin Deployment verb. Both answers are "n".
-        $result = Invoke-MainUnderTest -MenuInput @("3", "3", "n", "n")
+        # revert is the third Plugin Deployment verb (5th module, see ordering note above).
+        # Both answers are "n".
+        $result = Invoke-MainUnderTest -MenuInput @("5", "3", "n", "n")
 
         $result.ExitCode | Should -Be 0
         Get-InvocationLog | Should -BeNullOrEmpty
@@ -351,7 +368,7 @@ try {
     }
 
     It "runs a destructive verb as a preview when the user asks for -WhatIf" {
-        $result = Invoke-MainUnderTest -MenuInput @("3", "3", "y")
+        $result = Invoke-MainUnderTest -MenuInput @("5", "3", "y")
 
         $result.ExitCode | Should -Be 0
         Get-InvocationLog | Should -Be @("Plugin Deployment|revert")
@@ -364,7 +381,7 @@ try {
         try {
             # apply is not destructive, so it runs straight through and the stub
             # exits 1 on the way out.
-            $result = Invoke-MainUnderTest -MenuInput @("3", "2")
+            $result = Invoke-MainUnderTest -MenuInput @("5", "2")
 
             $result.ExitCode | Should -Be 0
             $result.Output | Should -Match "exit code 1"
@@ -375,7 +392,7 @@ try {
 
     It "re-prompts when a confirmation is answered with something other than y or n" {
         # Garbage must not be read as consent. Empty input is also not consent.
-        $result = Invoke-MainUnderTest -MenuInput @("3", "3", "maybe", "", "n", "n")
+        $result = Invoke-MainUnderTest -MenuInput @("5", "3", "maybe", "", "n", "n")
 
         $result.ExitCode | Should -Be 0
         Get-InvocationLog | Should -BeNullOrEmpty

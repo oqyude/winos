@@ -44,12 +44,16 @@ if ($Version -or $Module -eq '--version') { Write-Output "winos v0.1.2"; exit 0 
 # CLI mode
 if ($Module) {
     # --- Service routing: winos service <name> <action> ---
+    #
+    # Backwards-compatible wrapper around the flat module grammar. serviceKey
+    # is the registry key whose Alias matches $Name; the alias->module map is
+    # declared inline here rather than in $modules so a future two-level
+    # grammar (read: nested service definitions) stays easy to add without
+    # touching the module registry.
     if ($Module -eq "service") {
         $serviceAliases = @{
-            "opencode-serve" = "Service Manager"
-        }
-        $validServiceActions = @{
-            "Service Manager" = @("setup", "remove", "status", "start", "stop")
+            "opencode-serve" = "opencode-serve"
+            "herdr-serve"    = "herdr-serve"
         }
 
         $serviceKey = $serviceAliases[$Name]
@@ -58,11 +62,11 @@ if ($Module) {
             exit 1
         }
         if (-not $SubAction) {
-            Write-Error "Service '$Name' requires an action: $($validServiceActions[$serviceKey] -join ', ')"
+            Write-Error "Service '$Name' requires an action: $($modules[$serviceKey].Actions -join ', ')"
             exit 1
         }
-        if ($validServiceActions[$serviceKey] -notcontains $SubAction) {
-            Write-Error "Invalid action '$SubAction' for service '$Name'. Valid: $($validServiceActions[$serviceKey] -join ', ')"
+        if ($modules[$serviceKey].Actions -notcontains $SubAction) {
+            Write-Error "Invalid action '$SubAction' for service '$Name'. Valid: $($modules[$serviceKey].Actions -join ', ')"
             exit 1
         }
         & $modules[$serviceKey].Path $SubAction -Force:$Force

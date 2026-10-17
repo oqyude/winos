@@ -19,6 +19,7 @@ $symlinkManagerModule = "$PSScriptRoot\modules\symlink-manager.ps1"
 $essentialsModule     = "$PSScriptRoot\modules\essentials.ps1"
 $opencodeServeModule  = "$PSScriptRoot\modules\opencode-serve.ps1"
 $pluginManagerModule  = "$PSScriptRoot\modules\plugins\plugin-manager.ps1"
+$herdrServeModule     = "$PSScriptRoot\modules\herdr-serve.ps1"
 
 $modules = @{
     "Config Persistence" = @{
@@ -42,11 +43,19 @@ $modules = @{
         Destructive = @("uninstall")
         Description = "Cursor themes"
     }
-    "Service Manager" = @{
+    "opencode-serve" = @{
+        Alias       = "opencode-serve"
         Path        = $opencodeServeModule
         Actions     = @("setup", "remove", "status", "start", "stop")
         Destructive = @("remove")
-        Description = "opencode serve service manager"
+        Description = "Scheduled-task lifecycle for `opencode serve` on logon"
+    }
+    "herdr-serve" = @{
+        Alias       = "herdr-serve"
+        Path        = $herdrServeModule
+        Actions     = @("setup", "remove", "status", "start", "stop")
+        Destructive = @("remove")
+        Description = "Scheduled-task lifecycle for `herdr server` on logon"
     }
 }
 
