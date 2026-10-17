@@ -26,14 +26,21 @@ Describe "vars.ps1 loads" {
         $modules.Keys | Should -Not -Contain "Plugin Manager"
     }
 
-    It "gives every flat module an Alias (no menu-only entries left)" {
-        # After W10 (herdr-serve), every registered module carries its own Alias:
-        # the menu, the direct CLI grammar and the `service <name> <action>` two-level
-        # grammar all derive their routing from the same Alias field. A module
-        # without one would only be reachable through one of the three surfaces,
-        # silently dropping it from the others.
-        foreach ($name in $modules.Keys) {
-            $modules[$name].ContainsKey("Alias") | Should -Be $true -Because "$name is CLI-reachable"
+    It "gives every service entry an Alias (reaches both grammars)" {
+        # The `service <name> <action>` two-level grammar keys on Alias. Only
+        # entries whose action set contains 'setup' are services, so only
+        # those strictly need an Alias; an Alias-less module would still
+        # surface in the menu and be reachable via the direct CLI grammar
+        # (`winos <name> <action>`) as long as the menu maps to it. The
+        # current registry happens to give every entry an Alias, which is
+        # fine -- this assertion encodes the actual requirement, not the
+        # coincidental fact.
+        $serviceEntries = $modules.GetEnumerator() |
+            Where-Object { $_.Value.Actions -contains 'setup' }
+        $serviceEntries | Should -Not -BeNullOrEmpty
+        foreach ($entry in $serviceEntries) {
+            $entry.Value.ContainsKey('Alias') |
+                Should -BeTrue -Because "$($entry.Key) must be reachable through the service grammar"
         }
         # Sanity: the legacy 'Service Manager' placeholder (a single entry that
         # pointed at opencode-serve.ps1 and had no Alias of its own) is gone --

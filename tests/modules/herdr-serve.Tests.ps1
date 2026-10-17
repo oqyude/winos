@@ -1,6 +1,14 @@
 BeforeAll {
     $scriptPath = Join-Path $PSScriptRoot "../../src/modules/herdr-serve.ps1"
 
+    # Force non-interactive mode for every test in this file. Pester happens
+    # to suppress ShouldProcess prompts in its runner today, but relying on
+    # that silently makes a future Pester upgrade (or running the same action
+    # paths outside Pester) start asking for confirmation. Setting it here
+    # makes the intent explicit: the tests must run unattended, no matter
+    # what the host's $ConfirmPreference is.
+    $ConfirmPreference = 'None'
+
     # ScheduledTasks module must be importable so Pester Mock can hook its cmdlets.
     if (Get-Module -ListAvailable -Name ScheduledTasks) {
         Import-Module ScheduledTasks -ErrorAction SilentlyContinue

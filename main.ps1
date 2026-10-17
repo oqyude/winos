@@ -45,15 +45,22 @@ if ($Version -or $Module -eq '--version') { Write-Output "winos v0.1.2"; exit 0 
 if ($Module) {
     # --- Service routing: winos service <name> <action> ---
     #
-    # Backwards-compatible wrapper around the flat module grammar. serviceKey
-    # is the registry key whose Alias matches $Name; the alias->module map is
-    # declared inline here rather than in $modules so a future two-level
-    # grammar (read: nested service definitions) stays easy to add without
-    # touching the module registry.
+    # Two-level grammar kept for callers who think in "services" rather than
+    # in module verbs. serviceKey is the registry key whose Alias matches
+    # $Name. The alias->module map is derived from $modules (see below) so a
+    # future nested service definition only needs to be registered in one
+    # place.
     if ($Module -eq "service") {
-        $serviceAliases = @{
-            "opencode-serve" = "opencode-serve"
-            "herdr-serve"    = "herdr-serve"
+        # Derived from $modules rather than hand-kept: any entry whose action
+        # set contains 'setup' is a service, and its Alias is its public name
+        # under the `service <name> <action>` two-level grammar. Adding a
+        # service = one edit in $modules; the map cannot drift. Same
+        # single-source-of-truth pattern as $moduleAliases below.
+        $serviceAliases = @{}
+        foreach ($entry in $modules.GetEnumerator()) {
+            if (-not $entry.Value.ContainsKey('Alias'))    { continue }
+            if ($entry.Value.Actions -notcontains 'setup') { continue }
+            $serviceAliases[$entry.Value.Alias] = $entry.Key
         }
 
         $serviceKey = $serviceAliases[$Name]
