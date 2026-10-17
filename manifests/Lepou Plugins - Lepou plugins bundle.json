@@ -1,0 +1,5 @@
+{
+  "Name": "Lepou Plugins - Lepou plugins bundle",
+  "Description": "Drop-in VST DLLs organized into x32\\ and x64\\ subfolders. There is no vendor installer (no install.bat, .cmd, or .reg in the folder tree) and the plugin makes no system-level changes, so no junctions are created for it. Get the DLLs into a DAW-scanned directory by copying or hand-linking individual files.",
+  "Links": []
+}

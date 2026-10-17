@@ -1,21 +1,23 @@
-﻿# State.ps1 — Probe actual state of symlink-manager targets
-# Pure functions; no side effects.
+# State.ps1 -- Probe, compare, and reconcile symlink state.
+#
+# Pure functions for state analysis; side-effecting Invoke-SafeAction for execution.
+# Used by src/modules/plugin-manager.ps1.
+#
+# Concurrency: none of these functions share mutable state. Multiple instances
+# can probe the same target safely.
+#
+# Junction note: we use New-Item -ItemType Junction (not SymbolicLink) so
+# running as non-admin works on Windows. Junctions and symlinks both set
+# ReparsePoint; Get-SymlinkSubState treats them the same.
 
+# Get-SymlinkSubState -- Probe actual state of a single (from, to) pair.
+#
+# Returns a PSCustomObject describing the target's state:
+#   - exists: bool
+#   - kind: 'missing' | 'symlink' | 'file' | 'directory' | 'broken-symlink'
+#   - target: actual symlink target (or $null)
+#   - matches: bool -- true if symlink target equals expected source
 function Get-SymlinkSubState {
-    <#
-    .SYNOPSIS
-        Probe actual state of a single (from, to) pair.
-    .DESCRIPTION
-        Returns a PSCustomObject describing the target's state:
-        - exists: bool
-        - kind: 'missing' | 'symlink' | 'file' | 'directory' | 'broken-symlink'
-        - target: actual symlink target (or $null)
-        - matches: bool — true if symlink target equals expected source
-    .PARAMETER From
-        Expected source path (where symlink should point).
-    .PARAMETER To
-        Target path to probe.
-    #>
     param(
         [Parameter(Mandatory)] [string]$From,
         [Parameter(Mandatory)] [string]$To
@@ -40,7 +42,7 @@ function Get-SymlinkSubState {
         }
     }
 
-    # Symlink: ReparsePoint attribute set
+    # Symlink or junction: ReparsePoint attribute set
     if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
         $actualTarget = $item.Target
         # Check if the symlink target equals expected source (case-insensitive on Windows)
@@ -65,7 +67,7 @@ function Get-SymlinkSubState {
         }
     }
 
-    # Not a symlink — file or directory
+    # Not a symlink -- file or directory
     if ($item.PSIsContainer) {
         return [PSCustomObject]@{
             exists  = $true
@@ -83,13 +85,10 @@ function Get-SymlinkSubState {
     }
 }
 
+# Resolve-EntryPath -- Expand $pluginRoot, $env:USERPROFILE and other vars in entry's from/to paths.
+#
+# Returns PSCustomObject with resolved From and To paths.
 function Resolve-EntryPath {
-    <#
-    .SYNOPSIS
-        Expand $persist, $env:USERPROFILE and other vars in entry's from/to paths.
-    .DESCRIPTION
-        Returns PSCustomObject with resolved From and To paths.
-    #>
     param(
         [Parameter(Mandatory)] $Entry
     )
@@ -97,12 +96,12 @@ function Resolve-EntryPath {
     $rawFrom = $Entry.from
     $rawTo   = $Entry.to
 
-    # Substitute $name with entry's name (existing convention)
+    # Substitute $name with entry's name
     $rawFrom = $rawFrom -replace '\$name', $Entry.name
     $rawTo   = $rawTo   -replace '\$name', $Entry.name
 
     $resolvedFrom = if ($rawFrom) { $ExecutionContext.InvokeCommand.ExpandString($rawFrom) } else { $null }
-    $resolvedTo   = if ($rawTo)   { $ExecutionContext.InvokeCommand.ExpandString($rawTo) }   else { $null }
+    $resolvedTo   = if ($rawTo)   { $ExecutionContext.InvokeCommand.ExpandString($rawTo)   } else { $null }
 
     [PSCustomObject]@{
         From = $resolvedFrom
@@ -110,11 +109,14 @@ function Resolve-EntryPath {
     }
 }
 
+# Get-SymlinkEntryState -- Probe actual state for all (from, to) pairs in an entry.
+#
+# Two mappings schemas are supported:
+#   - Legacy: entry has top-level from/to; mappings' from/to are RELATIVE sub-paths.
+#   - New:    entry has no top-level from/to; mappings' from/to are ABSOLUTE paths.
+# In the new schema, the mapping is used as-is; in the legacy schema, mapping paths
+# are joined onto the resolved entry paths.
 function Get-SymlinkEntryState {
-    <#
-    .SYNOPSIS
-        Probe actual state for all (from, to) pairs in an entry.
-    #>
     param(
         [Parameter(Mandatory)] $Entry
     )
@@ -125,8 +127,10 @@ function Get-SymlinkEntryState {
     if ($Entry.mappings -and $Entry.mappings.Count -gt 0) {
         foreach ($m in $Entry.mappings) {
             if ($null -eq $m -or -not $m.from) { continue }
-            $src = if ($resolved.From) { Join-Path $resolved.From $m.from } else { $null }
-            $dst = if ($resolved.To)   { Join-Path $resolved.To   $m.to }   else { $null }
+            # If entry has top-level from/to, treat mapping paths as relative.
+            # Otherwise use them as absolute.
+            $src = if ($resolved.From) { Join-Path $resolved.From $m.from } else { $m.from }
+            $dst = if ($resolved.To)   { Join-Path $resolved.To   $m.to   } else { $m.to }
             if (-not $src -or -not $dst) { continue }
             $state = Get-SymlinkSubState -From $src -To $dst
             $subentries += [PSCustomObject]@{
@@ -156,28 +160,20 @@ function Get-SymlinkEntryState {
     }
 }
 
+# Compare-State -- Categorize each subentry into an action: noop | create | replace | drop | conflict.
+#
+# For desired='symlink' (link=true):
+#   - noop:     exists=true, kind=symlink, matches=true
+#   - create:   exists=false
+#   - replace:  exists=true, kind=symlink, matches=false (drift)
+#   - replace:  exists=true, kind=broken-symlink
+#   - conflict: exists=true, kind=file or kind=directory
+#
+# For desired='missing' (link=false):
+#   - noop:     exists=false (target already absent)
+#   - drop:     exists=true (any kind) -- break the connection
 function Compare-State {
-    <#
-    .SYNOPSIS
-        Categorize each subentry into an action: noop | create | replace | drop | conflict.
-    .DESCRIPTION
-        For desired='symlink' (enabled=true):
-          - noop:     exists=true, kind=symlink, matches=true
-          - create:   exists=false
-          - replace:  exists=true, kind=symlink, matches=false (drift)
-          - replace:  exists=true, kind=broken-symlink
-          - conflict: exists=true, kind=file or kind=directory
-
-        For desired='missing' (enabled=false):
-          - noop:     exists=false (target already absent)
-          - drop:     exists=true (any kind) — break the connection
-    .PARAMETER EntryState
-        Output from Get-SymlinkEntryState.
-    .PARAMETER Desired
-        Desired state of the target:
-          - 'symlink': target should be a symlink to the source
-          - 'missing': target should not exist (break connection)
-    #>
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory)] $EntryState,
         [ValidateSet('symlink', 'missing')]
@@ -186,10 +182,8 @@ function Compare-State {
 
     foreach ($sub in $EntryState.subentries) {
         if ($Desired -eq 'missing') {
-            # enabled=false: target should not exist
             $action = if ($sub.state.kind -eq 'missing') { 'noop' } else { 'drop' }
         } else {
-            # enabled=true: target should be a symlink to source
             $action = switch ($sub.state.kind) {
                 'missing'        { 'create' }
                 'symlink'        { if ($sub.state.matches) { 'noop' } else { 'replace' } }
@@ -205,18 +199,13 @@ function Compare-State {
     $EntryState
 }
 
+# Invoke-SafeAction -- Apply safe (or forced) actions for symlink entries.
+#
+# Without -Force: skip replace and conflict (safe mode).
+# With -Force: execute replace (drifted symlink) and conflict (file/dir in the way).
+#
+# Junction type: New-Item -ItemType Junction (not SymbolicLink) -- no admin required.
 function Invoke-SafeAction {
-    <#
-    .SYNOPSIS
-        Apply safe (or forced) actions for symlink entries.
-    .DESCRIPTION
-        Without -Force: skip replace and conflict (safe mode).
-        With -Force: execute replace (drifted symlink) and conflict (file/dir in the way).
-    .PARAMETER EntryState
-        Output from Compare-State.
-    .PARAMETER Force
-        Overwrite existing targets that differ or are regular files/directories.
-    #>
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)] $EntryState,
@@ -236,19 +225,40 @@ function Invoke-SafeAction {
                 }
             }
             'create' {
-                if ($PSCmdlet.ShouldProcess($sub.to, "Create symlink to $($sub.from)")) {
+                if (-not (Test-Path -LiteralPath $sub.from)) {
+                    # Refuse rather than create a link to nothing. Junction and
+                    # SymbolicLink both accept a target that does not exist, so a
+                    # typo in a manifest would otherwise scatter broken links across
+                    # the system and only surface when a DAW fails to load a plugin.
+                    $results += [PSCustomObject]@{
+                        action = 'create'
+                        from   = $sub.from
+                        to     = $sub.to
+                        status = 'failed'
+                        note   = 'source does not exist'
+                    }
+                    continue
+                }
+                if ($PSCmdlet.ShouldProcess($sub.to, "Create link to $($sub.from)")) {
                     try {
                         $parent = Split-Path -Parent $sub.to
                         if (-not (Test-Path $parent)) {
                             New-Item -ItemType Directory -Path $parent -Force | Out-Null
                         }
-                        New-Item -ItemType SymbolicLink -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
+                        $linkType = if (Test-Path -LiteralPath $sub.from -PathType Container) {
+                            # Directory: use Junction (no admin required, locally scoped)
+                            'Junction'
+                        } else {
+                            # File: use SymbolicLink
+                            'SymbolicLink'
+                        }
+                        New-Item -ItemType $linkType -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
                         $results += [PSCustomObject]@{
                             action = 'create'
                             from   = $sub.from
                             to     = $sub.to
                             status = 'created'
-                            note   = $null
+                            note   = $linkType
                         }
                     } catch {
                         $results += [PSCustomObject]@{
@@ -262,20 +272,35 @@ function Invoke-SafeAction {
                 }
             }
             'replace' {
-                if ($Force -and $PSCmdlet.ShouldProcess($sub.to, "Force-replace symlink to $($sub.from)")) {
+                if (-not (Test-Path -LiteralPath $sub.from)) {
+                    $results += [PSCustomObject]@{
+                        action = 'replace'
+                        from   = $sub.from
+                        to     = $sub.to
+                        status = 'failed'
+                        note   = 'source does not exist'
+                    }
+                    continue
+                }
+                if ($Force -and $PSCmdlet.ShouldProcess($sub.to, "Force-replace link to $($sub.from)")) {
                     try {
                         Remove-Item -LiteralPath $sub.to -Recurse -Force
                         $parent = Split-Path -Parent $sub.to
                         if (-not (Test-Path $parent)) {
                             New-Item -ItemType Directory -Path $parent -Force | Out-Null
                         }
-                        New-Item -ItemType SymbolicLink -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
+                        $linkType = if (Test-Path -LiteralPath $sub.from -PathType Container) {
+                            'Junction'
+                        } else {
+                            'SymbolicLink'
+                        }
+                        New-Item -ItemType $linkType -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
                         $results += [PSCustomObject]@{
                             action = 'replace'
                             from   = $sub.from
                             to     = $sub.to
                             status = 'replaced'
-                            note   = $null
+                            note   = $linkType
                         }
                     } catch {
                         $results += [PSCustomObject]@{
@@ -297,11 +322,11 @@ function Invoke-SafeAction {
                 }
             }
             'drop' {
-                if ($PSCmdlet.ShouldProcess($sub.to, "Remove (enabled=false)")) {
+                if ($PSCmdlet.ShouldProcess($sub.to, "Remove (link=false)")) {
                     try {
                         $item = Get-Item -LiteralPath $sub.to -Force -ErrorAction SilentlyContinue
                         if ($item -and ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) {
-                            # Symlink: remove just the link, do not follow
+                            # Junction or symlink: remove just the link, do not follow
                             $item.Delete()
                         } else {
                             # Regular file/dir: explicit remove
@@ -326,20 +351,25 @@ function Invoke-SafeAction {
                 }
             }
             'conflict' {
-                if ($Force -and $PSCmdlet.ShouldProcess($sub.to, "Force-overwrite with symlink to $($sub.from)")) {
+                if ($Force -and $PSCmdlet.ShouldProcess($sub.to, "Force-overwrite with link to $($sub.from)")) {
                     try {
                         Remove-Item -LiteralPath $sub.to -Recurse -Force
                         $parent = Split-Path -Parent $sub.to
                         if (-not (Test-Path $parent)) {
                             New-Item -ItemType Directory -Path $parent -Force | Out-Null
                         }
-                        New-Item -ItemType SymbolicLink -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
+                        $linkType = if (Test-Path -LiteralPath $sub.from -PathType Container) {
+                            'Junction'
+                        } else {
+                            'SymbolicLink'
+                        }
+                        New-Item -ItemType $linkType -Path $sub.to -Value $sub.from -Force -ErrorAction Stop | Out-Null
                         $results += [PSCustomObject]@{
                             action = 'conflict'
                             from   = $sub.from
                             to     = $sub.to
                             status = 'resolved'
-                            note   = $null
+                            note   = $linkType
                         }
                     } catch {
                         $results += [PSCustomObject]@{
@@ -366,11 +396,8 @@ function Invoke-SafeAction {
     $results
 }
 
+# Format-Subentry -- Format a single subentry as a colored status line.
 function Format-Subentry {
-    <#
-    .SYNOPSIS
-        Format a single subentry as a colored status line.
-    #>
     param($Sub)
 
     $icon = switch ($Sub.action) {
@@ -395,13 +422,8 @@ function Format-Subentry {
     Write-Host ("  {0} {1,-20} {2,-10} {3}" -f $icon, $Sub.action, $Sub.state.kind, $fromShort) -ForegroundColor $color
 }
 
+# Format-Plan -- Render plan as a human-readable table.
 function Format-Plan {
-    <#
-    .SYNOPSIS
-        Render plan as a human-readable table.
-    .PARAMETER Delta
-        Array of EntryState objects (after Compare-State).
-    #>
     param([Parameter(Mandatory)] $Delta)
 
     $summary = @{
@@ -438,15 +460,96 @@ function Format-Plan {
     return $summary
 }
 
+# Get-StateDrift -- Diff observed state against a previously saved snapshot.
+#
+# Pure function: no side effects, no I/O. Takes the entry-state objects that
+# Get-SymlinkEntryState produces plus a deserialized snapshot, and returns the
+# list of things that changed:
+#
+#   added      -- target exists now, baseline had no record of it (or had it absent)
+#   removed    -- baseline recorded it present, it is gone now
+#   retargeted -- both are links, but they point somewhere different
+#   orphaned   -- baseline recorded it present, and nothing probes it any more
+#                 (usually the plugin was dropped from state.json since)
+#
+# Comparing by target path rather than by index keeps the diff stable when
+# plugins are reordered in state.json between runs.
+function Get-StateDrift {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] $Current,
+        [Parameter(Mandatory)] $Baseline
+    )
+
+    # Index the baseline by target path.
+    $known = @{}
+    if ($null -ne $Baseline -and $Baseline.PSObject.Properties['entries']) {
+        foreach ($e in $Baseline.entries) {
+            if ($null -eq $e) { continue }
+            if (-not $e.PSObject.Properties['subentries']) { continue }
+            foreach ($s in $e.subentries) {
+                if ($null -eq $s -or -not $s.to) { continue }
+                $known[$s.to] = $s.state
+            }
+        }
+    }
+
+    $changes = @()
+    $seen = @{}
+
+    foreach ($e in $Current) {
+        if ($null -eq $e) { continue }
+        if (-not $e.PSObject.Properties['subentries']) { continue }
+        foreach ($sub in $e.subentries) {
+            if ($null -eq $sub -or -not $sub.to) { continue }
+            $seen[$sub.to] = $true
+
+            $now  = $sub.state
+            $prev = if ($known.ContainsKey($sub.to)) { $known[$sub.to] } else { $null }
+
+            $kind = $null
+            if ($null -eq $prev) {
+                if ($now.exists) { $kind = 'added' }
+            } elseif ($prev.exists -and -not $now.exists) {
+                $kind = 'removed'
+            } elseif ($prev.exists -and $now.exists -and $prev.kind -eq 'symlink' -and $now.kind -eq 'symlink') {
+                if (-not [string]::Equals([string]$prev.target, [string]$now.target, [System.StringComparison]::OrdinalIgnoreCase)) {
+                    $kind = 'retargeted'
+                }
+            }
+
+            if ($null -ne $kind) {
+                $changes += [PSCustomObject]@{
+                    change = $kind
+                    to     = $sub.to
+                    from   = $sub.from
+                    prev   = if ($null -ne $prev) { $prev.target } else { $null }
+                    now    = $now.target
+                }
+            }
+        }
+    }
+
+    # Anything the baseline saw that nothing probes any more.
+    foreach ($path in $known.Keys) {
+        if ($seen.ContainsKey($path)) { continue }
+        $prev = $known[$path]
+        if ($prev.exists) {
+            $changes += [PSCustomObject]@{
+                change = 'orphaned'
+                to     = $path
+                from   = $null
+                prev   = $prev.target
+                now    = $null
+            }
+        }
+    }
+
+    , $changes
+}
+
+# Save-Snapshot -- Save a snapshot of the current state to JSON.
 function Save-Snapshot {
-    <#
-    .SYNOPSIS
-        Save a snapshot of the current state to JSON.
-    .PARAMETER Path
-        Output file path.
-    .PARAMETER Delta
-        Output from Compare-State.
-    #>
     param(
         [Parameter(Mandatory)] [string]$Path,
         [Parameter(Mandatory)] $Delta
@@ -459,7 +562,7 @@ function Save-Snapshot {
 
     $snapshot = [PSCustomObject]@{
         timestamp      = (Get-Date).ToString('o')
-        tool_version   = '1.0.0'
+        tool_version   = $toolVersion
         entries        = $Delta
     }
 

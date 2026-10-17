@@ -1,0 +1,31 @@
+{
+  "Name": "Native Instruments Kontakt 7",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "Kontakt 7\\x64\\VST",
+      "To": "%ProgramFiles%\\VSTPlugins\\Kontakt 7 Portable x64",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Kontakt 7\\x64\\VST3",
+      "To": "%CommonProgramFiles%\\VST3\\Kontakt 7 Portable",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Kontakt 7\\x64\\AAX\\Kontakt 7 Portable.aaxplugin",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Kontakt 7 Portable.aaxplugin",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Kontakt 7\\x64\\AAX\\Kontakt 7 Portable.aaxplugin",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Kontakt 7 Portable.aaxplugin",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Kontakt 7\\x64\\VST3",
+      "To": "%CommonProgramFiles%\\VST3\\Kontakt 7 Portable",
+      "Kind": "Junction"
+    }
+  ]
+}

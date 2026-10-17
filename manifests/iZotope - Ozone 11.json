@@ -1,0 +1,26 @@
+{
+  "Name": "iZotope - Ozone 11",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\iZotope\\Ozone 11",
+      "To": "%CommonProgramFiles%\\VST3\\iZotope\\Ozone 11",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\iZotope\\Ozone 11",
+      "To": "%CommonProgramFiles%\\VST3\\iZotope\\Ozone 11",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files (x86)\\iZotope\\Meter Tap 3",
+      "To": "%ProgramFiles(x86)%\\iZotope\\Meter Tap 3",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\Documents\\iZotope\\Relay",
+      "To": "%UserProfile%\\Documents\\iZotope\\Relay",
+      "Kind": "Junction"
+    }
+  ]
+}

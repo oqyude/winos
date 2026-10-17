@@ -1,0 +1,24 @@
+{
+  "Name": "FabFilter - Total Bundle",
+  "Description": "FabFilter Pro bundle -- 2 VST targets + 2 reg files for install/uninstall.",
+  "Links": [
+    {
+      "From": "VST2\\FabFilter",
+      "To": "%ProgramFiles%\\VSTPlugins\\FabFilter",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\FabFilter",
+      "To": "%CommonProgramFiles%\\VST3\\FabFilter",
+      "Kind": "Junction"
+    }
+  ],
+  "Registry": [
+    {
+      "OnEnable": "Reg\\Install.reg"
+    },
+    {
+      "OnDisable": "Reg\\Uninstall.reg"
+    }
+  ]
+}

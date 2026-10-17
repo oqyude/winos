@@ -1,0 +1,16 @@
+{
+  "Name": "Soundtoys",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\VSTPlugins\\SoundToys",
+      "To": "%ProgramFiles%\\VSTPlugins\\SoundToys",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\public\\Documents\\Soundtoys",
+      "To": "%Public%\\Documents\\Soundtoys",
+      "Kind": "Junction"
+    }
+  ]
+}

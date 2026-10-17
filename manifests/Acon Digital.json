@@ -1,0 +1,41 @@
+{
+  "Name": "Acon Digital",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\VstPlugIns\\Acon Digital",
+      "To": "%ProgramFiles%\\VSTPlugins\\Acon Digital",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Acon Digital",
+      "To": "%CommonProgramFiles%\\VST3\\Acon Digital",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Acon Digital",
+      "To": "%CommonProgramFiles%\\VST3\\Acon Digital",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Acon Digital",
+      "To": "%ProgramData%\\Acon Digital",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\Documents\\Pro Tools\\Plug-In Settings\\Verberate 2",
+      "To": "%UserProfile%\\Documents\\Pro Tools\\Plug-In Settings\\Verberate 2",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\Documents\\Pro Tools\\Plug-In Settings\\Verberate Immers",
+      "To": "%UserProfile%\\Documents\\Pro Tools\\Plug-In Settings\\Verberate Immers",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\Documents\\Pro Tools\\Plug-In Settings\\Verberate Immersive 2",
+      "To": "%UserProfile%\\Documents\\Pro Tools\\Plug-In Settings\\Verberate Immersive 2",
+      "Kind": "Junction"
+    }
+  ]
+}

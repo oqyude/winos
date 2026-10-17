@@ -8,8 +8,10 @@
       -Apply    : probe state, apply safe actions (create, noop skip), save snapshot.
       -Snapshot : probe state, save snapshot only (no plan output).
 
-    Drift (replace) and conflicts are SKIPPED by default. They require
-    --Force, which is not yet implemented.
+    Drift (replace) and conflicts are SKIPPED, and always have been -- there is
+    no switch that turns them on. A -Force parameter used to sit here to
+    advertise that intent, but it was never read and nothing in the repo passed
+    it, so it only implied a capability the script does not have.
 
     Reads vars from src/vars.ps1 (data.json, $statePath, $persist, etc.).
 #>
@@ -18,7 +20,6 @@ param(
     [switch]$Plan,
     [switch]$Apply,
     [switch]$Snapshot,
-    [switch]$Force,
     [string]$JsonConfig,
     [string]$StatePath
 )
@@ -39,7 +40,7 @@ if (-not $Plan -and -not $Apply -and -not $Snapshot) {
 if (-not $JsonConfig)  { $JsonConfig  = $jsonConfig }
 if (-not $StatePath)   { $StatePath   = $statePath }
 
-Write-Host "=== Symlink Manager ===" -ForegroundColor Cyan
+Write-Host "=== Config Persistence ===" -ForegroundColor Cyan
 Write-Host ("Config: {0}" -f $JsonConfig)
 Write-Host ("State:  {0}" -f $StatePath)
 Write-Host ""

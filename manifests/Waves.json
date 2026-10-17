@@ -1,0 +1,65 @@
+{
+  "Name": "Waves",
+  "Description": "Waves Complete -- 8 junctions + 1 native tree copy + 2 reg + 1 process kill. %VAR% tokens expand to environment variables. No AAX link: this package ships no Avid tree (the vendor installer had it commented out too).",
+  "Links": [
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Waves",
+      "To": "%CommonProgramFiles%\\VST3\\Waves",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files (x86)\\Waves",
+      "To": "%ProgramFiles(x86)%\\Waves",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\WPAPI",
+      "To": "%CommonProgramFiles%\\WPAPI",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Waves Audio",
+      "To": "%ProgramData%\\Waves Audio",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\AppData\\Local\\Waves Audio",
+      "To": "%LocalAppData%\\Waves Audio",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\AppData\\Roaming\\COSMOS",
+      "To": "%AppData%\\COSMOS",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\AppData\\Roaming\\Waves Audio",
+      "To": "%AppData%\\Waves Audio",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\Public\\Waves Audio",
+      "To": "%Public%\\Waves Audio",
+      "Kind": "Junction"
+    }
+  ],
+  "Copy": [
+    {
+      "From": "C\\Program Files\\Common Files\\Native Instruments\\Service Center",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center"
+    }
+  ],
+  "Registry": [
+    {
+      "OnEnable": "R2R\\1.reg"
+    },
+    {
+      "OnDisable": "R2R\\2.reg"
+    }
+  ],
+  "Process": [
+    {
+      "BeforeRevert": "R2R\\R2R_Kill_Waves_Background_Process.cmd"
+    }
+  ]
+}

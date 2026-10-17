@@ -1,0 +1,49 @@
+{
+  "Name": "2C Audio - Bundle",
+  "Description": "2C Audio (Aether, B2, Breeze) -- 7 junctions + x64 registry pair. The x86 set in the vendor .cmd overlaps four of these targets and targets 32-bit hosts, so only the x64 set is declared here.",
+  "Links": [
+    {
+      "From": "C\\Program Files (x86)\\VstPlugins\\2C-Audio x64",
+      "To": "%ProgramFiles(x86)%\\VstPlugins\\2C-Audio x64",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files (x86)\\VstPlugins\\2C-Audio x86",
+      "To": "%ProgramFiles(x86)%\\VstPlugins\\2C-Audio x86",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\2C-Audio\\Aether",
+      "To": "%ProgramFiles%\\2C-Audio\\Aether",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\2C-Audio\\B2",
+      "To": "%ProgramFiles%\\2C-Audio\\B2",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\2C-Audio\\Breeze",
+      "To": "%ProgramFiles%\\2C-Audio\\Breeze",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\AppData\\Roaming\\2C-Audio",
+      "To": "%AppData%\\2C-Audio",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\Documents\\2C-Audio",
+      "To": "%UserProfile%\\Documents\\2C-Audio",
+      "Kind": "Junction"
+    }
+  ],
+  "Registry": [
+    {
+      "OnEnable": "x64 Windows 2C-Audio REG.reg"
+    },
+    {
+      "OnDisable": "x64 Windows 2C-Audio UnREG.reg"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "Name": "Dear Reality - Free Bundle Old",
+  "Description": "Vendor install.bat creates two junctions (no registry imports, no copy steps, no pre-revert scripts): the VST3 folder is linked under the Free Bundle Common Files target, and the bundled reverb IR data tree is linked under ProgramData\\DearReality. uninstall.bat only removes the Common Files junction, but install.bat re-creates both on every run. WARNING: both target paths collide with manifests/Dear Reality.json -- the two vendor installers write the same two junctions from different source folders. Enabling this entry while 'Dear Reality' is also enabled would repoint the working junctions at the Old folder. Only one of the two should ever be link=true in state/powerlinks.json.",
+  "Links": [
+    {
+      "From": "VST3",
+      "To": "%CommonProgramFiles%\\VST3\\Dear Reality - Free Bundle",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Data\\ProgramData\\DearReality",
+      "To": "%ProgramData%\\DearReality",
+      "Kind": "Junction"
+    }
+  ]
+}

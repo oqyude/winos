@@ -1,0 +1,21 @@
+{
+  "Name": "Supertone",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "VST\\Supertone",
+      "To": "%ProgramFiles%\\VSTPlugins\\Supertone",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\Supertone",
+      "To": "%CommonProgramFiles%\\VST3\\Supertone",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\Supertone",
+      "To": "%CommonProgramFiles%\\VST3\\Supertone",
+      "Kind": "Junction"
+    }
+  ]
+}

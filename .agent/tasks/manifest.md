@@ -1,36 +1,48 @@
-# Task Manifest
+# Task Manifest — winos-powerlinks
 
-**Session:** 00000000-0000-0000-0000-000000000001
-**Goal:** Инициализация проекта winos: рефакторинг, миграция CSV→JSON, Symlink Manager, унификация.
-**Date:** 2026-07-24
+**Session:** `e41df406-4a8b-45b2-a38d-efd3c78f1859`
+**Schema:** v3.0 (`metaagent-task-manifest`)
+**Goal:** слияние powerlinks в winos — winos становится контейнером, powerlinks четвёртым модулем.
 
----
-
-## Overview
-
-| Total | Pending | In Progress | Completed | Archived | Failed |
-|---|---|---|---|---|---|
-| 9 | 0 | 0 | 0 | 9 | 0 |
+Машиночитаемая версия: [manifest.json](manifest.json)
 
 ---
 
-## Tasks
+## Задачи слияния
 
-| ID | Title | Type | Status |
-|---|---|---|---|
-| C1 | Миграция CSV → JSON (data/data.json v2) | refactor | archived |
-| C2 | Symlink Manager с method-архитектурой | feature | archived |
-| C3 | Unified $action во всех модулях | refactor | archived |
-| C4 | Новый main.ps1 (CLI + интерактив) | refactor | archived |
-| C5 | Essentials module (ex Windows Cursor) | fix | archived |
-| C6 | Удалить админ-проверку и старые модули | refactor | archived |
-| P3 | PSScriptAnalyzer + approved verbs | config | archived |
-| P4 | Pester smoke-тесты | config | archived |
-| P5 | Структура проекта + интерактив | refactor | archived |
+| ID | Задача | Фаза | Статус | Гейт |
+|---|---|---|---|---|
+| **W0** | Миграция метасостояния v2 → v3 | 0 | ✅ completed | — |
+| **W1** | Перенести артефакты powerlinks в дерево winos | 1 | pending | git: только добавления |
+| **W2** | Зарегистрировать 4-й модуль + переименовать | 1 | pending | меню показывает 4 модуля |
+| **W3** | Общий прогон тестов | 1 | pending | 70 тестов, 0 падений |
+| **W4** | Заменить `lint.ps1`/`test.ps1` на версии с гейтом | 2 | pending | exit 1 доказан на падающем тесте |
+| **W5** | Доработать меню (подтверждение, `-WhatIf`, код возврата) | 2 | pending | `revert`/`adopt` требуют подтверждения |
+| **W6** | Тесты меню | 2 | pending | выбор пункта приводит к вызову модуля |
+| **W7** | Оценить объединение двух `State.ps1` | 3 | pending | **только по команде пользователя** |
 
----
+## Зависимости
 
-## Archive
+```
+W0 → W1 → W2 → W3 → W4 → W5 → W6 → W7
+```
 
-Полные описания задач: `.agent/archive/tasks/<id>.json`
-Индекс: `.agent/archive/index.json`
+Линейная цепочка. Ветвлений нет — каждая фаза опирается на устоявшуюся предыдущую.
+
+## Ключевые решения, зафиксированные в задачах
+
+**Контейнер — winos.** Он уже мультидоменный (3 домена), у него есть меню, реестр `$modules`, грамматика CLI, CI и `docs/`. powerlinks однодоменный и станет четвёртым модулем.
+
+**Движки симлинков в фазе 1 не сливаются.** `symlink-manager` линкует файлы конфигов в `%APPDATA%`/`%USERPROFILE%`; `plugin-manager` линкует каталоги плагинов в `Program Files`/`VST3`. Оба грузятся через dot-source, а имена функций у них совпадают — слияние в один файл в фазе 1 сломало бы scope.
+
+**Если объединять движки, то на базе powerlinks.** Сравнение имён функций: у winos 8 функций, у powerlinks 9; все 8 присутствуют в powerlinks, уникальных нет — версия powerlinks является надмножеством. Но тела не сравнивались, см. W7.
+
+**W4 обязателен до того, как CI станет осмысленным.** Нынешний `test.ps1` возвращает `exit 0` при падающих тестах.
+
+## Архив
+
+| ID | Задача | Статус |
+|---|---|---|
+| C1–C6, P3–P5 | Рефакторинг winos (M1–M7), июль 2026 | archived |
+
+Состояние этих задач перенесено из манифеста формата v2.1.0, который не соответствовал установленной схеме v3.

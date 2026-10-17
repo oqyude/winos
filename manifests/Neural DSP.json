@@ -1,0 +1,26 @@
+{
+  "Name": "Neural DSP",
+  "Description": "Neural DSP bundles -- 4 junctions, no registry or copy steps. Layout mirrors SymLink Installer.bat. No AAX link: the source tree is not shipped in this package, though the vendor .bat still tries to create one and leaves a dangling junction behind.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\VSTPlugins\\Neural DSP",
+      "To": "%ProgramFiles%\\VSTPlugins\\Neural DSP",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Neural DSP",
+      "To": "%CommonProgramFiles%\\VST3\\Neural DSP",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Neural DSP",
+      "To": "%ProgramFiles%\\Neural DSP",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Neural DSP",
+      "To": "%ProgramData%\\Neural DSP",
+      "Kind": "Junction"
+    }
+  ]
+}

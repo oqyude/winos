@@ -1,0 +1,5 @@
+{
+  "Name": "Native Instruments Kontakt Libraries",
+  "Description": "Sample content (.nicnt, .nkm, .nkc, .nkx) for the Kontakt sampler. The folder holds one subdirectory per library product and contains only sample/preset assets, no vendor installer scripts and no DLLs. Kontakt's library browser points at the absolute path, so symlinks are not used. no junctions are created for this entry.",
+  "Links": []
+}

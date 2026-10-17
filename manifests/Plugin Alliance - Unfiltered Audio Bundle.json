@@ -1,0 +1,26 @@
+{
+  "Name": "Plugin Alliance - Unfiltered Audio Bundle",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "VST3\\Plugin Alliance - Unfiltered Audio Bundle",
+      "To": "%CommonProgramFiles%\\VST3\\Plugin Alliance - Unfiltered Audio Bundle",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\Plugin Alliance - Unfiltered Audio Bundle",
+      "To": "%CommonProgramFiles%\\VST3\\Plugin Alliance - Unfiltered Audio Bundle",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Presets\\UnfilteredAudio",
+      "To": "%ProgramData%\\UnfilteredAudio",
+      "Kind": "Junction"
+    },
+    {
+      "From": "UserPresets\\UnfilteredAudio",
+      "To": "%AppData%\\UnfilteredAudio",
+      "Kind": "Junction"
+    }
+  ]
+}

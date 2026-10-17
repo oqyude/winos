@@ -70,13 +70,19 @@ if ($Module) {
     }
 
     # --- Direct module routing: winos <module> <action> ---
-    $moduleAliases = @{
-        "symlink-manager" = "Symlink Manager"
-        "essentials"      = "Essentials"
-    }
-    $validActions = @{
-        "Symlink Manager" = @("plan", "apply", "snapshot")
-        "Essentials"      = @("install", "uninstall")
+    #
+    # Derived from the $modules registry in src/vars.ps1 rather than restated
+    # here. Two hand-kept copies of the same action lists drift apart silently --
+    # adding a verb to the registry would leave the CLI still rejecting it, with
+    # no error anywhere. Entries carrying no Alias (Service Manager) are reached
+    # through the `service <name> <action>` grammar handled above, so they are
+    # skipped here and stay menu-only.
+    $moduleAliases = @{}
+    $validActions  = @{}
+    foreach ($entry in $modules.GetEnumerator()) {
+        if (-not $entry.Value.ContainsKey('Alias')) { continue }
+        $moduleAliases[$entry.Value.Alias] = $entry.Key
+        $validActions[$entry.Key]            = $entry.Value.Actions
     }
 
     $moduleKey = $moduleAliases[$Module]
@@ -138,6 +144,23 @@ function Read-Choice {
     } while ($true)
 }
 
+# Read-Confirm -- Yes/No prompt that defaults to No.
+#
+# Deliberately does NOT share Read-Choice's empty-input behaviour: there, empty
+# means "no console attached, leave". Here it means "hit Enter", and Enter must
+# never be the answer that runs a destructive verb. Re-prompt instead of
+# accepting, so the user has to type the word.
+function Read-Confirm {
+    param([string]$Prompt)
+    while ($true) {
+        $raw = (Read-Host "  $Prompt").Trim()
+        if ($raw -eq "")   { return $false }
+        if ($raw -match '^(y|yes)$') { return $true }
+        if ($raw -match '^(n|no)$')  { return $false }
+        Write-Host "  Answer y or n" -ForegroundColor Yellow
+    }
+}
+
 $moduleNames = $modules.Keys | Sort-Object
 
 :menu while ($true) {
@@ -149,6 +172,7 @@ $moduleNames = $modules.Keys | Sort-Object
 
     :actions while ($true) {
         $actions = $modules[$selectedModule].Actions
+        $risky  = @($modules[$selectedModule]['Destructive'])
         Show-Menu -Title $selectedModule -Items $actions -BackLabel "Back"
         $actIdx = Read-Choice -Prompt "Select action" -MaxChoice $actions.Count -AllowZero
         if ($actIdx -eq 0) { continue menu }
@@ -157,7 +181,30 @@ $moduleNames = $modules.Keys | Sort-Object
         Write-Host ""
         Write-Host "  ▸ $selectedModule → $selectedAction" -ForegroundColor Green
         Write-Host ""
-        & $modules[$selectedModule].Path $selectedAction -Force:$Force
+
+        # A destructive verb must never run on a single keypress: `revert` drops
+        # every junction, `adopt` overwrites state/powerlinks.json. Offer the
+        # -WhatIf preview first so the usual answer is "show me, don't touch".
+        $whatIf = $false
+        if ($risky -contains $selectedAction) {
+            Write-Host "  This action changes system state." -ForegroundColor Yellow
+            if (Read-Confirm "Preview only (-WhatIf)? [y/N]") { $whatIf = $true }
+            elseif (-not (Read-Confirm "Run for real? [y/N]")) {
+                Write-Host "  Cancelled." -ForegroundColor DarkGray
+                Write-Host ""
+                break actions
+            }
+        }
+
+        & $modules[$selectedModule].Path $selectedAction -Force:$Force -WhatIf:$whatIf
+
+        # A child script signals trouble through its exit code, not by throwing
+        # here. Swallowing it made a failed action look identical to a silent
+        # success and the menu just bounced back to the module list.
+        if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
+            Write-Host ""
+            Write-Host ("  Action finished with exit code {0}." -f $LASTEXITCODE) -ForegroundColor Red
+        }
         break actions
     }
 }

@@ -1,0 +1,381 @@
+{
+  "Name": "Arturia FX Collection",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Arturia FX",
+      "To": "%CommonProgramFiles%\\VST3\\Arturia FX",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Arturia FX",
+      "To": "%CommonProgramFiles%\\VST3\\Arturia FX",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files (x86)\\Arturia\\Arturia Software Center",
+      "To": "%ProgramFiles(x86)%\\Arturia\\Arturia Software Center",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Bus EXCITER-104",
+      "To": "%ProgramData%\\Arturia\\Bus EXCITER-104",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\BUS FORCE",
+      "To": "%ProgramData%\\Arturia\\BUS FORCE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Bus PEAK",
+      "To": "%ProgramData%\\Arturia\\Bus PEAK",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Chorus DIMENSION-D",
+      "To": "%ProgramData%\\Arturia\\Chorus DIMENSION-D",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Chorus JUN-6",
+      "To": "%ProgramData%\\Arturia\\Chorus JUN-6",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Comp DIODE-609",
+      "To": "%ProgramData%\\Arturia\\Comp DIODE-609",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Comp FET-76",
+      "To": "%ProgramData%\\Arturia\\Comp FET-76",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Comp TUBE-STA",
+      "To": "%ProgramData%\\Arturia\\Comp TUBE-STA",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Comp VCA-65",
+      "To": "%ProgramData%\\Arturia\\Comp VCA-65",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Delay BRIGADE",
+      "To": "%ProgramData%\\Arturia\\Delay BRIGADE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Delay ETERNITY",
+      "To": "%ProgramData%\\Arturia\\Delay ETERNITY",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Delay TAPE-201",
+      "To": "%ProgramData%\\Arturia\\Delay TAPE-201",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Dist COLDFIRE",
+      "To": "%ProgramData%\\Arturia\\Dist COLDFIRE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Dist OPAMP-21",
+      "To": "%ProgramData%\\Arturia\\Dist OPAMP-21",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Dist TUBE-CULTURE",
+      "To": "%ProgramData%\\Arturia\\Dist TUBE-CULTURE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Efx FRAGMENTS",
+      "To": "%ProgramData%\\Arturia\\Efx FRAGMENTS",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Efx MOTIONS",
+      "To": "%ProgramData%\\Arturia\\Efx MOTIONS",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Efx REFRACT",
+      "To": "%ProgramData%\\Arturia\\Efx REFRACT",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\EQ SITRAL-295",
+      "To": "%ProgramData%\\Arturia\\EQ SITRAL-295",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Filter M12",
+      "To": "%ProgramData%\\Arturia\\Filter M12",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Filter MINI",
+      "To": "%ProgramData%\\Arturia\\Filter MINI",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Filter MS-20",
+      "To": "%ProgramData%\\Arturia\\Filter MS-20",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Filter SEM",
+      "To": "%ProgramData%\\Arturia\\Filter SEM",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Flanger BL-20",
+      "To": "%ProgramData%\\Arturia\\Flanger BL-20",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Phaser BI-TRON",
+      "To": "%ProgramData%\\Arturia\\Phaser BI-TRON",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Pre 1973",
+      "To": "%ProgramData%\\Arturia\\Pre 1973",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Pre TridA",
+      "To": "%ProgramData%\\Arturia\\Pre TridA",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Pre V76",
+      "To": "%ProgramData%\\Arturia\\Pre V76",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Rev INTENSITY",
+      "To": "%ProgramData%\\Arturia\\Rev INTENSITY",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Rev LX-24",
+      "To": "%ProgramData%\\Arturia\\Rev LX-24",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Rev PLATE-140",
+      "To": "%ProgramData%\\Arturia\\Rev PLATE-140",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Rev SPRING-636",
+      "To": "%ProgramData%\\Arturia\\Rev SPRING-636",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Rotary CLS-222",
+      "To": "%ProgramData%\\Arturia\\Rotary CLS-222",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Tape MELLO-FI",
+      "To": "%ProgramData%\\Arturia\\Tape MELLO-FI",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Bus EXCITER-104",
+      "To": "%ProgramData%\\Arturia\\Presets\\Bus EXCITER-104",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\BUS FORCE",
+      "To": "%ProgramData%\\Arturia\\Presets\\BUS FORCE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Bus PEAK",
+      "To": "%ProgramData%\\Arturia\\Presets\\Bus PEAK",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Chorus DIMENSION-D",
+      "To": "%ProgramData%\\Arturia\\Presets\\Chorus DIMENSION-D",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Chorus JUN-6",
+      "To": "%ProgramData%\\Arturia\\Presets\\Chorus JUN-6",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Comp DIODE-609",
+      "To": "%ProgramData%\\Arturia\\Presets\\Comp DIODE-609",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Comp FET-76",
+      "To": "%ProgramData%\\Arturia\\Presets\\Comp FET-76",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Comp TUBE-STA",
+      "To": "%ProgramData%\\Arturia\\Presets\\Comp TUBE-STA",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Comp VCA-65",
+      "To": "%ProgramData%\\Arturia\\Presets\\Comp VCA-65",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Delay BRIGADE",
+      "To": "%ProgramData%\\Arturia\\Presets\\Delay BRIGADE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Delay ETERNITY",
+      "To": "%ProgramData%\\Arturia\\Presets\\Delay ETERNITY",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Delay TAPE-201",
+      "To": "%ProgramData%\\Arturia\\Presets\\Delay TAPE-201",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Dist COLDFIRE",
+      "To": "%ProgramData%\\Arturia\\Presets\\Dist COLDFIRE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Dist OPAMP-21",
+      "To": "%ProgramData%\\Arturia\\Presets\\Dist OPAMP-21",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Dist TUBE-CULTURE",
+      "To": "%ProgramData%\\Arturia\\Presets\\Dist TUBE-CULTURE",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Efx FRAGMENTS",
+      "To": "%ProgramData%\\Arturia\\Presets\\Efx FRAGMENTS",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Efx MOTIONS",
+      "To": "%ProgramData%\\Arturia\\Presets\\Efx MOTIONS",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Efx REFRACT",
+      "To": "%ProgramData%\\Arturia\\Presets\\Efx REFRACT",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\EQ SITRAL-295",
+      "To": "%ProgramData%\\Arturia\\Presets\\EQ SITRAL-295",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Filter M12",
+      "To": "%ProgramData%\\Arturia\\Presets\\Filter M12",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Filter MINI",
+      "To": "%ProgramData%\\Arturia\\Presets\\Filter MINI",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Filter MS-20",
+      "To": "%ProgramData%\\Arturia\\Presets\\Filter MS-20",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Filter SEM",
+      "To": "%ProgramData%\\Arturia\\Presets\\Filter SEM",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Flanger BL-20",
+      "To": "%ProgramData%\\Arturia\\Presets\\Flanger BL-20",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Phaser BI-TRON",
+      "To": "%ProgramData%\\Arturia\\Presets\\Phaser BI-TRON",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Pre 1973",
+      "To": "%ProgramData%\\Arturia\\Presets\\Pre 1973",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Pre TridA",
+      "To": "%ProgramData%\\Arturia\\Presets\\Pre TridA",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Pre V76",
+      "To": "%ProgramData%\\Arturia\\Presets\\Pre V76",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Rev INTENSITY",
+      "To": "%ProgramData%\\Arturia\\Presets\\Rev INTENSITY",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Rev LX-24",
+      "To": "%ProgramData%\\Arturia\\Presets\\Rev LX-24",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Rev PLATE-140",
+      "To": "%ProgramData%\\Arturia\\Presets\\Rev PLATE-140",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Rev SPRING-636",
+      "To": "%ProgramData%\\Arturia\\Presets\\Rev SPRING-636",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Rotary CLS-222",
+      "To": "%ProgramData%\\Arturia\\Presets\\Rotary CLS-222",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Presets\\Tape MELLO-FI",
+      "To": "%ProgramData%\\Arturia\\Presets\\Tape MELLO-FI",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Samples\\Efx MOTIONS",
+      "To": "%ProgramData%\\Arturia\\Samples\\Efx MOTIONS",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Samples\\Rev PLATE-140",
+      "To": "%ProgramData%\\Arturia\\Samples\\Rev PLATE-140",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Samples\\Rev SPRING-636",
+      "To": "%ProgramData%\\Arturia\\Samples\\Rev SPRING-636",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Arturia\\Shared\\x64",
+      "To": "%ProgramData%\\Arturia\\Shared\\x64",
+      "Kind": "Junction"
+    }
+  ]
+}

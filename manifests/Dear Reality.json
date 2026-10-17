@@ -1,0 +1,26 @@
+{
+  "Name": "Dear Reality",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "VST3",
+      "To": "%CommonProgramFiles%\\VST3\\Dear Reality - Free Bundle",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3",
+      "To": "%CommonProgramFiles%\\VST3\\Dear Reality - Free Bundle",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Data\\ProgramData\\DearReality",
+      "To": "%ProgramData%\\DearReality",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Data\\AppData\\Roaming\\DearReality",
+      "To": "%AppData%\\DearReality",
+      "Kind": "Junction"
+    }
+  ]
+}

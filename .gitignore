@@ -230,3 +230,7 @@ data/state/
 .omo/
 
 data/opencode-serve/.env
+
+# Probe snapshot — machine-local, regenerated on every run. Tracked powerlinks.json
+# right next to it is a deliberate positive; this one is not.
+state/powerlinks-snapshot.json

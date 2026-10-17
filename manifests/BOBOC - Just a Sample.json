@@ -1,0 +1,16 @@
+{
+  "Name": "BOBOC - Just a Sample",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "VST3\\Just a Sample",
+      "To": "%CommonProgramFiles%\\VST3\\Just a Sample",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\Just a Sample",
+      "To": "%CommonProgramFiles%\\VST3\\Just a Sample",
+      "Kind": "Junction"
+    }
+  ]
+}

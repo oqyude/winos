@@ -1,0 +1,31 @@
+{
+  "Name": "Celemony - Melodyne 5",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Celemony",
+      "To": "%CommonProgramFiles%\\VST3\\Celemony",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\Avid\\Audio\\Plug-Ins\\Celemony",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Celemony",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\Celemony",
+      "To": "%CommonProgramFiles%\\Celemony",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\Avid\\Audio\\Plug-Ins\\Celemony",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Celemony",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Celemony",
+      "To": "%CommonProgramFiles%\\VST3\\Celemony",
+      "Kind": "Junction"
+    }
+  ]
+}

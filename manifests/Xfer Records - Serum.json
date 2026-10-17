@@ -1,0 +1,26 @@
+{
+  "Name": "Xfer Records - Serum",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\VstPlugins\\Xfer Records",
+      "To": "%ProgramFiles%\\VSTPlugins\\Xfer Records",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\AppData\\Roaming\\Xfer",
+      "To": "%AppData%\\Xfer",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\AppData\\Local\\Xfer",
+      "To": "%LocalAppData%\\Xfer",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\Documents\\Xfer",
+      "To": "%UserProfile%\\Documents\\Xfer",
+      "Kind": "Junction"
+    }
+  ]
+}

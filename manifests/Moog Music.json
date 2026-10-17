@@ -1,0 +1,16 @@
+{
+  "Name": "Moog Music",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "VST3\\Moog Music - Mariana",
+      "To": "%CommonProgramFiles%\\VST3\\Moog Music - Mariana",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\Moog Music - Mariana",
+      "To": "%CommonProgramFiles%\\VST3\\Moog Music - Mariana",
+      "Kind": "Junction"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "Name": "XLN Audio",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "Addictive Drums 2\\Plugin\\vst",
+      "To": "%ProgramFiles%\\VSTPlugins\\Addictive Drums 2",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Addictive Keys\\Plugin\\vst",
+      "To": "%ProgramFiles%\\VSTPlugins\\Addictive Keys",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Addictive Drums 2\\Plugin\\vst\\Addictive Drums 2.dll_",
+      "To": "%ProgramData%\\XLN Audio\\VST32\\Addictive Drums 2.dll",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Addictive Keys\\Plugin\\vst\\Addictive Keys.dll_",
+      "To": "%ProgramData%\\XLN Audio\\VST32\\Addictive Keys.dll",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Addictive Drums 2\\Plugin\\vst\\Addictive Drums 2.dll_",
+      "To": "%ProgramData%\\XLN Audio\\VST64\\Addictive Drums 2.dll",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Addictive Keys\\Plugin\\vst\\Addictive Keys.dll_",
+      "To": "%ProgramData%\\XLN Audio\\VST64\\Addictive Keys.dll",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Addictive Drums 2\\Plugin\\settings",
+      "To": "%UserProfile%\\Documents\\Addictive Drums 2",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Addictive Keys\\Plugin\\settings",
+      "To": "%UserProfile%\\Documents\\Addictive Keys",
+      "Kind": "Junction"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "Name": "Joey Sturgis Tones - Toneforge DI Match",
+  "Description": "Toneforge DI Match. The VST3 folder is the payload itself rather than a container of plugins, so the VST3 heuristic cannot infer it and the link is declared explicitly.",
+  "Links": [
+    {
+      "From": "VST3",
+      "To": "%CommonProgramFiles%\\VST3\\Joey Sturgis Tones - Toneforge DI Match",
+      "Kind": "Junction"
+    }
+  ]
+}

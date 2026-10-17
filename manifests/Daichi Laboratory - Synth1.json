@@ -1,0 +1,11 @@
+{
+  "Name": "Daichi Laboratory - Synth1",
+  "Description": "Synth1 VST2. The vst\\ folder is the payload itself (it holds the DLL, not subdirectories), so the VST2 heuristic cannot infer it and the link is declared explicitly. Target follows the vendor install_vst.bat.",
+  "Links": [
+    {
+      "From": "vst",
+      "To": "%ProgramFiles%\\Steinberg\\VSTPlugins\\Daichi Laboratory - Synth1",
+      "Kind": "Junction"
+    }
+  ]
+}

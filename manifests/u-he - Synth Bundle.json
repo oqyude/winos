@@ -1,0 +1,91 @@
+{
+  "Name": "u-he - Synth Bundle",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "Program Files\\VstPlugins\\u-he",
+      "To": "%ProgramFiles%\\VSTPlugins\\u-he",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-ACE.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-ACE.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-Bazille.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-Bazille.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-Diva.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-Diva.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-Hive.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-Hive.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-Repro-1.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-Repro-1.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-Repro-5.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-Repro-5.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-Zebra2.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-Zebra2.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Program Files\\Common Files\\Native Instruments\\Service Center\\u-he-Zebrify.xml",
+      "To": "%CommonProgramFiles%\\Native Instruments\\Service Center\\u-he-Zebrify.xml",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\ACE.data",
+      "To": "%ProgramData%\\u-he\\ACE.data",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\Bazille.data",
+      "To": "%ProgramData%\\u-he\\Bazille.data",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\Diva.data",
+      "To": "%ProgramData%\\u-he\\Diva.data",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\Filterscape.data",
+      "To": "%ProgramData%\\u-he\\Filterscape.data",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\Hive.data",
+      "To": "%ProgramData%\\u-he\\Hive.data",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\Repro-1.data",
+      "To": "%ProgramData%\\u-he\\Repro-1.data",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\Zebra2.data",
+      "To": "%ProgramData%\\u-he\\Zebra2.data",
+      "Kind": "Junction"
+    },
+    {
+      "From": "ProgramData\\u-he\\ZebraHZ.data",
+      "To": "%ProgramData%\\u-he\\ZebraHZ.data",
+      "Kind": "Junction"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "Name": "Toontrack - Superior Drummer",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\VSTplugins\\Toontrack",
+      "To": "%ProgramFiles%\\VSTPlugins\\Toontrack",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\Avid\\Audio\\Plug-Ins\\Toontrack",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Toontrack",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\Avid\\Audio\\Plug-Ins\\Toontrack",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Toontrack",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Toontrack",
+      "To": "%ProgramData%\\Toontrack",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\AppData\\Roaming\\Toontrack",
+      "To": "%AppData%\\Toontrack",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\Documents\\Toontrack",
+      "To": "%UserProfile%\\Documents\\Toontrack",
+      "Kind": "Junction"
+    }
+  ]
+}

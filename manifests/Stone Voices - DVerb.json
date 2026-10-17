@@ -1,0 +1,21 @@
+{
+  "Name": "Stone Voices - DVerb",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "VST2\\Stone Voices - DReverb2",
+      "To": "%ProgramFiles%\\VSTPlugins\\Stone Voices - DReverb2",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\Stone Voices - DReverb2",
+      "To": "%CommonProgramFiles%\\VST3\\Stone Voices - DReverb2",
+      "Kind": "Junction"
+    },
+    {
+      "From": "VST3\\Stone Voices - DReverb2",
+      "To": "%CommonProgramFiles%\\VST3\\Stone Voices - DReverb2",
+      "Kind": "Junction"
+    }
+  ]
+}

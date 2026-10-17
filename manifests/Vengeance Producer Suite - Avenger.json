@@ -1,0 +1,36 @@
+{
+  "Name": "Vengeance Producer Suite - Avenger",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\VSTPlugins\\Avenger",
+      "To": "%ProgramFiles%\\VSTPlugins\\Avenger",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Avenger",
+      "To": "%CommonProgramFiles%\\VST3\\Avenger",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\Avid\\Audio\\Plug-Ins\\Avenger",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Avenger",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\Avid\\Audio\\Plug-Ins\\Avenger",
+      "To": "%CommonProgramFiles%\\Avid\\Audio\\Plug-Ins\\Avenger",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\Avenger",
+      "To": "%CommonProgramFiles%\\VST3\\Avenger",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\Vengeance\\VPS Avenger",
+      "To": "%ProgramData%\\Vengeance\\VPS Avenger",
+      "Kind": "Junction"
+    }
+  ]
+}

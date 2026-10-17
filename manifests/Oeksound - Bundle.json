@@ -1,0 +1,31 @@
+{
+  "Name": "Oeksound - Bundle",
+  "Description": "Generated from the junctions present on this system.",
+  "Links": [
+    {
+      "From": "C\\Program Files\\VSTPlugins\\oeksound",
+      "To": "%ProgramFiles%\\VSTPlugins\\oeksound",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\oeksound",
+      "To": "%CommonProgramFiles%\\VST3\\oeksound",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Program Files\\Common Files\\VST3\\oeksound",
+      "To": "%CommonProgramFiles%\\VST3\\oeksound",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\ProgramData\\oeksound",
+      "To": "%ProgramData%\\oeksound",
+      "Kind": "Junction"
+    },
+    {
+      "From": "C\\Users\\(Current User Name)\\Documents\\oeksound",
+      "To": "%UserProfile%\\Documents\\oeksound",
+      "Kind": "Junction"
+    }
+  ]
+}
