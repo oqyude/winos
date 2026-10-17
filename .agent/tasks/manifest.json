@@ -409,6 +409,29 @@
       ],
       "context": "ВНЕШНИЙ ИСТОЧНИК. Два отчёта агента в S:\\Git\\work/output (отдельный репозиторий, не winos):\n\n- docs/neural-note-portable-plan.md — общие данные о NeuralNote v2.1.0 (Apache-2.0 код, CC BY-NC 4.0 веса — коммерческое использование ЗАПРЕЩЕНО), состав инсталлятора Inno Setup, куда он пишет файлы, почему %APPDATA%\\NeuralNote\\ делят Standalone и VST3.\n- docs/neural-note-portable-symlinks-report.md — точная раскладка S:\\Plugins\\NeuralNote\\ и готовые junction-схемы для манифеста: VST3 bundle (минимальный набор), Standalone (отдельно), модели (отдельно, опционально).\n\nЛИЦЕНЗИОННАЯ ОСОБЕННОСТЬ. Веса MuScriptor под CC BY-NC 4.0. Это критично для portable-сборки: в коммерческом контексте (студия звукозаписи) использовать нельзя. Манифест это не меняет -- winos не лицензирует, лицензирует выбранный плагин; но owner должен знать, что adopting NeuralNote без проверки лицензии для коммерческого использования недопустим. Конкретное предупреждение добавить в манифест.\n\nВРЕМЕННОЕ ХРАНИЛИЩЕ. docs/neural-note-portable-*.md — work-in-progress: после создания manifests/NeuralNote.json они удаляются (по решению владельца). Это фиксируется здесь, чтобы случайный поиск не оставил их как постоянную документацию.\n\nЧТО НЕ ВХОДИТ В W14.\n1. Самой записи в state/powerlinks.json (allowlist) — это действие owner'а через adopt, не автоматическое.\n2. Загрузка файлов плагина в S:\\Plugins\\NeuralNote — это copy-операция, не задача кода.\n3. Решение по лицензии NC для коммерческого использования — owner decision, не агентский.",
       "status": "pending"
+    },
+    {
+      "id": "W15",
+      "title": "Apply post-merge review findings (merge-powerlinks..dev)",
+      "type": "fix",
+      "origin": "agent:review",
+      "files": [
+        "main.ps1",
+        "tests/vars.Tests.ps1",
+        "tests/modules/herdr-serve.Tests.ps1",
+        ".agent/tasks/manifest.json"
+      ],
+      "depends_on": [],
+      "acceptance_criteria": [
+        "$serviceAliases в main.ps1 derivation от $modules, без ручной карты",
+        "Alias-ассерт в tests/vars.Tests.ps1 сужен до entries с action 'setup'",
+        "$ConfirmPreference = 'None' в BeforeAll herdr-serve.Tests.ps1",
+        "W10 context в manifest.json ссылается на 7374f7e, не 57276a1",
+        "Полный набор тестов зелёный, PSScriptAnalyzer 0 замечаний",
+        "Сообщение bee5588 переписано под reference commit 7374f7e, rebase + force-push выполнены"
+      ],
+      "context": "Источник -- отчёт агента в .temp/report.md (ревью diff merge-powerlinks..dev, post-W11). Девять пунктов распределены: четыре обязательных (#1-#4) реализованы здесь, пять отложены (бэклог или владелец-решение). Что отложено: W14 пробел в acceptance (бэклог), menu-тесты на магических индексах (бэклог), баннер 'Plugin Deployment ::' дубль строк (бэклог), регистр сервисов в меню (бэклог), ShouldProcess в opencode-serve (нужен явный ответ владельца про -WhatIf как контракт).\n\nКЛЮЧЕВОЕ ПРО #1. Сообщение bee5588 ('reference commit 57276a1') и W10 context в этом файле содержали одну и ту же фактическую ошибку: feat(herdr-serve) -- это 7374f7e, а 57276a1 -- косметический rename баннера. По решению владельца: правка в обоих местах. Это потребовало git rebase -i с edit на bee5588, переписать сообщение и подложить исправленный manifest.json в тот же коммит, потом force-push на dev. Все следующие за bee5588 коммиты получили новые хеши; dev/HEAD = f596232.\n\nКЛЮЧЕВОЕ ПРО #2. В main.ps1 уже был образец автогенерации: $moduleAliases на строках 84-90 деривируется из $modules. Для $serviceAliases взят тот же шаблон, плюс фильтр 'Actions contains setup' -- именно наличие setup делает запись сервисом. Тест на дрейф (вариант b из репорта) не понадобился, потому что источник один.\n\nКЛЮЧЕВОЕ ПРО #3. Репорт сформулировал мотивацию как 'тест проходит вакуумно' -- это неточно: 'Should -Be $true' падает громко при удалении Alias у всех записей. Но сужение инварианта до 'services have Alias' самостоятельно ценно, потому что меню-only записи технически могут существовать без Alias. Применён узкий ассерт + сохранён legacy sanity на отсутствие 'Service Manager'.\n\nVerification после ребейза: tests 240/0, lint 0. См. коммит f596232 (был bd1a871 до ребейза).",
+      "status": "pending"
     }
   ]
 }
