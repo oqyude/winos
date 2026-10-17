@@ -162,20 +162,20 @@ copy_file() {
     local dst="$dst_dir/$name"
     if [[ ! -f "$src" ]]; then
         skip "$name (source not found)"
-        ((SKIP_COUNT += 1))
+        SKIP_COUNT=$((SKIP_COUNT + 1))
         return
     fi
     if [[ "$UPDATE" == true ]] || [[ ! -f "$dst" ]]; then
         if cp "$src" "$dst"; then
             ok "$name"
-            ((COPY_COUNT++))
+            COPY_COUNT=$((COPY_COUNT + 1))
         else
             fail "$name"
-            ((FAIL_COUNT++))
+            FAIL_COUNT=$((FAIL_COUNT + 1))
         fi
     else
         skip "$name (exists, use --update to overwrite)"
-        ((SKIP_COUNT += 1))
+        SKIP_COUNT=$((SKIP_COUNT + 1))
     fi
 }
 
@@ -185,30 +185,32 @@ copy_dir() {
     local dst="$dst_dir/$name"
     if [[ ! -d "$src" ]]; then
         skip "$name/ (source not found)"
-        ((SKIP_COUNT += 1))
+        SKIP_COUNT=$((SKIP_COUNT + 1))
         return
     fi
     mkdir -p "$dst"
     if [[ "$UPDATE" == true ]]; then
         if cp -rf "$src"/* "$dst/" 2>/dev/null; then
             ok "$name/"
-            ((COPY_COUNT++))
+            COPY_COUNT=$((COPY_COUNT + 1))
         else
             fail "$name/ (partial copy)"
-            ((FAIL_COUNT++))
+            FAIL_COUNT=$((FAIL_COUNT + 1))
         fi
     else
         cp -rn "$src"/* "$dst/" 2>/dev/null || true
         ok "$name/"
-        ((COPY_COUNT++))
+        COPY_COUNT=$((COPY_COUNT + 1))
     fi
 }
 
-copy_file "$METAAGENT_SRC/META_AGENT_GUIDE.md" "$SRC_DIR"
+copy_file "$METAAGENT_SRC/GUIDE.md" "$SRC_DIR"
 copy_file "$METAAGENT_SRC/BOUNDARIES.md" "$SRC_DIR"
+copy_file "$METAAGENT_SRC/CHANGELOG.md" "$SRC_DIR"
 copy_file "$METAAGENT_SRC/WORKFLOW.md" "$SRC_DIR"
 copy_file "$METAAGENT_SRC/VERSION" "$SRC_DIR"
 copy_dir  "$METAAGENT_SRC/PROTOCOLS" "$SRC_DIR"
+copy_dir  "$METAAGENT_SRC/COMMANDS"  "$SRC_DIR"
 copy_dir  "$METAAGENT_SRC/TEMPLATES" "$SRC_DIR"
 copy_file "$METAAGENT_SRC/install.sh" "$SRC_DIR"
 copy_file "$METAAGENT_SRC/install.ps1" "$SRC_DIR"
@@ -220,19 +222,21 @@ create_agents_md() {
     cat > "$1" << AGENTS_EOF
 # MetaAgent
 
-Этот проект использует [MetaAgent](.agent/src/META_AGENT_GUIDE.md) v$VERSION —
+Этот проект использует [MetaAgent](.agent/src/GUIDE.md) v$VERSION —
 набор инструкций для AI-агента.
 
 ## Контекст MetaAgent
 
 | Ресурс | Путь |
 |--------|------|
-| Главная инструкция | \`.agent/src/META_AGENT_GUIDE.md\` |
+| Главная инструкция | \`.agent/src/GUIDE.md\` |
 | Протоколы фаз | \`.agent/src/PROTOCOLS/\` |
+| Команды (on-demand) | \`.agent/src/COMMANDS/\` |
 | Шаблоны артефактов | \`.agent/src/TEMPLATES/\` |
 | Границы (что разрешено/запрещено) | \`.agent/src/BOUNDARIES.md\` |
+| История версий | \`.agent/src/CHANGELOG.md\` |
 | Правила проекта | \`.agent/rules/project-rules.md\` |
-| Примеры работы | \`.agent/src/WORKFLOW.md\` |
+| Пример работы | \`.agent/src/WORKFLOW.md\` |
 | Версия | \`.agent/src/VERSION\` |
 
 ## Состояние сессии (если инициализировано)
@@ -240,19 +244,38 @@ create_agents_md() {
 | Артефакт | Путь |
 |----------|------|
 | Чекпоинты сессии | \`.agent/checkpoints.json\` |
-| Манифест задач | \`.agent/task-manifest.json\` |
-| Сводка для exec-агента | \`.agent/handoff-summary.md\` |
-| Анализ репозитория | \`.agent/analysis-report.md\` |
+| Слепок проекта | \`.agent/context/project-state.md\` |
+| Анализ репозитория | \`.agent/context/analysis-report.md\` |
+| Дорожная карта | \`.agent/roadmap/sources.md\` |
+| Манифест задач | \`.agent/tasks/manifest.json\` |
+| Сводка для следующего агента | \`.agent/handoff-summary.md\` |
+| Сводка сессии | \`.agent/session-summary.md\` |
 
-## Для исполнительного агента
+## Для агента
 
-1. **Прочитай** \`.agent/src/META_AGENT_GUIDE.md\` — пойми жизненный цикл MetaAgent.
+Жизненный цикл MetaAgent v$VERSION:
+
+\`\`\`
+INIT → ANALYSE → ROADMAP → [DESIGN] → DECOMPOSITION → EXECUTION → METASTATE → HANDOFF
+\`\`\`
+
+1. **Прочитай** \`.agent/src/GUIDE.md\` — пойми цикл и доступные команды.
 2. **Прочитай** \`.agent/src/BOUNDARIES.md\` — соблюдай границы.
-3. **Прочитай** \`.agent/rules/project-rules.md\` — выполни пользовательские правила.
+3. **Прочитай** \`.agent/rules/project-rules.md\` — выполни правила пользователя.
 4. **Проверь** \`.agent/checkpoints.json\` — если существует, используй как состояние сессии.
-5. **Проверь** \`.agent/task-manifest.json\` — если существует, выполняй задачи по порядку.
-6. Если \`.agent/\` не инициализирован или устарел — запусти \`install.sh --update\` для
+5. **Проверь** \`.agent/context/project-state.md\` — получи актуальную картину.
+6. **Проверь** \`.agent/tasks/manifest.json\` — если существует, выполняй задачи по порядку.
+7. Если \`.agent/\` не инициализирован или устарел — запусти \`install.sh --update\` для
    обновления исходников MetaAgent до актуальной версии.
+
+## Команды (on-demand)
+
+В любой момент пользователь может вызвать:
+- \`/adr\` — записать архитектурное решение
+- \`/red-team\` — попытаться сломать дизайн
+- \`/risk-register\` — зафиксировать допущения
+- \`/alt-arch\` — описать альтернативу
+- \`/invariant-tests\` — тесты-инварианты для ADR
 AGENTS_EOF
 }
 
@@ -264,7 +287,7 @@ elif [[ "$UPDATE" == true ]]; then
     ok "AGENTS.md updated"
 else
     skip "AGENTS.md (exists, use --update to overwrite)"
-    ((SKIP_COUNT += 1))
+    SKIP_COUNT=$((SKIP_COUNT + 1))
 fi
 
 # --- summary -------------------------------------------------------------

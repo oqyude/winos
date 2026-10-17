@@ -2,91 +2,98 @@
 
 ## Цель
 
-По команде пользователя «обнови метасостояние проекта» — провести ревью накопленных requests, синхронизировать манифест, обновить слепок проекта и подготовить `.agent/` как полную картину для следующей сессии.
+По команде пользователя провести ревью накопленных requests, синхронизировать манифест, обновить слепок проекта и подготовить `.agent/` как полную картину для следующей сессии.
+
+## Когда запускать
+
+По команде пользователя:
+
+- «обнови метасостояние»
+- «update metastate»
+- «подведи итог»
+- «заверши сессию»
+
+Может запускаться многократно — после каждой группы выполненных задач.
 
 ## Вход
 
 - `.agent/requests/active/` — все request-ы со статусом `ready_for_review`
-- `.agent/tasks/manifest.json` — текущее состояние задач
-- `.agent/context/project-state.md` — текущий слепок проекта (создан в ANALYSIS)
-- `.agent/roadmap/sources.md` — дорожная карта (создана в ROADMAP)
+- `.agent/tasks/manifest.json`
+- `.agent/context/project-state.md` (создан в ANALYSE, обновляется здесь)
+- `.agent/roadmap/sources.md`
+- `.agent/decisions/index.json`
 - `.agent/checkpoints.json`
 
 ## Шаги
 
-### 6.1. Сбор requests
+### 6.1. Собрать requests
 
 Прочитать все файлы из `.agent/requests/active/` со статусом `ready_for_review`.
-Каждый request — это выполненная задача, ожидающая подтверждения.
 
 ### 6.2. Ревью каждого request
 
-Для каждого request:
+Для каждого:
 
-1. **Верифицировать** — проверить, что verification корректен:
-   - Тесты действительно проходят (перезапустить, если нужно)
-   - LSP diagnostics чист
-   - Acceptance criteria выполнены
-   - При необходимости — проверить коммиты (git show)
-
+1. **Верифицировать** — тесты проходят, LSP чист, AC выполнены, коммиты на месте.
 2. **Принять или отклонить:**
-   - ✅ **approved** — всё ОК:
-     - Переместить request: `.agent/requests/active/` → `.agent/requests/archive/`
-     - Убедиться, что задача в manifest.json имеет `status: "completed"`
-   - ❌ **rejected** — есть проблемы:
-     - Оставить request в active/ с комментарием о причинах отказа
-     - В manifest.json: `status: "reopened"`, снять `claimed_by`
-     - Добавить `rejection_reason` в request
+
+   - ✅ **approved**:
+     - Переместить в `.agent/requests/archive/`.
+     - В `manifest.json` убедиться: `status: "completed"`.
+
+   - ❌ **rejected**:
+     - Оставить в `active/` с комментарием.
+     - В `manifest.json`: `status: "reopened"`, добавить `rejection_reason`.
+     - В request добавить `rejection_reason`.
 
 ### 6.3. Архивация завершённых задач
 
-Для каждой задачи в manifest.json со статусом `completed`:
-1. Создать `.agent/archive/tasks/{id}.json` — полное описание задачи (все поля)
-2. В manifest.json заменить на one-liner:
+Для каждой `completed` задачи:
+
+1. Создать `.agent/archive/tasks/{id}.json` — полное описание.
+2. В `manifest.json` заменить на one-liner:
+
    ```json
    { "id": "T1", "title": "GET /health endpoint", "status": "archived", "origin": "user:direct" }
    ```
 
-### 6.4. Обновление project-state.md
+### 6.4. Обновить project-state
 
 Переписать `.agent/context/project-state.md` с учётом выполненных задач:
-- Обновить список модулей (какие добавлены/изменены)
-- Обновить архитектурную схему (кратко)
-- Обновить статус тестов
-- Добавить новые ADR, если появились
-- Убрать закрытые concerns
 
-Цель: следующий агент читает project-state.md и понимает проект, не открывая исходники.
+- Обновить список модулей (добавлены / изменены).
+- Обновить архитектурную схему (кратко).
+- Обновить статус тестов.
+- Добавить новые ADR.
+- Убрать закрытые concerns.
 
-### 6.5. Обновление roadmap
+**Цель:** следующий агент читает `project-state.md` и понимает проект, не открывая исходники.
+
+### 6.5. Обновить roadmap
 
 В `.agent/roadmap/sources.md`:
-- Отметить выполненные пункты
-- Пересчитать приоритеты
-- Если появились новые источники — добавить
+
+- Отметить выполненные пункты.
+- Пересчитать приоритеты.
+- Добавить новые источники (если появились).
 
 ### 6.6. Индекс архива
 
 Создать/обновить `.agent/archive/index.json`:
+
 ```json
 {
-  "version": "2.1.0",
+  "version": "3.0.0",
   "archived_at": "<timestamp>",
-  "tasks": [
-    { "id": "T1", "title": "GET /health", "archived_at": "<timestamp>" }
-  ],
-  "requests": [
-    { "id": "req-T1", "task_id": "T1", "archived_at": "<timestamp>" }
-  ],
-  "checkpoints": [
-    { "file": "checkpoints/<timestamp>.json", "archived_at": "<timestamp>" }
-  ]
+  "tasks": [{ "id": "T1", "title": "...", "archived_at": "<timestamp>" }],
+  "requests": [{ "id": "req-T1", "task_id": "T1", "archived_at": "<timestamp>" }],
+  "checkpoints": [{ "file": "checkpoints/<ts>.json", "archived_at": "<timestamp>" }]
 }
 ```
 
-### 6.7. Создание handoff-summary.md
+### 6.7. Создать handoff-summary
 
-Создать `.agent/handoff-summary.md` — полную сводку для следующего агента:
+Создать `.agent/handoff-summary.md` — полная сводка для следующего агента:
 
 ```markdown
 ## Session Summary
@@ -110,40 +117,29 @@
 - Archive: `.agent/archive/index.json`
 ```
 
-### 6.8. Финализация чекпоинта
+### 6.8. Обновить checkpoints
 
-Обновить checkpoints.json:
-- `phases.metastate = "completed"`
-- Актуальный список задач
-- `last_updated`
+```json
+{ "phases": { "metastate": "completed" }, "last_updated": "<timestamp>" }
+```
 
 ## Выход
 
-- Подтверждённые requests: `.agent/requests/archive/`
-- Архив задач: `.agent/archive/tasks/{id}.json`
-- Обновлённый project-state.md
-- Обновлённый roadmap/sources.md
-- `.agent/handoff-summary.md` — полная сводка
+- `.agent/requests/archive/` — подтверждённые request-ы
+- `.agent/archive/tasks/{id}.json` — архив задач
+- Обновлённый `.agent/context/project-state.md`
+- Обновлённый `.agent/roadmap/sources.md`
+- `.agent/handoff-summary.md`
 - `.agent/archive/index.json`
-- Финальный checkpoints.json
+- Финальный `checkpoints.json`
 
 ## Критерии завершения
 
-- [ ] Все ready_for_review requests проверены (approved/rejected)
-- [ ] Approved requests перемещены в archive
+- [ ] Все `ready_for_review` requests проверены (approved / rejected)
+- [ ] Approved перемещены в archive
 - [ ] Completed задачи архивированы (one-liner в manifest)
-- [ ] project-state.md отражает актуальное состояние проекта
-- [ ] roadmap/sources.md обновлён
-- [ ] archive/index.json создан
-- [ ] handoff-summary.md готов
-- [ ] checkpoints.json финализирован
-
-## Когда запускать
-
-По команде пользователя:
-- «обнови метасостояние»
-- «update metastate»
-- «подведи итог»
-- «заверши сессию»
-
-Может запускаться многократно в течение жизни проекта — после каждой группы выполненных задач.
+- [ ] `project-state.md` отражает актуальное состояние
+- [ ] `roadmap/sources.md` обновлён
+- [ ] `archive/index.json` создан
+- [ ] `handoff-summary.md` готов
+- [ ] `checkpoints.json` финализирован

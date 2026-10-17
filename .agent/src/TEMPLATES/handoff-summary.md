@@ -3,37 +3,24 @@
 ## Session Info
 
 - **Session ID:** `{{ session_id }}`
-- **Target Repo:** `{{ target_repo }}`
+- **Target Repo:** {{ target_repo }}
 - **Goal:** {{ goal }}
 - **Date:** {{ date }}
-- **Duration:** {{ duration }}
-- **Depth:** {{ depth }}
-- **Config:** {{ config_summary }}
+- **Project type:** {{ project_type }}
 
 ## Repo Summary
 
 {{ repo_summary }}
 
-## Project Type
+## Artifacts Created
 
-- **Type:** {{ project_type }}
-- **Design report:** {% if project_type == "greenfield" or project_type == "scaffold" %}`.agent/context/design-report.md`{% else %}—{% endif %}
-
-## ADR Summary (если применимо)
-
-{% if adr_count > 0 %}
-Создано ADR: {{ adr_count }}
-{% for adr in adr_list %}
-- `{{ adr.path }}` — {{ adr.title }}
-{% endfor %}
-{% endif %}
-
-## Risk Register (если применимо)
-
-{% if risk_count > 0 %}
-Задокументировано допущений: {{ risk_count }}
-Наиболее критичное: {{ top_risk }}
-{% endif %}
+- **Analysis report:** `.agent/context/analysis-report.md`
+- **Project state:** `.agent/context/project-state.md`
+- **Design report:** {{ design_report_path_or_dash }}
+- **Roadmap:** `.agent/roadmap/sources.md`
+- **ADR:** {{ adr_summary_or_dash }}
+- **Risk Register:** {{ risk_register_path_or_dash }}
+- **Red Team Report:** {{ red_team_report_path_or_dash }}
 
 ## Environment Status
 
@@ -50,35 +37,21 @@
 | Pending | {{ pending }} |
 | In Progress | {{ in_progress }} |
 | Completed | {{ completed }} |
+| Archived | {{ archived }} |
 | Failed/Skipped | {{ failed }} |
-
-**Task by type:**
-{% for type, count in tasks_by_type %}
-- {{ type }}: {{ count }}
-{% endfor %}
 
 ## Tasks (ordered)
 
-{% for task in tasks %}
-### {{ task.id }}: {{ task.title }}
-- Type: {{ task.type }}
-- Depends on: {{ task.depends_on | default("—") }}
-- Files: {{ task.files | join(", ") }}
-- Status: {{ task.status }}
-
-{% endfor %}
+{{ task_list_markdown }}
 
 ## Next Steps
 
-Исполнительный агент начинает с задачи **{{ first_task }}**.
+Следующий агент: прочитай `.agent/context/project-state.md`, затем `.agent/tasks/manifest.json` и приступай к первой `pending` задаче.
 
 ## Caveats
 
-{% for caveat in caveats %}
-- {{ caveat }}
-{% endfor %}
+{{ caveats_list }}
 
 ## Checkpoints
 
-Файл: `.agent/checkpoints.json`
-Актуальное состояние чекпоинтов прилагается.
+Файл: `.agent/checkpoints.json` — состояние фаз и список задач.

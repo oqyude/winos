@@ -38,36 +38,11 @@
 
 ### Сущности
 
-{% for entity in entities %}
-### {{ entity.name }}
-
-| Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-{% for field in entity.fields %}
-| {{ field.name }} | {{ field.type }} | {{ field.constraints }} | {{ field.description }} |
-{% endfor %}
-
-**Связи:** {{ entity.relationships }}
-
-{% endfor %}
+{{ entity_descriptions }}
 
 ## 5. API / Интерфейсы
 
-{% if has_api %}
-| Метод | Путь | Описание | Request | Response |
-|---|---|---|---|---|
-{% for endpoint in api_endpoints %}
-| {{ endpoint.method }} | {{ endpoint.path }} | {{ endpoint.description }} | {{ endpoint.request }} | {{ endpoint.response }} |
-{% endfor %}
-{% endif %}
-
-{% if has_gui %}
-**Экраны:** {{ gui_screens }}
-{% endif %}
-
-{% if has_cli %}
-**Команды:** {{ cli_commands }}
-{% endif %}
+{{ api_endpoints_table }}
 
 ## 6. Обработка ошибок
 
@@ -82,31 +57,16 @@
 - **Mock-стратегия:** {{ mock_strategy }}
 - **Команда запуска:** `{{ test_command }}`
 
-## 8. Alternative Architecture (если применимо)
+## 8. Дополнительные артефакты (по команде пользователя)
 
-| Критерий | Выбранная архитектура | Альтернатива |
-|---|---|---|
-| Название | {{ chosen_arch }} | {{ alt_arch }} |
-| Сложность | {{ chosen_complexity }} | {{ alt_complexity }} |
-| Почему не выбрана | — | {{ alt_rejection_reason }} |
+Если пользователь вызвал соответствующие команды, добавить ссылки:
 
-## 9. ADR Reference (если применимо)
+- ADR: `.agent/decisions/` (команда `/adr`)
+- Alternative Architecture: `.agent/context/alt-architecture.md` (команда `/alt-arch`)
+- Risk Register: `.agent/context/risk-register.md` (команда `/risk-register`)
+- Red Team Review: `.agent/context/red-team-report.md` (команда `/red-team`)
 
-| ID | Решение | Файл |
-|---|---|---|
-{% for adr in adr_list %}
-| {{ adr.id }} | {{ adr.title }} | `{{ adr.path }}` |
-{% endfor %}
-
-## 10. Risk Register (если применимо)
-
-| # | Assumption | Impact | Mitigation |
-|---|---|---|---|
-{% for risk in risk_list %}
-| {{ risk.id }} | {{ risk.assumption }} | {{ risk.impact }} | {{ risk.mitigation }} |
-{% endfor %}
-
-## 11. Предварительная группировка задач
+## 9. Предварительная группировка задач
 
 | Задача | Описание | Тип |
 |---|---|---|
@@ -115,6 +75,6 @@
 | T3 | {{ task_3 }} | feature |
 | T4 | {{ task_4 }} | test |
 
-## 12. Примечания
+## 10. Примечания
 
 {{ notes }}

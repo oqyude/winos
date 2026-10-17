@@ -206,11 +206,13 @@ function Copy-Dir {
     }
 }
 
-Copy-File (Join-Path $MetaAgentSrc "META_AGENT_GUIDE.md") $SrcDir
+Copy-File (Join-Path $MetaAgentSrc "GUIDE.md") $SrcDir
 Copy-File (Join-Path $MetaAgentSrc "BOUNDARIES.md") $SrcDir
+Copy-File (Join-Path $MetaAgentSrc "CHANGELOG.md") $SrcDir
 Copy-File (Join-Path $MetaAgentSrc "WORKFLOW.md") $SrcDir
 Copy-File (Join-Path $MetaAgentSrc "VERSION") $SrcDir
 Copy-Dir  (Join-Path $MetaAgentSrc "PROTOCOLS") $SrcDir
+Copy-Dir  (Join-Path $MetaAgentSrc "COMMANDS")  $SrcDir
 Copy-Dir  (Join-Path $MetaAgentSrc "TEMPLATES") $SrcDir
 Copy-File (Join-Path $MetaAgentSrc "install.sh") $SrcDir
 Copy-File (Join-Path $MetaAgentSrc "install.ps1") $SrcDir
@@ -222,19 +224,21 @@ if (-not (Test-Path $AgentsMd -PathType Leaf)) {
     $content = @"
 # MetaAgent
 
-Этот проект использует [MetaAgent](.agent/src/META_AGENT_GUIDE.md) v$Version —
+Этот проект использует [MetaAgent](.agent/src/GUIDE.md) v$Version —
 набор инструкций для AI-агента.
 
 ## Контекст MetaAgent
 
 | Ресурс | Путь |
 |--------|------|
-| Главная инструкция | `.agent/src/META_AGENT_GUIDE.md` |
+| Главная инструкция | `.agent/src/GUIDE.md` |
 | Протоколы фаз | `.agent/src/PROTOCOLS/` |
+| Команды (on-demand) | `.agent/src/COMMANDS/` |
 | Шаблоны артефактов | `.agent/src/TEMPLATES/` |
 | Границы (что разрешено/запрещено) | `.agent/src/BOUNDARIES.md` |
+| История версий | `.agent/src/CHANGELOG.md` |
 | Правила проекта | `.agent/rules/project-rules.md` |
-| Примеры работы | `.agent/src/WORKFLOW.md` |
+| Пример работы | `.agent/src/WORKFLOW.md` |
 | Версия | `.agent/src/VERSION` |
 
 ## Состояние сессии (если инициализировано)
@@ -242,19 +246,38 @@ if (-not (Test-Path $AgentsMd -PathType Leaf)) {
 | Артефакт | Путь |
 |----------|------|
 | Чекпоинты сессии | `.agent/checkpoints.json` |
-| Манифест задач | `.agent/task-manifest.json` |
-| Сводка для exec-агента | `.agent/handoff-summary.md` |
-| Анализ репозитория | `.agent/analysis-report.md` |
+| Слепок проекта | `.agent/context/project-state.md` |
+| Анализ репозитория | `.agent/context/analysis-report.md` |
+| Дорожная карта | `.agent/roadmap/sources.md` |
+| Манифест задач | `.agent/tasks/manifest.json` |
+| Сводка для следующего агента | `.agent/handoff-summary.md` |
+| Сводка сессии | `.agent/session-summary.md` |
 
-## Для исполнительного агента
+## Для агента
 
-1. **Прочитай** `.agent/src/META_AGENT_GUIDE.md` — пойми жизненный цикл MetaAgent.
+Жизненный цикл MetaAgent v${Version}:
+
+```
+INIT → ANALYSE → ROADMAP → [DESIGN] → DECOMPOSITION → EXECUTION → METASTATE → HANDOFF
+```
+
+1. **Прочитай** `.agent/src/GUIDE.md` — пойми цикл и доступные команды.
 2. **Прочитай** `.agent/src/BOUNDARIES.md` — соблюдай границы.
-3. **Прочитай** `.agent/rules/project-rules.md` — выполни пользовательские правила.
+3. **Прочитай** `.agent/rules/project-rules.md` — выполни правила пользователя.
 4. **Проверь** `.agent/checkpoints.json` — если существует, используй как состояние сессии.
-5. **Проверь** `.agent/task-manifest.json` — если существует, выполняй задачи по порядку.
-6. Если `.agent/` не инициализирован или устарел — запусти `install.sh --update` для
+5. **Проверь** `.agent/context/project-state.md` — получи актуальную картину.
+6. **Проверь** `.agent/tasks/manifest.json` — если существует, выполняй задачи по порядку.
+7. Если `.agent/` не инициализирован или устарел — запусти `install.sh --update` для
    обновления исходников MetaAgent до актуальной версии.
+
+## Команды (on-demand)
+
+В любой момент пользователь может вызвать:
+- `/adr` — записать архитектурное решение
+- `/red-team` — попытаться сломать дизайн
+- `/risk-register` — зафиксировать допущения
+- `/alt-arch` — описать альтернативу
+- `/invariant-tests` — тесты-инварианты для ADR
 "@
     $utf8 = [System.Text.Encoding]::UTF8
     [System.IO.File]::WriteAllBytes($AgentsMd, $utf8.GetBytes($content))
@@ -263,19 +286,21 @@ if (-not (Test-Path $AgentsMd -PathType Leaf)) {
     $content = @"
 # MetaAgent
 
-Этот проект использует [MetaAgent](.agent/src/META_AGENT_GUIDE.md) v$Version —
+Этот проект использует [MetaAgent](.agent/src/GUIDE.md) v$Version —
 набор инструкций для AI-агента.
 
 ## Контекст MetaAgent
 
 | Ресурс | Путь |
 |--------|------|
-| Главная инструкция | `.agent/src/META_AGENT_GUIDE.md` |
+| Главная инструкция | `.agent/src/GUIDE.md` |
 | Протоколы фаз | `.agent/src/PROTOCOLS/` |
+| Команды (on-demand) | `.agent/src/COMMANDS/` |
 | Шаблоны артефактов | `.agent/src/TEMPLATES/` |
 | Границы (что разрешено/запрещено) | `.agent/src/BOUNDARIES.md` |
+| История версий | `.agent/src/CHANGELOG.md` |
 | Правила проекта | `.agent/rules/project-rules.md` |
-| Примеры работы | `.agent/src/WORKFLOW.md` |
+| Пример работы | `.agent/src/WORKFLOW.md` |
 | Версия | `.agent/src/VERSION` |
 
 ## Состояние сессии (если инициализировано)
@@ -283,19 +308,38 @@ if (-not (Test-Path $AgentsMd -PathType Leaf)) {
 | Артефакт | Путь |
 |----------|------|
 | Чекпоинты сессии | `.agent/checkpoints.json` |
-| Манифест задач | `.agent/task-manifest.json` |
-| Сводка для exec-агента | `.agent/handoff-summary.md` |
-| Анализ репозитория | `.agent/analysis-report.md` |
+| Слепок проекта | `.agent/context/project-state.md` |
+| Анализ репозитория | `.agent/context/analysis-report.md` |
+| Дорожная карта | `.agent/roadmap/sources.md` |
+| Манифест задач | `.agent/tasks/manifest.json` |
+| Сводка для следующего агента | `.agent/handoff-summary.md` |
+| Сводка сессии | `.agent/session-summary.md` |
 
-## Для исполнительного агента
+## Для агента
 
-1. **Прочитай** `.agent/src/META_AGENT_GUIDE.md` — пойми жизненный цикл MetaAgent.
+Жизненный цикл MetaAgent v${Version}:
+
+```
+INIT → ANALYSE → ROADMAP → [DESIGN] → DECOMPOSITION → EXECUTION → METASTATE → HANDOFF
+```
+
+1. **Прочитай** `.agent/src/GUIDE.md` — пойми цикл и доступные команды.
 2. **Прочитай** `.agent/src/BOUNDARIES.md` — соблюдай границы.
-3. **Прочитай** `.agent/rules/project-rules.md` — выполни пользовательские правила.
+3. **Прочитай** `.agent/rules/project-rules.md` — выполни правила пользователя.
 4. **Проверь** `.agent/checkpoints.json` — если существует, используй как состояние сессии.
-5. **Проверь** `.agent/task-manifest.json` — если существует, выполняй задачи по порядку.
-6. Если `.agent/` не инициализирован или устарел — запусти `install.sh --update` для
+5. **Проверь** `.agent/context/project-state.md` — получи актуальную картину.
+6. **Проверь** `.agent/tasks/manifest.json` — если существует, выполняй задачи по порядку.
+7. Если `.agent/` не инициализирован или устарел — запусти `install.sh --update` для
    обновления исходников MetaAgent до актуальной версии.
+
+## Команды (on-demand)
+
+В любой момент пользователь может вызвать:
+- `/adr` — записать архитектурное решение
+- `/red-team` — попытаться сломать дизайн
+- `/risk-register` — зафиксировать допущения
+- `/alt-arch` — описать альтернативу
+- `/invariant-tests` — тесты-инварианты для ADR
 "@
     $utf8 = [System.Text.Encoding]::UTF8
     [System.IO.File]::WriteAllBytes($AgentsMd, $utf8.GetBytes($content))

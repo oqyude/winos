@@ -15,8 +15,7 @@
 - **Точка входа:** {{ entry_point }}
 - **Система сборки:** {{ build_system }}
 
-{% if project_type == "existing" or project_type == "scaffold" %}
-## 2. Стек технологий
+## 2. Стек технологий (existing / scaffold)
 
 | Компонент | Значение |
 |---|---|
@@ -27,7 +26,7 @@
 | Пакетный менеджер | {{ package_manager }} |
 | Линтер/форматтер | {{ linter }} |
 
-## 3. Архитектура
+## 3. Архитектура (existing / scaffold)
 
 ```
 {{ directory_tree }}
@@ -41,7 +40,7 @@
 |---|---|
 | {{ module }} | {{ description }} |
 
-## 4. Конвенции
+## 4. Конвенции (existing / scaffold)
 
 - **Стиль:** {{ code_style }}
 - **Импорты:** {{ import_style }}
@@ -49,52 +48,38 @@
 - **Обработка ошибок:** {{ error_handling }}
 - **Логирование:** {{ logging }}
 
-## 5. Тесты
+## 5. Тесты (existing / scaffold)
 
 - **Команда запуска:** `{{ test_command }}`
 - **Всего тестов:** {{ total_tests }}
 - **Пройдено:** {{ passed }}
 - **Упало:** {{ failed }}
 - **Пропущено:** {{ skipped }}
-- **Упавшие тесты:**
-  {% for test in failed_tests %}
-  - `{{ test }}`
-  {% endfor %}
+- **Упавшие тесты:** {{ failed_tests_list }}
 
-## 6. Базовая проверка
+## 6. Базовая проверка (existing / scaffold)
 
 - **Сборка:** {{ build_status }}
 - **Запуск:** {{ run_status }}
 - **Git status:** {{ git_status }}
-{% endif %}
 
-{% if project_type == "greenfield" or project_type == "scaffold" %}
-## 7. Требования (из README)
+## 7. Требования (greenfield / scaffold)
 
 ### Функциональные требования
 
-{% for req in functional_requirements %}
-- {{ req }}
-{% endfor %}
+{{ functional_requirements_list }}
 
 ### Нефункциональные требования
 
-{% for req in non_functional_requirements %}
-- {{ req }}
-{% endfor %}
+{{ non_functional_requirements_list }}
 
 ### Бизнес-контекст
 
-{% for item in business_context %}
-- {{ item }}
-{% endfor %}
+{{ business_context_list }}
 
 ### Неясные моменты / Вопросы
 
-{% for question in open_questions %}
-- {{ question }}
-{% endfor %}
-{% endif %}
+{{ open_questions_list }}
 
 ## 8. Примечания
 

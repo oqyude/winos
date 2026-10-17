@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "metaagent/task-manifest/2.0.0",
+  "$id": "metaagent/task-manifest/3.0.0",
   "title": "MetaAgent Task Manifest",
   "description": "Schema for .agent/tasks/manifest.json — the global task manifest",
   "type": "object",
@@ -8,7 +8,7 @@
     "version": {
       "type": "string",
       "description": "Schema version",
-      "enum": ["2.0"]
+      "enum": ["3.0"]
     },
     "session_id": {
       "type": "string",
@@ -31,8 +31,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^T[0-9]+$",
-            "description": "Unique task identifier (T1, T2, ...)"
+            "pattern": "^(T[0-9]+|T-INV-[0-9]+)$",
+            "description": "Unique task identifier (T1, T2, ... or T-INV-N for invariants)"
           },
           "title": {
             "type": "string",
@@ -46,6 +46,10 @@
             "type": "string",
             "enum": ["feature", "refactor", "test", "fix", "config", "design", "docs", "invariant"],
             "description": "Task type"
+          },
+          "origin": {
+            "type": "string",
+            "description": "Task source (roadmap:file, adr:NNN, user:direct, agent:analysis, decomposition, invariant:NNN, risk:R-NNN)"
           },
           "files": {
             "type": "array",

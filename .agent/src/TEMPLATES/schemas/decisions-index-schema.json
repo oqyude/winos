@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "metaagent/decisions-index/2.0.0",
+  "$id": "metaagent/decisions-index/3.0.0",
   "title": "MetaAgent Decisions Index",
   "description": "Schema for .agent/decisions/index.json — machine-readable index of ADRs",
   "type": "object",
   "properties": {
     "version": {
       "type": "string",
-      "description": "Schema version",
-      "enum": ["2.0"]
+      "description": "Schema version (3.0 in v3.0+, 2.0 still valid from v2.1)",
+      "enum": ["2.0", "3.0"]
     },
     "decisions": {
       "type": "array",

@@ -1,6 +1,6 @@
 {
   "$schema": ".agent/src/TEMPLATES/schemas/task-manifest-schema.json",
-  "version": "1.0",
+  "version": "3.0",
   "session_id": "{{ session_id }}",
   "goal": "{{ goal }}",
   "created_at": "{{ timestamp }}",
@@ -9,7 +9,8 @@
       "id": "T1",
       "title": "{{ task_title }}",
       "description": "{{ task_description }}",
-      "type": "feature|refactor|test|fix|config|docs",
+      "type": "feature|refactor|test|fix|config|design|docs|invariant",
+      "origin": "user:direct",
       "files": ["path/to/file1.py", "path/to/file2.py"],
       "depends_on": [],
       "acceptance_criteria": [
