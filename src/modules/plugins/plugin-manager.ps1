@@ -326,7 +326,7 @@ switch ($action) {
         # scripts/audit-plugins.ps1 covers the whole library; this covers exactly
         # the entries state.json selects, resolved the way apply resolves them.
         Write-Host ""
-        Write-Host "  powerlinks :: verify" -ForegroundColor Cyan
+        Write-Host "  Plugin Deployment :: verify" -ForegroundColor Cyan
         Write-Host "  $('-' * 32)"           -ForegroundColor DarkGray
 
         $report = Get-VerifyReport -Entries $entries -PluginRoot $pluginRoot -ManifestDir $manifestDir
@@ -348,7 +348,7 @@ switch ($action) {
     }
     "plan" {
         Write-Host ""
-        Write-Host "  powerlinks :: plan" -ForegroundColor Cyan
+        Write-Host "  Plugin Deployment :: plan" -ForegroundColor Cyan
         Write-Host "  $('-' * 32)"          -ForegroundColor DarkGray
         $delta = Build-Delta -EntryList $entries
         Format-Plan -Delta $delta | Out-Null
@@ -358,7 +358,7 @@ switch ($action) {
     }
     "apply" {
         Write-Host ""
-        Write-Host "  powerlinks :: apply" -ForegroundColor Cyan
+        Write-Host "  Plugin Deployment :: apply" -ForegroundColor Cyan
         Write-Host "  $('-' * 32)"          -ForegroundColor DarkGray
         $delta = Build-Delta -EntryList $entries
         Invoke-Reconcile -Delta $delta -Force:$Force
@@ -380,7 +380,7 @@ switch ($action) {
     }
     "revert" {
         Write-Host ""
-        Write-Host "  powerlinks :: revert" -ForegroundColor Cyan
+        Write-Host "  Plugin Deployment :: revert" -ForegroundColor Cyan
         Write-Host "  $('-' * 32)"          -ForegroundColor DarkGray
         # Force link=false for every non-ignored entry, then reconcile. The per-drop
         # ShouldProcess is inside Invoke-SafeAction, so -WhatIf propagates there.
@@ -419,7 +419,7 @@ switch ($action) {
     }
     "adopt" {
         Write-Host ""
-        Write-Host "  powerlinks :: adopt" -ForegroundColor Cyan
+        Write-Host "  Plugin Deployment :: adopt" -ForegroundColor Cyan
         Write-Host "  $('-' * 32)"          -ForegroundColor DarkGray
         if (-not $PSCmdlet.ShouldProcess($stateFile, "Adopt: scan system and overwrite state.json")) {
             # WhatIf mode: still scan and report, but don't write.
@@ -435,7 +435,7 @@ switch ($action) {
     }
     "snapshot" {
         Write-Host ""
-        Write-Host "  powerlinks :: snapshot" -ForegroundColor Cyan
+        Write-Host "  Plugin Deployment :: snapshot" -ForegroundColor Cyan
         Write-Host "  $('-' * 32)"              -ForegroundColor DarkGray
         $delta = Build-Delta -EntryList $entries
         Save-Snapshot -Path $snapshotFile -Delta $delta | Out-Null
@@ -446,7 +446,7 @@ switch ($action) {
         # Deliberately does not write a snapshot -- that would move the baseline
         # and hide the very drift the user asked to see.
         Write-Host ""
-        Write-Host "  powerlinks :: status" -ForegroundColor Cyan
+        Write-Host "  Plugin Deployment :: status" -ForegroundColor Cyan
         Write-Host "  $('-' * 32)"           -ForegroundColor DarkGray
 
         if (-not (Test-Path -LiteralPath $snapshotFile)) {
