@@ -1,6 +1,12 @@
-# Symlink Manager
+# Config Persistence
 
 State-aware symlink orchestration for `~/Storage/persist/` → app data directories.
+
+> Formerly "Symlink Manager". Renamed in the winos-powerlinks merge because a
+> second module (`Plugin Deployment`) also creates symlinks, and two menu
+> entries both called "symlink manager" were impossible to tell apart. The file
+> keeps its name — it still documents this module, not the plugin one. The CLI
+> token is unchanged: `.\main.ps1 symlink-manager plan`.
 
 ## Goals
 
@@ -127,7 +133,7 @@ Saved automatically as a side effect of every `plan`, `apply`, and `snapshot` ac
 ```powershell
 # Interactive (main.ps1 menu):
 .\main.ps1
-  → Symlink Manager
+  → Config Persistence
   → [1] plan       # probe + show table + save snapshot
   → [2] apply      # probe + apply safe actions + save snapshot
   → [3] snapshot   # probe + save snapshot (no plan output)
@@ -170,13 +176,13 @@ pwsh -File .\src\modules\symlink-manager.ps1 -action snapshot
      "mappings": []
    }
    ```
-2. Run `.\main.ps1` → "Symlink Manager" → `[2] apply`
+2. Run `.\main.ps1` → "Config Persistence" → `[2] apply`
 3. The target symlink is created. Future runs show `noop` for it.
 
 ## Disabling an entry
 
 1. Edit `data/data.json`: set `enabled: false`
-2. Run `.\main.ps1` → "Symlink Manager" → `[2] apply`
+2. Run `.\main.ps1` → "Config Persistence" → `[2] apply`
 3. The symlink is removed (`drop`). Future runs show `noop` (target already absent).
 
 ## Future work

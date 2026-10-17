@@ -67,7 +67,9 @@ This helps migration for users familiar with old syntax.
 ## Architecture / quality
 
 ### F7. Move common to module
-`src/modules/common/State.ps1` has ~411 LOC. It mixes probing, comparison, application, formatting. Split:
+`src/modules/common/State.ps1` has 571 LOC / 9 functions (was 468 / 8 before the
+powerlinks merge; it adopted the newer engine, which added `Get-StateDrift`). It
+mixes probing, comparison, application, formatting. Split:
 - `src/modules/common/State/Probe.ps1` — probe functions
 - `src/modules/common/State/Compare.ps1` — compare + categorize
 - `src/modules/common/State/Apply.ps1` — apply + format

@@ -1,36 +1,135 @@
 {
-  "metaagent_version": "2.1.0",
-  "session_id": "00000000-0000-0000-0000-000000000001",
+  "metaagent_version": "3.0.0",
+  "session_id": "e41df406-4a8b-45b2-a38d-efd3c78f1859",
   "target_repo": "S:\\Git\\winos",
-  "goal": "Cleanup-сессия: привести артефакты MetaAgent в консистентное состояние после рефакторинга winos (M1-M7).",
+  "goal": "Слияние powerlinks в winos: winos становится контейнером, powerlinks -- четвёртым модулем. Движки симлинков в фазе 1 не сливаются.",
   "project_type": "existing",
-  "config": {
-    "depth": 4,
-    "design": { "adr": false, "alternative_arch": false },
-    "red_team": false,
-    "risk_register": false,
-    "decomposition": { "invariant_tests": false }
-  },
   "phases": {
-    "analysis": "completed",
+    "init": "completed",
+    "analyse": "completed",
     "roadmap": "completed",
-    "design": "skipped",
-    "red_team": "skipped",
+    "design": "completed",
     "decomposition": "completed",
-    "execution": "completed",
-    "metastate": "completed",
-    "handoff": "completed"
+    "execution": "in_progress",
+    "metastate": "pending",
+    "handoff": "pending"
   },
   "tasks": [
-    { "id": "C1", "title": "Миграция CSV → JSON (data/data.json v2)", "status": "archived" },
-    { "id": "C2", "title": "Symlink Manager с method-архитектурой", "status": "archived" },
-    { "id": "C3", "title": "Unified $action во всех модулях", "status": "archived" },
-    { "id": "C4", "title": "Новый main.ps1 (CLI + интерактив)", "status": "archived" },
-    { "id": "C5", "title": "Essentials module (ex Windows Cursor)", "status": "archived" },
-    { "id": "C6", "title": "Удаление админ-проверки и старых модулей", "status": "archived" },
-    { "id": "P3", "title": "PSScriptAnalyzer + approved verbs", "status": "archived" },
-    { "id": "P4", "title": "Pester smoke-тесты", "status": "archived" },
-    { "id": "P5", "title": "Структура проекта + интерактив", "status": "archived" }
+    {
+      "id": "C1",
+      "title": "Миграция CSV → JSON (data/data.json v2)",
+      "status": "archived"
+    },
+    {
+      "id": "C2",
+      "title": "Symlink Manager с method-архитектурой",
+      "status": "archived"
+    },
+    {
+      "id": "C3",
+      "title": "Unified $action во всех модулях",
+      "status": "archived"
+    },
+    {
+      "id": "C4",
+      "title": "Новый main.ps1 (CLI + интерактив)",
+      "status": "archived"
+    },
+    {
+      "id": "C5",
+      "title": "Essentials module (ex Windows Cursor)",
+      "status": "archived"
+    },
+    {
+      "id": "C6",
+      "title": "Удаление админ-проверки и старых модулей",
+      "status": "archived"
+    },
+    {
+      "id": "P3",
+      "title": "PSScriptAnalyzer + approved verbs",
+      "status": "archived"
+    },
+    {
+      "id": "P4",
+      "title": "Pester smoke-тесты",
+      "status": "archived"
+    },
+    {
+      "id": "P5",
+      "title": "Структура проекта + интерактив",
+      "status": "archived"
+    },
+    {
+      "id": "W0",
+      "title": "Миграция метасостояния v2 → v3",
+      "status": "completed"
+    },
+    {
+      "id": "W1",
+      "title": "Фаза 1: перенести артефакты powerlinks в дерево winos",
+      "status": "completed"
+    },
+    {
+      "id": "W2",
+      "title": "Фаза 1: зарегистрировать 4-й модуль и переименовать",
+      "status": "completed"
+    },
+    {
+      "id": "W3",
+      "title": "Фаза 1: прогнать общий тестовый набор",
+      "status": "completed"
+    },
+    {
+      "id": "W4",
+      "title": "Фаза 2: заменить lint/test на версии с гейтом exit code",
+      "status": "completed"
+    },
+    {
+      "id": "W5",
+      "title": "Фаза 2: доработать меню под новый модуль",
+      "status": "completed"
+    },
+    {
+      "id": "W6",
+      "title": "Фаза 2: тесты меню",
+      "status": "completed"
+    },
+    {
+      "id": "W7",
+      "title": "Фаза 3: оценить объединение двух State.ps1",
+      "status": "completed"
+    },
+    {
+      "id": "W8",
+      "title": "Решить линтерную политику объединённого репозитория",
+      "status": "completed"
+    },
+    {
+      "id": "W9",
+      "title": "Потеряна работа в .temp/new-features",
+      "status": "pending"
+    },
+    {
+      "id": "W10",
+      "title": "Автозапуск herdr по образцу opencode-serve",
+      "status": "pending"
+    },
+    {
+      "id": "W11",
+      "title": "Perенос оставшихся скриптов powerlinks в winos",
+      "status": "completed"
+    },
+    {
+      "id": "W12",
+      "title": "Перенос документации powerlinks и решение об архивировании",
+      "status": "completed"
+    },
+    {
+      "id": "W13",
+      "title": "Архивирование powerlinks: подтвердить готовность winos быть единственным источником",
+      "status": "pending"
+    }
   ],
-  "last_updated": "2026-07-30T00:00:00.000Z"
+  "last_updated": "2026-10-17T22:30:00.000Z"
 }
