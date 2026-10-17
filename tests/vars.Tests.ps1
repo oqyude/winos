@@ -7,12 +7,81 @@ Describe "vars.ps1 loads" {
         $modules | Should -Not -BeNullOrEmpty
     }
 
-    It "has 3 module entries" {
-        $modules.Count | Should -Be 3
+    It "has 4 module entries" {
+        $modules.Count | Should -Be 4
     }
 
-    It "contains Symlink Manager" {
-        $modules.ContainsKey("Symlink Manager") | Should -Be $true
+    It "contains Config Persistence" {
+        $modules.ContainsKey("Config Persistence") | Should -Be $true
+    }
+
+    It "contains Plugin Deployment" {
+        $modules.ContainsKey("Plugin Deployment") | Should -Be $true
+    }
+
+    It "renamed the two symlink modules by job, not by mechanism" {
+        # Both create symlinks. If the display names still said "Symlink",
+        # the menu would list two entries a user could not tell apart.
+        $modules.Keys | Should -Not -Contain "Symlink Manager"
+        $modules.Keys | Should -Not -Contain "Plugin Manager"
+    }
+
+    It "gives every flat module an Alias, and no Alias to Service Manager" {
+        foreach ($name in @("Config Persistence", "Plugin Deployment", "Essentials")) {
+            $modules[$name].ContainsKey("Alias") | Should -Be $true -Because "$name is CLI-reachable"
+        }
+        # Service Manager is reached through `service <name> <action>` only.
+        $modules["Service Manager"].ContainsKey("Alias") | Should -Be $false
+    }
+
+    It "registers Plugin Deployment with all seven verbs" {
+        $modules["Plugin Deployment"].Actions |
+            Should -Be @("plan", "apply", "revert", "snapshot", "status", "adopt", "verify")
+    }
+
+    It "points Plugin Deployment at the isolated module root" {
+        # Must NOT be src\modules\plugin-manager.ps1: that directory also holds
+        # the symlink-manager's common/State.ps1, whose eight function names
+        # collide with the plugin engine's.
+        $modules["Plugin Deployment"].Path | Should -BeLike "*modules\plugins\plugin-manager.ps1"
+    }
+
+    It "resolves Plugin Deployment Path to a file that exists" {
+        Test-Path -LiteralPath $modules["Plugin Deployment"].Path | Should -Be $true
+    }
+
+    It "declares Destructive on every module entry" {
+        # The menu reads this field to decide whether to gate a verb behind a
+        # confirmation. A missing key is read as $null, which is falsy, so an
+        # entry that forgot the field would silently run revert unprotected.
+        foreach ($name in $modules.Keys) {
+            $modules[$name].ContainsKey('Destructive') | Should -Be $true -Because "$name gates on it"
+        }
+    }
+
+    It "gates revert and adopt, the two verbs that destroy or overwrite" {
+        # revert drops every junction; adopt rewrites state/powerlinks.json.
+        $d = $modules["Plugin Deployment"].Destructive
+        $d | Should -Contain "revert"
+        $d | Should -Contain "adopt"
+    }
+
+    It "does not gate the read-only verbs of Plugin Deployment" {
+        $d = $modules["Plugin Deployment"].Destructive
+        foreach ($safe in @("plan", "snapshot", "status", "verify")) {
+            $d | Should -Not -Contain $safe -Because "$safe only reads"
+        }
+        # apply reconciles toward the declared state and is the module's main
+        # verb -- prompting on it would make the tool feel broken.
+        $d | Should -Not -Contain "apply"
+    }
+
+    It "lists only verbs the module actually accepts in Destructive" {
+        foreach ($name in $modules.Keys) {
+            foreach ($verb in $modules[$name].Destructive) {
+                $modules[$name].Actions | Should -Contain $verb -Because "$name cannot run '$verb'"
+            }
+        }
     }
 
     It "contains Essentials" {

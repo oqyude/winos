@@ -57,21 +57,35 @@ Describe "opencode-serve.ps1" {
             'Register-ScheduledTask' = 0
             'Start-ScheduledTask'    = 0
         }
+        # These are test doubles. The parameter lists are load-bearing: the real
+        # cmdlets accept named parameters (-TaskName, -Action, -User...), so a
+        # stub that dropped them would reject the very calls it exists to record.
+        # Overriding Get-Command and Read-Host is the isolation technique itself,
+        # not an accident. Suppressed per function so the rules stay enforced
+        # everywhere else in the repo.
         function Get-Command {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidOverwritingBuiltInCmdlets', '', Justification = 'Test double')]
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
             param([Parameter(Position = 0)][string]$Name)
             $script:Calls['Get-Command']++
             [pscustomobject]@{ Source = 'C:\fake\opencode.exe' }
         }
-        function Read-Host { param([string]$Prompt) '' }
+        function Read-Host {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidOverwritingBuiltInCmdlets', '', Justification = 'Test double')]
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
+            param([string]$Prompt) ''
+        }
         function New-ScheduledTaskAction { [pscustomobject]@{} }
         function New-ScheduledTaskTrigger { [pscustomobject]@{} }
         function New-ScheduledTaskSettingsSet { [pscustomobject]@{} }
         function Register-ScheduledTask {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
             param([string]$TaskName, $Action, $Trigger, $Settings,
                   [string]$User, [switch]$Force, $RunLevel)
             $script:Calls['Register-ScheduledTask']++
         }
         function Start-ScheduledTask {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
             param([string]$TaskName)
             $script:Calls['Start-ScheduledTask']++
         }
