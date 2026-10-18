@@ -208,11 +208,11 @@ Describe "Sandbox" {
     Context "registry and process suppression" {
         BeforeEach {
             Enable-Sandbox -SourceRoot $script:Source -TargetRoot $script:Target -RealSourceRoot $script:RealSource | Out-Null
-            $script:Hive = 'HKEY_CURRENT_USER\Software\PowerLinksSandboxTest'
+            $script:Hive = 'HKEY_CURRENT_USER\Software\PluginSandboxTest'
         }
         AfterEach {
-            if (Test-Path "HKCU:\Software\PowerLinksSandboxTest") {
-                Remove-Item -Path "HKCU:\Software\PowerLinksSandboxTest" -Recurse -Force -ErrorAction SilentlyContinue
+            if (Test-Path "HKCU:\Software\PluginSandboxTest") {
+                Remove-Item -Path "HKCU:\Software\PluginSandboxTest" -Recurse -Force -ErrorAction SilentlyContinue
             }
         }
 
@@ -238,7 +238,7 @@ Describe "Sandbox" {
             # The gate that matters: plugin-manager skips this call when sandboxed.
             # Confirmed here by asserting the guard predicate the dispatcher uses.
             Test-SandboxActive | Should -BeTrue
-            Test-Path "HKCU:\Software\PowerLinksSandboxTest" | Should -BeFalse
+            Test-Path "HKCU:\Software\PluginSandboxTest" | Should -BeFalse
         }
     }
 }

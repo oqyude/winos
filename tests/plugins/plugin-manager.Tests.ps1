@@ -64,7 +64,7 @@ Describe "plugin-manager.ps1 integration (with manifests)" {
         $manifestObj | ConvertTo-Json -Depth 10 | Out-File -FilePath $script:FakeManifest -Encoding utf8
 
         # Mock state.json (build via PSCustomObject -> JSON to avoid escape bugs)
-        $script:FakeState = Join-Path $script:Sandbox "powerlinks.json"
+        $script:FakeState = Join-Path $script:Sandbox "plugin-deployment.json"
         $stateObj = [PSCustomObject]@{
             version      = 1
             tool_version = '0.0.1'
@@ -103,7 +103,7 @@ Describe "plugin-manager.ps1 integration (with manifests)" {
         $manifestDir = $script:FakeManifestDir
         $pluginRoot  = $script:FakePluginRoot
 
-        $entries = Get-EnabledPlugins -State (Read-PowerLinksState -Path $script:FakeState)
+        $entries = Get-EnabledPlugins -State (Read-PluginDeploymentState -Path $script:FakeState)
         $entries.Count | Should -Be 1
 
         # Inline the equivalent of Build-Delta + Invoke-Reconcile

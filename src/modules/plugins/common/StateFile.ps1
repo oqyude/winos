@@ -1,4 +1,4 @@
-# StateFile.ps1 -- Read and write state/powerlinks.json.
+# StateFile.ps1 -- Read and write state/plugin-deployment.json.
 #
 # Schema (Phase 1):
 # {
@@ -18,14 +18,14 @@
 #
 # Notes:
 # - Phantoms: PowerShell ConvertFrom-Json sometimes returns $null entries for missing
-#   trailing items. Read-PowerLinksState strips these.
+#   trailing items. Read-PluginDeploymentState strips these.
 # - Defaults: if a plugin folder is not in the list, treat as ignore=true (handled
 #   in plugin-manager.ps1, not here).
 # - Backward compatibility: if a field is missing on a plugin entry, downstream code
 #   uses $entry.PSObject.Properties['field']?.Value, which returns $null for missing.
 
-# Read-PowerLinksState -- Load state file or return empty default.
-function Read-PowerLinksState {
+# Read-PluginDeploymentState -- Load state file or return empty default.
+function Read-PluginDeploymentState {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string]$Path
@@ -68,8 +68,8 @@ function Read-PowerLinksState {
     }
 }
 
-# Write-PowerLinksState -- Persist state to JSON. Creates parent dir if missing.
-function Write-PowerLinksState {
+# Write-PluginDeploymentState -- Persist state to JSON. Creates parent dir if missing.
+function Write-PluginDeploymentState {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string]$Path,

@@ -231,6 +231,6 @@ data/state/
 
 data/opencode-serve/.env
 
-# Probe snapshot — machine-local, regenerated on every run. Tracked powerlinks.json
+# Probe snapshot — machine-local, regenerated on every run. Tracked plugin-deployment.json
 # right next to it is a deliberate positive; this one is not.
-state/powerlinks-snapshot.json
+state/plugin-deployment-snapshot.json

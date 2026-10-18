@@ -1,4 +1,4 @@
-# vars.ps1 -- paths for the plugin-deployment module (powerlinks lineage).
+# vars.ps1 -- paths for the plugin-deployment module.
 #
 # Sourced by plugin-manager.ps1 AFTER src/init.ps1 has set $root. It is
 # deliberately NOT merged into src/vars.ps1: that file belongs to the winos
@@ -23,11 +23,12 @@ if (Test-Path "S:\Plugins") {
 }
 
 # --- State files --------------------------------------------------------------
-# state/powerlinks.json is the committed allowlist. powerlinks-snapshot.json is a
-# machine-local baseline regenerated on every run and is gitignored.
+# state/plugin-deployment.json is the committed allowlist.
+# plugin-deployment-snapshot.json is a machine-local baseline regenerated on
+# every run and is gitignored.
 $stateDir     = Join-Path $root "state"
-$stateFile    = Join-Path $stateDir "powerlinks.json"
-$snapshotFile = Join-Path $stateDir "powerlinks-snapshot.json"
+$stateFile    = Join-Path $stateDir "plugin-deployment.json"
+$snapshotFile = Join-Path $stateDir "plugin-deployment-snapshot.json"
 
 # --- Manifests ----------------------------------------------------------------
 # One JSON file per plugin folder, named after the folder, declaring what the

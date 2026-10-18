@@ -16,7 +16,7 @@
 # boundary, so C:\Program Files matches C:\Program Files\X but never
 # C:\Program Files (x86)\X.
 
-$PowerLinksSandbox = $null
+$PluginSandbox = $null
 
 # Get-SandboxPathMap -- Build the prefix -> replacement table.
 function Get-SandboxPathMap {
@@ -79,7 +79,7 @@ function Enable-Sandbox {
         }
     }
 
-    $script:PowerLinksSandbox = [PSCustomObject]@{
+    $script:PluginSandbox = [PSCustomObject]@{
         Enabled      = $true
         SourceRoot   = $SourceRoot
         TargetRoot   = $TargetRoot
@@ -92,7 +92,7 @@ function Enable-Sandbox {
         }
     }
 
-    $script:PowerLinksSandbox
+    $script:PluginSandbox
 }
 
 # Disable-Sandbox -- Turn path redirection back off.
@@ -100,12 +100,12 @@ function Disable-Sandbox {
 # Held in script scope: the dot-sourced file and its caller share it, and an
 # unqualified assignment inside Enable-Sandbox would otherwise create a
 # function-local variable that vanishes on return.
-$script:PowerLinksSandbox = $null
+$script:PluginSandbox = $null
 }
 
 # Test-SandboxActive -- True when path redirection is on.
 function Test-SandboxActive {
-    return ($null -ne $script:PowerLinksSandbox -and $script:PowerLinksSandbox.Enabled)
+    return ($null -ne $script:PluginSandbox -and $script:PluginSandbox.Enabled)
 }
 
 # ConvertTo-SandboxPath -- Rewrite a real path into its sandboxed equivalent.
@@ -123,11 +123,11 @@ function ConvertTo-SandboxPath {
     if ([string]::IsNullOrWhiteSpace($Path)) { return $Path }
     if (-not (Test-SandboxActive)) { return $Path }
 
-    foreach ($from in $script:PowerLinksSandbox.Map.Keys) {
+    foreach ($from in $script:PluginSandbox.Map.Keys) {
         $pattern = '^' + [regex]::Escape($from) + '(?=\\|$)'
         if ($Path -notmatch $pattern) { continue }
 
-        $replacement = $script:PowerLinksSandbox.Map[$from]
+        $replacement = $script:PluginSandbox.Map[$from]
         $remainder   = $Path.Substring($from.Length)
 
         # Already inside the target side of this mapping: leave it alone.
@@ -144,7 +144,7 @@ function ConvertTo-SandboxPath {
 # Get-SandboxPluginRoot -- The plugin folder to read from while sandboxed.
 function Get-SandboxPluginRoot {
     param([string]$RealPluginRoot)
-    if (Test-SandboxActive) { return $script:PowerLinksSandbox.SourceRoot }
+    if (Test-SandboxActive) { return $script:PluginSandbox.SourceRoot }
     $RealPluginRoot
 }
 
@@ -158,7 +158,7 @@ function Get-SandboxPluginRoot {
 function Get-SandboxScanRoots {
     if (-not (Test-SandboxActive)) { return $null }
 
-    $t = $script:PowerLinksSandbox.TargetRoot
+    $t = $script:PluginSandbox.TargetRoot
     @(
         'VSTPlugins'
         'CommonProgramFiles\VST3'
@@ -180,8 +180,8 @@ function Format-SandboxBanner {
     Write-Host ""
     Write-Host "  ============================================================" -ForegroundColor Yellow
     Write-Host "   SANDBOX: sources and targets are redirected. Nothing" -ForegroundColor Yellow
-    Write-Host ("   real is touched. sources : {0}" -f $script:PowerLinksSandbox.SourceRoot) -ForegroundColor Yellow
-    Write-Host ("              targets : {0}" -f $script:PowerLinksSandbox.TargetRoot) -ForegroundColor Yellow
+    Write-Host ("   real is touched. sources : {0}" -f $script:PluginSandbox.SourceRoot) -ForegroundColor Yellow
+    Write-Host ("              targets : {0}" -f $script:PluginSandbox.TargetRoot) -ForegroundColor Yellow
     Write-Host "   registry and process steps are skipped." -ForegroundColor Yellow
     Write-Host "  ============================================================" -ForegroundColor Yellow
 }

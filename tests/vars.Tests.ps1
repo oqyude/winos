@@ -74,7 +74,7 @@ Describe "vars.ps1 loads" {
     }
 
     It "gates revert and adopt, the two verbs that destroy or overwrite" {
-        # revert drops every junction; adopt rewrites state/powerlinks.json.
+        # revert drops every junction; adopt rewrites state/plugin-deployment.json.
         $d = $modules["Plugin Deployment"].Destructive
         $d | Should -Contain "revert"
         $d | Should -Contain "adopt"

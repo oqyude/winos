@@ -1,5 +1,5 @@
 # Discovery.ps1 -- Auto-discover plugin mappings from S:\Plugins folder structure
-# and adopt existing on-system junctions into state/powerlinks.json.
+# and adopt existing on-system junctions into state/plugin-deployment.json.
 #
 # Two layers of heuristics:
 #   1. Top-level VST2/VST3/vst directories (simple case, e.g. FabFilter, BOBOC).
@@ -24,7 +24,7 @@ function Get-PluginFolders {
     $sandboxSource = $null
     if (Get-Command Test-SandboxActive -ErrorAction SilentlyContinue) {
         if (Test-SandboxActive) {
-            $sandboxSource = [System.IO.Path]::GetFullPath($script:PowerLinksSandbox.SourceRoot).TrimEnd('\', '/')
+            $sandboxSource = [System.IO.Path]::GetFullPath($script:PluginSandbox.SourceRoot).TrimEnd('\', '/')
         }
     }
     if (-not $sandboxSource) {
@@ -127,10 +127,10 @@ function Discover-AllPlugins {
 }
 
 # Invoke-Adopt -- Scan standard system paths for existing junctions pointing
-# under $pluginRoot, group them by plugin, write a fresh state/powerlinks.json.
+# under $pluginRoot, group them by plugin, write a fresh state/plugin-deployment.json.
 #
 # This is the migration entry-point: if you had old .bat scripts creating symlinks
-# on the system, adopt captures them so you can manage them via powerlinks.
+# on the system, adopt captures them so you can manage them through the module.
 #
 # Only ACTIVE plugins end up in state.json. Inactive plugin folders in $pluginRoot
 # are NOT listed (they remain ignored by default per the state.json spec). Add them
@@ -199,6 +199,6 @@ function Invoke-Adopt {
         plugins      = $plugins
     }
     
-    Write-PowerLinksState -Path $StateFile -Data $state
+    Write-PluginDeploymentState -Path $StateFile -Data $state
     $state
 }

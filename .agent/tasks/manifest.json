@@ -455,6 +455,41 @@
       ],
       "context": "Возник из пункта #5 отчёта .temp/report.md. Поле W15 содержало 'пять отложены', но этот пункт отложен был не как 'сделать позже', а как 'нужен явный ответ владельца'. После ответа на три уточняющих вопроса (align vs document / поведение Read-Host на -WhatIf / объём тестов) -- применён вариант 'align с herdr-serve, обходить Read-Host, один тест на setup'.\n\nПРИЧИНА РАСХОЖДЕНИЯ. opencode-serve был прототипом (e46abab feat: add opencode-serve module), Capability SupportsShouldProcess задекларирован, но тела setup/remove/start/stop не вызывали ShouldProcess. herdr-serve писался уже с правильным образцом и реально гейтил действия. Итог: herdr-serve.md строки 35 и 48 утверждали, что ОБА модуля следуют одному шаблону -- фактически неверно для opencode-serve. После фикса herdr-serve.md перестаёт врать.\n\nКОНТРАКТ. Проектный паттерн роадмапа/манифеста плагинов уже требует ShouldProcess для деструктивных действий. herdr-serve этот контракт выполняет, opencode-serve теперь тоже. tests/modules/herdr-serve.Tests.ps1:111-150 -- образец, по которому написан новый тест в opencode-serve.Tests.ps1.\n\nЧТО НЕ СДЕЛАНО. Тесты на -WhatIf для remove/start/stop -- одна ветка setup покрыта как наиболее сложная (config.json + .env + Register + Start). Покрытие остальных гейтов -- бэклог. Также herdr-serve.md сейчас не упоминает про -WhatIf (он там подразумевается, текст 35: 'gate behind SupportsShouldProcess'), но и не врёт. Явной строки про -WhatIf отдельно не добавлял -- контракт ShouldProcess общий для модуля, искать отдельную ссылку в доке избыточно.\n\nСм. коммит f596232 (в нём правка main.ps1 + 2 теста) для контекста и запись W15 для остальных четырёх пунктов репорта.",
       "status": "pending"
+    },
+    {
+      "id": "W17",
+      "title": "Heritage-rename: state/powerlinks.json -> state/plugin-deployment.json (и связанные имена)",
+      "type": "refactor",
+      "origin": "user:direct",
+      "files": [
+        "src/modules/plugins/vars.ps1",
+        "src/modules/plugins/plugin-manager.ps1",
+        "src/modules/plugins/common/StateFile.ps1",
+        "src/modules/plugins/common/Discovery.ps1",
+        "src/modules/plugins/common/Sandbox.ps1",
+        "tests/plugins/statefile.Tests.ps1",
+        "tests/plugins/discovery.Tests.ps1",
+        "tests/plugins/standalone.Tests.ps1",
+        "tests/plugins/plugin-manager.Tests.ps1",
+        "tests/vars.Tests.ps1",
+        "docs/plugin-manager.md",
+        "state/powerlinks.json"
+      ],
+      "depends_on": [
+        "W13"
+      ],
+      "acceptance_criteria": [
+        "git mv state/powerlinks.json -> state/plugin-deployment.json",
+        "Read-PowerLinksState -> Read-PluginDeploymentState (StateFile.ps1 + все вызывающие)",
+        "Write-PowerLinksState -> Write-PluginDeploymentState (StateFile.ps1 + все вызывающие)",
+        "$PowerLinksSandbox -> $PluginSandbox (Sandbox.ps1 + Discovery.ps1)",
+        "$stateFile / $snapshotFile в vars.ps1 указывают на plugin-deployment.json и plugin-deployment-snapshot.json",
+        "Комментарии в src/ и docs/ обновлены; ссылки на state/powerlinks.json заменены",
+        "Полный набор тестов зелёный",
+        "PSScriptAnalyzer 0 замечаний"
+      ],
+      "context": "После удаления S:\\Git\\powerlinks (W13) heritage-имена остались болтаться. 'powerlinks' в коде и путях отсылает к несуществующему репо. Переименование убирает эту висящую ссылку.\n\nЧТО ПЕРЕИМЕНОВЫВАЕТСЯ:\n- state/powerlinks.json -> state/plugin-deployment.json (git mv)\n- state/powerlinks-snapshot.json -> state/plugin-deployment-snapshot.json (declared в vars.ps1, файл gitignored)\n- Read-PowerLinksState / Write-PowerLinksState -> Read/Write-PluginDeploymentState\n- $PowerLinksSandbox -> $PluginSandbox\n\nЧТО НЕ ТРОГАЕТСЯ (осознанно):\n- $env:TEMP\\powerlinks-* testdirs в tests/plugins/*.Tests.ps1 -- косметика, не ссылка на репо. Можно отдельным проходом, не блокер.\n- 'PowerLinksSandboxTest' (registry hive) в tests/plugins/sandbox.Tests.ps1 -- тестовая фикстура, имя произвольное. Переименование даст 0 пользы.\n- Исторические упоминания 'powerlinks merge' в docs/roadmap.md и docs/symlink-manager.md -- это про историю слияния, не про живой код. Пусть остаётся.\n- Комментарий '(из powerlinks)' в .agent/rules/project-rules.md:75-76 -- пояснение происхождения имён. Сам файл state/powerlinks.json уже переименован -- этот комментарий скоро станет неактуальным, но в этом проходе не правим (не heritage код, а комментарий в meta-rules).\n\nСОВМЕСТИМОСТЬ. Single-user локальный инструмент, state-файл закоммичен в репо. Обратная совместимость с state/powerlinks.json не нужна -- у пользователя только эта машина и этот checkout. Migration через git mv (rename detected).\n\nVERIFICATION ПОСЛЕ: tests 241/0 (без добавления новых), lint 0. Файлов тронуто: 9 src/tests + 1 док + 1 state-файл.",
+      "status": "pending"
     }
   ]
 }

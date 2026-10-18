@@ -194,7 +194,7 @@ $moduleNames = $modules.Keys | Sort-Object
         Write-Host ""
 
         # A destructive verb must never run on a single keypress: `revert` drops
-        # every junction, `adopt` overwrites state/powerlinks.json. Offer the
+        # every junction, `adopt` overwrites state/plugin-deployment.json. Offer the
         # -WhatIf preview first so the usual answer is "show me, don't touch".
         $whatIf = $false
         if ($risky -contains $selectedAction) {

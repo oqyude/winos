@@ -8,7 +8,7 @@ via junctions in `Program Files`, `Common Files`, `ProgramData`, and `AppData`.
 
 1. **Idempotent** — running `apply` multiple times produces the same result.
 2. **Safe for active programs** — `noop` actions don't invalidate open file handles.
-3. **Declarative** — `state/powerlinks.json` is the source of truth; commands reconcile the system to match.
+3. **Declarative** — `state/plugin-deployment.json` is the source of truth; commands reconcile the system to match.
 4. **Junctions, not symlinks** — uses `New-Item -ItemType Junction` (no admin required for directories). Falls back to `SymbolicLink` for file targets.
 5. **Migration-friendly** — `adopt` captures existing on-system junctions from old `.bat` scripts.
 
@@ -323,7 +323,7 @@ pwsh -File ./src/modules/plugin-manager.ps1 -action snapshot
 | `src/init.ps1` | Bootstrap: sets `$root`, sources `vars.ps1`. |
 | `src/vars.ps1` | Defines `$pluginRoot`, `$stateFile`, `$snapshotFile`, `$modules`. |
 | `src/modules/common/State.ps1` | Pure functions: `Get-SymlinkSubState`, `Compare-State`, `Invoke-SafeAction`, `Format-Plan`, `Save-Snapshot`. |
-| `src/modules/common/StateFile.ps1` | `Read-PowerLinksState`, `Write-PowerLinksState`, `Get-EnabledPlugins`. |
+| `src/modules/common/StateFile.ps1` | `Read-PluginDeploymentState`, `Write-PluginDeploymentState`, `Get-EnabledPlugins`. |
 | `src/modules/common/Discovery.ps1` | `Get-PluginFolders`, `Discover-Plugin`, `Invoke-Adopt`. |
 | `src/modules/common/Manifest.ps1` | `Get-PluginManifest`, `Test-Manifest`, `Get-Prop`, `Get-ManifestSection`, `Get-Manifest*Steps`, `Resolve-ManifestPath`. |
 | `src/modules/common/Verify.ps1` | `Get-VerifyReport`: read-only pre-flight over resolved entries. |
@@ -335,8 +335,8 @@ pwsh -File ./src/modules/plugin-manager.ps1 -action snapshot
 | `scripts/generate-manifests.ps1` | Writes manifests from the links the machine already has. |
 | `scripts/new-test-plugins.ps1` | Populates `S:\Plugins\Test` for sandbox runs. |
 | `src/modules/plugin-manager.ps1` | Entry point with action dispatch. |
-| `state/powerlinks.json` | Declared state (committed to git). |
-| `state/powerlinks-snapshot.json` | Last probe (gitignored). |
+| `state/plugin-deployment.json` | Declared state (committed to git). |
+| `state/plugin-deployment-snapshot.json` | Last probe (gitignored). |
 | `manifests/<Name>.json` | Per-plugin behavior (Phase 3+). Tracked in git. |
 
 ## Tests
@@ -378,7 +378,7 @@ state.json or wait for Phase 3 (manifests).
 
 ## Disabling a plugin
 
-1. Edit `state/powerlinks.json`: set `link: false` for the plugin.
+1. Edit `state/plugin-deployment.json`: set `link: false` for the plugin.
 2. Run `apply` — the junctions are removed (source data is preserved when
    the target is itself a junction).
 3. Future `plan`/`apply` runs show `noop` for that plugin (target already

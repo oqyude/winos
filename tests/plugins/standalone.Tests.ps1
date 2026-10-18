@@ -73,8 +73,8 @@ Describe "Phase 0 scaffolding" {
         Remove-Item $outPath, $errPath -ErrorAction SilentlyContinue
     }
 
-    It "state/powerlinks.json exists with valid schema" {
-        $stateFile = Join-Path $script:RepoRoot "state/powerlinks.json"
+    It "state/plugin-deployment.json exists with valid schema" {
+        $stateFile = Join-Path $script:RepoRoot "state/plugin-deployment.json"
         Test-Path $stateFile | Should -Be $true
         $content = Get-Content -Raw -Path $stateFile | ConvertFrom-Json
         $content.version | Should -Be 1
@@ -100,7 +100,7 @@ Describe "Phase 0 scaffolding" {
 
     It "plugin-manager.ps1 -action snapshot writes a snapshot file" {
         $script = Join-Path $script:RepoRoot "src/modules/plugins/plugin-manager.ps1"
-        $snapshot = Join-Path $script:RepoRoot "state/powerlinks-snapshot.json"
+        $snapshot = Join-Path $script:RepoRoot "state/plugin-deployment-snapshot.json"
         $snapshotBackup = $snapshot + ".bak"
 
         # Move any existing snapshot aside so we can verify a fresh one is created.

@@ -211,7 +211,7 @@ Describe "Discovery.ps1" {
             }
         }
 
-        It "writes state.json that round-trips through Read-PowerLinksState" {
+        It "writes state.json that round-trips through Read-PluginDeploymentState" {
             $origCF = $env:COMMONPROGRAMFILES
             $env:COMMONPROGRAMFILES = $script:TempCommonFiles
             try {
@@ -220,7 +220,7 @@ Describe "Discovery.ps1" {
                 New-Item -ItemType Junction -Path $target -Value $source -Force | Out-Null
 
                 Invoke-Adopt -PluginRoot $script:MockRoot -StateFile $script:MockState | Out-Null
-                $read = Read-PowerLinksState -Path $script:MockState
+                $read = Read-PluginDeploymentState -Path $script:MockState
                 $read.plugins.Count | Should -Be 1
                 $read.plugins[0].name | Should -Be "VendorA"
                 $read.plugins[0].link | Should -Be $true

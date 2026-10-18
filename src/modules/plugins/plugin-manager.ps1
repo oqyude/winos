@@ -316,7 +316,7 @@ function Resolve-EntryMappings {
 
 Format-SandboxBanner
 
-$state = Read-PowerLinksState -Path $stateFile
+$state = Read-PluginDeploymentState -Path $stateFile
 $entries = Get-EnabledPlugins -State $state
 $entries = Resolve-EntryMappings -EntryList $entries
 

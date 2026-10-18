@@ -14,10 +14,10 @@ Describe "StateFile.ps1" {
         }
     }
 
-    Context "Read-PowerLinksState" {
+    Context "Read-PluginDeploymentState" {
         It "missing file returns empty default" {
             $missing = Join-Path $script:TestDir "nope.json"
-            $result = Read-PowerLinksState -Path $missing
+            $result = Read-PluginDeploymentState -Path $missing
             $result.version | Should -Be $stateVersion
             $result.tool_version | Should -Be $toolVersion
             $result.plugins.Count | Should -Be 0
@@ -26,14 +26,14 @@ Describe "StateFile.ps1" {
         It "empty file returns empty default" {
             $empty = Join-Path $script:TestDir "empty.json"
             "" | Out-File -FilePath $empty -Encoding utf8
-            $result = Read-PowerLinksState -Path $empty
+            $result = Read-PluginDeploymentState -Path $empty
             $result.plugins.Count | Should -Be 0
         }
 
         It "malformed file returns empty default and warns" {
             $bad = Join-Path $script:TestDir "bad.json"
             "{ this is not json" | Out-File -FilePath $bad -Encoding utf8
-            $result = Read-PowerLinksState -Path $bad 3>$null
+            $result = Read-PluginDeploymentState -Path $bad 3>$null
             $result.plugins.Count | Should -Be 0
         }
 
@@ -52,14 +52,14 @@ Describe "StateFile.ps1" {
 }
 "@ | Out-File -FilePath $full -Encoding utf8
 
-            $result = Read-PowerLinksState -Path $full
+            $result = Read-PluginDeploymentState -Path $full
             $result.plugins.Count | Should -Be 2
             $result.plugins[0].name | Should -Be 'A'
             $result.plugins[1].name | Should -Be 'B'
         }
     }
 
-    Context "Write-PowerLinksState" {
+    Context "Write-PluginDeploymentState" {
         It "creates parent dir if missing" {
             $deep = Join-Path $script:TestDir "deep\nested\file.json"
             $payload = [PSCustomObject]@{
@@ -67,11 +67,11 @@ Describe "StateFile.ps1" {
                 tool_version = "0.0.1"
                 plugins = @()
             }
-            Write-PowerLinksState -Path $deep -Data $payload
+            Write-PluginDeploymentState -Path $deep -Data $payload
             Test-Path $deep | Should -Be $true
         }
 
-        It "round-trips through Read-PowerLinksState" {
+        It "round-trips through Read-PluginDeploymentState" {
             $path = Join-Path $script:TestDir "roundtrip.json"
             $payload = [PSCustomObject]@{
                 version = 1
@@ -86,8 +86,8 @@ Describe "StateFile.ps1" {
                     }
                 )
             }
-            Write-PowerLinksState -Path $path -Data $payload
-            $read = Read-PowerLinksState -Path $path
+            Write-PluginDeploymentState -Path $path -Data $payload
+            $read = Read-PluginDeploymentState -Path $path
             $read.version | Should -Be 1
             $read.plugins.Count | Should -Be 1
             $read.plugins[0].name | Should -Be 'Vendor - Product'
