@@ -1,0 +1,21 @@
+{
+  "Name": "DamRsn - NeuralNote",
+  "Description": "NeuralNote v2.1.0 -- audio-to-MIDI transcription (JUCE + ggml + MuScriptor). VST3 required; Standalone and models optional. LICENSE WARNING: weights of MuScriptor (the .gguf model files) are CC BY-NC 4.0. Commercial use (e.g. recording studio work) is NOT permitted. Source files extracted from NeuralNote_Installer_Windows_x64.exe and laid out under S:\\Plugins\\NeuralNote\\ (Standalone\\, VST3\\NeuralNote.vst3\\, models\\). The plugin writes its runtime data to %APPDATA%\\NeuralNote\\ (settings, logs) and downloads models into %APPDATA%\\NeuralNote\\models\\ on first run. The VST3 bundle is a single folder (Contents\\x86_64-win\\NeuralNote.vst3 inside NeuralNote.vst3\\); one junction at the bundle root covers the whole hierarchy.",
+  "Links": [
+    {
+      "From": "VST3\\NeuralNote.vst3",
+      "To": "%CommonProgramFiles%\\VST3\\NeuralNote.vst3",
+      "Kind": "Junction"
+    },
+    {
+      "From": "Standalone",
+      "To": "%ProgramFiles%\\NeuralNote",
+      "Kind": "Junction"
+    },
+    {
+      "From": "models",
+      "To": "%AppData%\\NeuralNote\\models",
+      "Kind": "Junction"
+    }
+  ]
+}

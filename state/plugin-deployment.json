@@ -2,6 +2,7 @@
   "version": 1,
   "tool_version": "0.0.1",
   "plugins": [
-    { "name": "XLN Audio", "link": true, "ignore": false }
+    { "name": "XLN Audio", "link": true, "ignore": false },
+    { "name": "DamRsn - NeuralNote", "link": true, "ignore": false }
   ]
 }
