@@ -79,7 +79,7 @@ winos/
 | ID | Что | Статус |
 |---|---|---|
 | W0–W8 | Миграция v2→v3, перенос артефактов, общий набор тестов, лёрнер, объединение движков | ✅ |
-| W9 | Потеряна работа в `.temp/new-features` (4 файла) | ⏸ **ждёт решения владельца** |
+| W9 | Потеряна работа в `.temp/new-features` (4 файла) | ✅ 2026-10-17 (закрыто как утрата; oc-serve перереализован в W11, herdr — в W10) |
 | W10 | Автозапуск `herdr-serve` по образцу `opencode-serve` | ✅ 2026-10-17 (`7374f7e`) |
 | W11 | Перенос оставшихся скриптов powerlinks | ✅ |
 | W12 | Документация powerlinks + ADR | ✅ |
@@ -96,8 +96,7 @@ winos/
 
 ## Требует внимания
 
-1. **W9 открыта.** 4 потерянных файла в `.temp/new-features` (см. W9 context). Из них `oc-serve.{sh,ps1}` дублируют работу `opencode-serve.ps1` (не потеряны по существу); `herdr-{run.sh,task.ps1}` потеряны безвозвратно, но `herdr-serve.ps1` уже реализует их задачу.
-2. **W14 открыта.** NeuralNote: манифест + adopt — это owner-work (загрузка файлов в `S:\Plugins\NeuralNote`, лицензионное решение по CC BY-NC для коммерческого использования).
+1. **W14 открыта.** NeuralNote: манифест + adopt — это owner-work (загрузка файлов в `S:\Plugins\NeuralNote`, лицензионное решение по CC BY-NC для коммерческого использования).
 3. **`state/powerlinks.json` в репозитории.** Машинное состояние пользователя, но коммитится сознательно (см. `src/modules/plugins/vars.ps1`). При появлении второго пользователя — решить, оставлять или перенести в `.gitignore`.
 4. **Heritage-имена** в коде (после удаления powerlinks-репо): `state/powerlinks.json`, `Read/Write-PowerLinksState`, `$PowerLinksSandbox`, баннер `Plugin Deployment ::` (уже переименован с `powerlinks ::` в 57276a1), комментарии в `docs/roadmap.md` и `docs/symlink-manager.md`. Не блокирует, не правил в этом проходе.
 5. **`src/init.ps1` делает `Set-Location` глобально.** Уводит CWD в `src/`. Безвредно для одноразового CLI, рискованно для интерактивного сеанса и тестовой параллельности. Не правил.
@@ -106,7 +105,6 @@ winos/
 
 ## Ближайшие шаги
 
-- **W9** — owner decision по потерянным файлам.
 - **W14** — owner work (NeuralNote adopt + загрузка).
 - **Heritage-rename pass** — отдельной задачей: `state/powerlinks.json` → `state/plugin-deployment.json` + переименование функций + миграция. Бэклог, не блокер.
 - **PR** — ветка `dev` не открыта в PR (правило: `master` только через PR). Сейчас активная работа идёт в `dev`, PR пока не нужен.
