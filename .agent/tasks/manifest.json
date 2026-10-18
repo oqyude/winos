@@ -432,6 +432,29 @@
       ],
       "context": "Источник -- отчёт агента в .temp/report.md (ревью diff merge-powerlinks..dev, post-W11). Девять пунктов распределены: четыре обязательных (#1-#4) реализованы здесь, пять отложены (бэклог или владелец-решение). Что отложено: W14 пробел в acceptance (бэклог), menu-тесты на магических индексах (бэклог), баннер 'Plugin Deployment ::' дубль строк (бэклог), регистр сервисов в меню (бэклог), ShouldProcess в opencode-serve (нужен явный ответ владельца про -WhatIf как контракт).\n\nКЛЮЧЕВОЕ ПРО #1. Сообщение bee5588 ('reference commit 57276a1') и W10 context в этом файле содержали одну и ту же фактическую ошибку: feat(herdr-serve) -- это 7374f7e, а 57276a1 -- косметический rename баннера. По решению владельца: правка в обоих местах. Это потребовало git rebase -i с edit на bee5588, переписать сообщение и подложить исправленный manifest.json в тот же коммит, потом force-push на dev. Все следующие за bee5588 коммиты получили новые хеши; dev/HEAD = f596232.\n\nКЛЮЧЕВОЕ ПРО #2. В main.ps1 уже был образец автогенерации: $moduleAliases на строках 84-90 деривируется из $modules. Для $serviceAliases взят тот же шаблон, плюс фильтр 'Actions contains setup' -- именно наличие setup делает запись сервисом. Тест на дрейф (вариант b из репорта) не понадобился, потому что источник один.\n\nКЛЮЧЕВОЕ ПРО #3. Репорт сформулировал мотивацию как 'тест проходит вакуумно' -- это неточно: 'Should -Be $true' падает громко при удалении Alias у всех записей. Но сужение инварианта до 'services have Alias' самостоятельно ценно, потому что меню-only записи технически могут существовать без Alias. Применён узкий ассерт + сохранён legacy sanity на отсутствие 'Service Manager'.\n\nVerification после ребейза: tests 240/0, lint 0. См. коммит f596232 (был bd1a871 до ребейза).",
       "status": "pending"
+    },
+    {
+      "id": "W16",
+      "title": "opencode-serve: honour -WhatIf on setup/remove/start/stop",
+      "type": "fix",
+      "origin": "user:direct",
+      "files": [
+        "src/modules/opencode-serve.ps1",
+        "tests/modules/opencode-serve.Tests.ps1"
+      ],
+      "depends_on": [
+        "W15"
+      ],
+      "acceptance_criteria": [
+        "opencode-serve.ps1: $PSCmdlet.ShouldProcess в setup/remove/start/stop по образцу herdr-serve",
+        "opencode-serve.ps1: status read-only, не гейтится (как в herdr-serve)",
+        "opencode-serve.ps1: Read-Host пароля в setup попадает внутрь ShouldProcess-гейта (на -WhatIf не спрашивает)",
+        "tests/modules/opencode-serve.Tests.ps1: добавлен тест 'setup with -WhatIf writes nothing and registers nothing'",
+        "tests/modules/opencode-serve.Tests.ps1: $ConfirmPreference = 'None' в BeforeAll",
+        "Полный набор тестов зелёный, PSScriptAnalyzer 0 замечаний"
+      ],
+      "context": "Возник из пункта #5 отчёта .temp/report.md. Поле W15 содержало 'пять отложены', но этот пункт отложен был не как 'сделать позже', а как 'нужен явный ответ владельца'. После ответа на три уточняющих вопроса (align vs document / поведение Read-Host на -WhatIf / объём тестов) -- применён вариант 'align с herdr-serve, обходить Read-Host, один тест на setup'.\n\nПРИЧИНА РАСХОЖДЕНИЯ. opencode-serve был прототипом (e46abab feat: add opencode-serve module), Capability SupportsShouldProcess задекларирован, но тела setup/remove/start/stop не вызывали ShouldProcess. herdr-serve писался уже с правильным образцом и реально гейтил действия. Итог: herdr-serve.md строки 35 и 48 утверждали, что ОБА модуля следуют одному шаблону -- фактически неверно для opencode-serve. После фикса herdr-serve.md перестаёт врать.\n\nКОНТРАКТ. Проектный паттерн роадмапа/манифеста плагинов уже требует ShouldProcess для деструктивных действий. herdr-serve этот контракт выполняет, opencode-serve теперь тоже. tests/modules/herdr-serve.Tests.ps1:111-150 -- образец, по которому написан новый тест в opencode-serve.Tests.ps1.\n\nЧТО НЕ СДЕЛАНО. Тесты на -WhatIf для remove/start/stop -- одна ветка setup покрыта как наиболее сложная (config.json + .env + Register + Start). Покрытие остальных гейтов -- бэклог. Также herdr-serve.md сейчас не упоминает про -WhatIf (он там подразумевается, текст 35: 'gate behind SupportsShouldProcess'), но и не врёт. Явной строки про -WhatIf отдельно не добавлял -- контракт ShouldProcess общий для модуля, искать отдельную ссылку в доке избыточно.\n\nСм. коммит f596232 (в нём правка main.ps1 + 2 теста) для контекста и запись W15 для остальных четырёх пунктов репорта.",
+      "status": "pending"
     }
   ]
 }
