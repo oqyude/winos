@@ -1,6 +1,14 @@
 BeforeAll {
     $scriptPath = Join-Path $PSScriptRoot "../../src/modules/opencode-serve.ps1"
 
+    # Force non-interactive mode for every test in this file. Pester happens
+    # to suppress ShouldProcess prompts in its runner today, but relying on
+    # that silently makes a future Pester upgrade (or running the same action
+    # paths outside Pester) start asking for confirmation. Setting it here
+    # makes the intent explicit: the tests must run unattended, no matter
+    # what the host's $ConfirmPreference is.
+    $ConfirmPreference = 'None'
+
     # ScheduledTasks module must be importable so Pester Mock can hook its cmdlets.
     if (Get-Module -ListAvailable -Name ScheduledTasks) {
         Import-Module ScheduledTasks -ErrorAction SilentlyContinue
@@ -101,6 +109,56 @@ Describe "opencode-serve.ps1" {
         $cfg.port | Should -Be 4096
         $cfg.username | Should -Be 'opencode'
         $cfg.opencode | Should -Be 'C:\fake\opencode.exe'
+    }
+
+    It "setup with -WhatIf writes nothing and registers nothing" {
+        # Same stub strategy as the positive test above: shadow every external
+        # dependency the module calls so a ShouldProcess-skipping -WhatIf must
+        # leave all of them at 0 invocations. Mirrors the corresponding test
+        # in herdr-serve.Tests.ps1 (the contract this aligns to).
+        $cfgDir = Join-Path $data "opencode-serve"
+        if (Test-Path $cfgDir) {
+            Remove-Item $cfgDir -Recurse -Force
+        }
+
+        $script:Calls = [ordered]@{
+            'Get-Command'             = 0
+            'Register-ScheduledTask' = 0
+            'Start-ScheduledTask'    = 0
+        }
+        function Get-Command {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidOverwritingBuiltInCmdlets', '', Justification = 'Test double')]
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
+            param([Parameter(Position = 0)][string]$Name)
+            $script:Calls['Get-Command']++
+            [pscustomobject]@{ Source = 'C:\fake\opencode.exe' }
+        }
+        function Read-Host {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidOverwritingBuiltInCmdlets', '', Justification = 'Test double')]
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
+            param([string]$Prompt) ''
+        }
+        function New-ScheduledTaskAction { [pscustomobject]@{} }
+        function New-ScheduledTaskTrigger { [pscustomobject]@{} }
+        function New-ScheduledTaskSettingsSet { [pscustomobject]@{} }
+        function Register-ScheduledTask {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
+            param([string]$TaskName, $Action, $Trigger, $Settings,
+                  [string]$User, [switch]$Force, $RunLevel)
+            $script:Calls['Register-ScheduledTask']++
+        }
+        function Start-ScheduledTask {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Signature must match the real cmdlet')]
+            param([string]$TaskName)
+            $script:Calls['Start-ScheduledTask']++
+        }
+
+        . $scriptPath -action setup -WhatIf
+
+        $script:Calls['Get-Command']            | Should -Be 0
+        $script:Calls['Register-ScheduledTask'] | Should -Be 0
+        $script:Calls['Start-ScheduledTask']    | Should -Be 0
+        Test-Path $cfgDir | Should -BeFalse
     }
 
     It "status without a task exits 1 and prints NOT INSTALLED" {

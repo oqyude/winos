@@ -17,6 +17,15 @@ $runnerScript = Join-Path $PSScriptRoot "opencode-serve\runner.ps1"
 
 switch ($action) {
     "setup" {
+        # Gate the side effects (configDir/config.json write + .env password
+        # prompt + Register-ScheduledTask) behind ShouldProcess so `-WhatIf`
+        # truly is a no-op. Same shape as herdr-serve setup: the password
+        # prompt is intentionally inside the gate -- a dry run must not
+        # interactively ask for a secret.
+        if (-not $PSCmdlet.ShouldProcess($serviceName, "Install opencode-serve scheduled task")) {
+            return
+        }
+
         # 1. Verify opencode is in PATH
         try {
             $opencodePath = (Get-Command "opencode" -ErrorAction Stop).Source
@@ -71,6 +80,10 @@ switch ($action) {
     }
 
     "remove" {
+        if (-not $PSCmdlet.ShouldProcess($serviceName, "Remove opencode-serve scheduled task")) {
+            return
+        }
+
         Stop-ScheduledTask -TaskName $serviceName -ErrorAction SilentlyContinue | Out-Null
         Unregister-ScheduledTask -TaskName $serviceName -Confirm:$false -ErrorAction SilentlyContinue | Out-Null
         if (Test-Path $configDir) {
@@ -119,12 +132,16 @@ switch ($action) {
     }
 
     "start" {
-        Start-ScheduledTask -TaskName $serviceName -ErrorAction Stop | Out-Null
-        Write-Host "OpenCode Serve started." -ForegroundColor Green
+        if ($PSCmdlet.ShouldProcess($serviceName, "Start opencode-serve task")) {
+            Start-ScheduledTask -TaskName $serviceName -ErrorAction Stop | Out-Null
+            Write-Host "OpenCode Serve started." -ForegroundColor Green
+        }
     }
 
     "stop" {
-        Stop-ScheduledTask -TaskName $serviceName -ErrorAction Stop | Out-Null
-        Write-Host "OpenCode Serve stopped." -ForegroundColor Yellow
+        if ($PSCmdlet.ShouldProcess($serviceName, "Stop opencode-serve task")) {
+            Stop-ScheduledTask -TaskName $serviceName -ErrorAction Stop | Out-Null
+            Write-Host "OpenCode Serve stopped." -ForegroundColor Yellow
+        }
     }
 }
