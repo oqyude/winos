@@ -230,6 +230,7 @@ data/state/
 .omo/
 
 data/opencode-serve/.env
+data/herdr-serve/config.json
 
 # Probe snapshot — machine-local, regenerated on every run. Tracked plugin-deployment.json
 # right next to it is a deliberate positive; this one is not.
