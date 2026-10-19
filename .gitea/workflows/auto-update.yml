@@ -1,0 +1,152 @@
+name: Auto-Update Bucket
+
+# Walks bucket/*.json, checks each manifest's upstream via the GitHub Releases
+# API, and applies version+url+hash updates via scripts/update-manifest.sh.
+#
+# Adapted from Dicklesworthstone/scoop-bucket (auto-update.yml). The original
+# used a hard-coded matrix and repository_dispatch; this version iterates
+# dynamically over bucket/ (so new manifests are picked up automatically) and
+# drops the dispatch job because Gitea does not implement it. `git.zeroq.su`
+# source repos cannot fire webhooks at this bucket anyway.
+#
+# Triggers:
+#   schedule    - every 6 hours, checks every manifest with checkver.github
+#   workflow_dispatch - manual run; loop runs as-is (re-checks all)
+#
+# Excludes:
+#   kvrt.json        - has its own .gitea/workflows/update-kvrt.yml (kvrt.xml)
+#   zapretcontrol*   - encoding issues, handled in a separate task
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  check-updates:
+    name: Check and apply bucket updates
+    runs-on: ci-sapphira
+    env:
+      # Gitea-injected. Used to push the roll-up commit back via HTTPS.
+      GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+      # Optional Gitea secret. Unauthenticated GitHub API is 60 req/h which the
+      # cron job will eat through in a single run with 13 manifests; supply a
+      # PAT to bump to 5000 req/h.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Discover outdated manifests and update them
+        id: discover
+        # Gitea puts the checkout at $GITEA_WORKSPACE for host runners; cd into
+        # the repo root in case the runner cloned into a subdirectory.
+        run: |
+          set -eu
+          cd "${GITEA_WORKSPACE:-$PWD}"
+          if [[ ! -d bucket ]]; then
+            cd ..
+          fi
+          repo_root="$(pwd)"
+          cd "$repo_root"
+          bucket_dir="$repo_root/bucket"
+          [[ -d "$bucket_dir" ]] || { echo "::error::bucket/ not found at $repo_root"; exit 1; }
+
+          GH_API="https://api.github.com"
+          declare -a GH_AUTH=()
+          if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+            GH_AUTH=(-H "Authorization: token $GITHUB_TOKEN")
+          fi
+
+          declare -a UPDATED=()
+
+          for manifest in "$bucket_dir"/*.json; do
+            tool="$(basename "$manifest" .json)"
+
+            # Excluded tools.
+            case "$tool" in
+              kvrt|zapretcontrol|zapretcontrol6)
+                echo "::notice::$tool: skipped (custom update path)"
+                continue
+                ;;
+            esac
+
+            repo="$(jq -er '.checkver.github // empty' "$manifest")" || {
+              echo "::notice::$tool: no checkver.github, skipping"
+              continue
+            }
+            repo_path="${repo#https://github.com/}"
+
+            current="$(jq -r '.version' "$manifest")"
+            tag="$(curl -fsSL "${GH_AUTH[@]}" "$GH_API/repos/$repo_path/releases/latest" \
+                  | jq -r '.tag_name // empty')" || {
+              echo "::warning::$tool: GitHub API call failed for $repo_path, skipping"
+              continue
+            }
+            [[ -n "$tag" ]] || {
+              echo "::warning::$tool: no tag_name for $repo_path, skipping"
+              continue
+            }
+
+            # Apply checkver.regex to the tag when present. Patterns are
+            # author-supplied and may be loose; we strip a leading v after
+            # match to normalise against manifest's bare version field.
+            regex="$(jq -r '.checkver.regex // empty' "$manifest")"
+            if [[ -n "$regex" ]]; then
+              latest="$(printf '%s' "$tag" | grep -Eo "$regex" | head -n1 || true)"
+              latest="${latest#v}"
+            else
+              latest="${tag#v}"
+            fi
+            [[ -n "$latest" ]] || {
+              echo "::warning::$tool: regex '$regex' did not match tag '$tag', skipping"
+              continue
+            }
+
+            echo "$tool: current=$current latest=$latest"
+            if [[ "$current" == "$latest" ]]; then
+              continue
+            fi
+
+            if ./scripts/update-manifest.sh "$tool" "$latest"; then
+              UPDATED+=("$tool $latest")
+            else
+              echo "::warning::$tool: update-manifest.sh failed; skipping"
+            fi
+          done
+
+          # Emit a single-line summary for the next step and the run log.
+          if [[ ${#UPDATED[@]} -eq 0 ]]; then
+            echo "summary=none" >> "$GITEA_OUTPUT"
+            echo "All manifests up to date."
+            exit 0
+          fi
+          {
+            echo "summary<<EOF"
+            printf '  - %s\n' "${UPDATED[@]}"
+            echo "EOF"
+          } >> "$GITEA_OUTPUT"
+
+      - name: Commit and push
+        if: steps.discover.outputs.summary != 'none'
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+        run: |
+          set -eu
+          cd "${GITEA_WORKSPACE:-$PWD}"
+
+          git remote set-url gitea \
+            "https://oauth2:${GITEA_TOKEN}@git.zeroq.su/oqyude/winos.git"
+          git config user.name  "gitea-actions[bot]"
+          git config user.email "gitea-actions[bot]@noreply.git.zeroq.su"
+
+          if git diff --quiet bucket/; then
+            echo "No changes after update (manifest hashes already matched)."
+            exit 0
+          fi
+
+          trigger="${{ gitea.event_name }}"
+          summary="${{ steps.discover.outputs.summary }}"
+          {
+            echo "chore(bucket): auto-update [${trigger}]"
+            echo "$summary"
+          } | git commit -F -
+
+          git push gitea HEAD
