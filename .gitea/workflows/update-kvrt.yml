@@ -5,7 +5,9 @@ name: Update KVRT
 # real version into bucket/kvrt.json (see scripts/update-kvrt.ps1).
 #
 # Runs on the only available Gitea runner (ci-sapphira, host mode, NixOS).
-# The workspace is already checked out, so no actions/checkout is needed.
+# The `runs-on` value is the runner's LABEL, not its name -- see the comment
+# on the job below. The workspace is already checked out, so no
+# actions/checkout is needed.
 
 on:
   workflow_dispatch:
@@ -16,7 +18,12 @@ on:
 jobs:
   update-kvrt:
     name: Update kvrt manifest
-    runs-on: ci-sapphira
+    # `native` is the runner's LABEL, not its name: the runner registers with
+    # `labels = [ "native:host" ]` (nixos: modules/server/gitea-runner.nix), and
+    # Gitea matches `runs-on` against label names only. Using the runner name
+    # `ci-sapphira` here matches nothing and falls back to a docker image this
+    # host cannot run.
+    runs-on: native
     steps:
       - name: Fetch latest KVRT build
         id: kvrt

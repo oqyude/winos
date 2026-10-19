@@ -25,7 +25,12 @@ on:
 jobs:
   check-updates:
     name: Check and apply bucket updates
-    runs-on: ci-sapphira
+    # `native` is the runner's LABEL, not its name: the runner registers with
+    # `labels = [ "native:host" ]` (nixos: modules/server/gitea-runner.nix), and
+    # Gitea matches `runs-on` against label names only. Using the runner name
+    # `ci-sapphira` here matches nothing and falls back to a docker image this
+    # host cannot run.
+    runs-on: native
     env:
       # Gitea-injected. Used to push the roll-up commit back via HTTPS.
       GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
