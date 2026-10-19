@@ -24,8 +24,9 @@
     .\scripts\update-kvrt.ps1
 
 .NOTES
-    Designed for GitHub Actions (windows-latest, pwsh) and for local runs.
-    Writes changed/version outputs to $env:GITHUB_OUTPUT when present.
+    Designed for Gitea Actions (host runner, pwsh) and for local runs.
+    Writes changed/version outputs to $env:GITEA_OUTPUT (Gitea) or
+    $env:GITHUB_OUTPUT (GitHub) when present — whichever the runner sets.
 #>
 [CmdletBinding()]
 param(
@@ -50,8 +51,13 @@ function Set-OutputValue {
         [Parameter(Mandatory)]
         [string]$Value
     )
-    if ($env:GITHUB_OUTPUT) {
-        "$Name=$Value" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding ascii
+    # Honour whichever output file the runner exposes. Gitea Actions sets
+    # GITEA_OUTPUT; GitHub Actions sets GITHUB_OUTPUT. Writing to either is a
+    # no-op when unset, so this stays portable across CI hosts.
+    $outputFile = $env:GITEA_OUTPUT
+    if (-not $outputFile) { $outputFile = $env:GITHUB_OUTPUT }
+    if ($outputFile) {
+        "$Name=$Value" | Out-File -FilePath $outputFile -Append -Encoding ascii
     }
 }
 
