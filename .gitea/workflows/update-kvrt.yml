@@ -1,0 +1,47 @@
+name: Update KVRT
+
+# KVRT publishes daily dev builds at an unversioned "latest" URL, so Excavator
+# cannot detect updates. This workflow fetches the current build and stamps the
+# real version into bucket/kvrt.json (see scripts/update-kvrt.ps1).
+#
+# Runs on the only available Gitea runner (ci-sapphira, host mode, NixOS).
+# The workspace is already checked out, so no actions/checkout is needed.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 05:40 / 17:40 UTC - right after Kaspersky's usual ~05:07 build
+    - cron: '40 5,17 * * *'
+
+jobs:
+  update-kvrt:
+    name: Update kvrt manifest
+    runs-on: ci-sapphira
+    steps:
+      - name: Fetch latest KVRT build
+        id: kvrt
+        # pwsh is on PATH on ci-sapphira; nix-shell is a fallback if the path
+        # ever changes. scripts/update-kvrt.ps1 writes outputs to either
+        # $GITEA_OUTPUT or $GITHUB_OUTPUT depending on which the runner sets.
+        run: |
+          if command -v pwsh >/dev/null 2>&1; then
+            pwsh -NoProfile -File ./scripts/update-kvrt.ps1
+          else
+            nix-shell -p powershell --run 'pwsh -NoProfile -File ./scripts/update-kvrt.ps1'
+          fi
+
+      - name: Commit and push
+        if: steps.kvrt.outputs.changed == 'true'
+        env:
+          # The Gitea workflow token is auto-injected; we trade SSH auth for an
+          # HTTPS URL so no runner-side ssh key setup is needed.
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+        run: |
+          set -eu
+          git remote set-url gitea \
+            "https://oauth2:${GITEA_TOKEN}@git.zeroq.su/oqyude/winos.git"
+          git config user.name  "gitea-actions[bot]"
+          git config user.email "gitea-actions[bot]@noreply.git.zeroq.su"
+          git add bucket/kvrt.json
+          git commit -m "kvrt: Update to version ${{ steps.kvrt.outputs.version }}"
+          git push gitea HEAD
