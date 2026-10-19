@@ -73,7 +73,8 @@ if [[ -n "$OUTPUT_FILE" && ( -e "$OUTPUT_FILE" || -L "$OUTPUT_FILE" ) ]]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUCKET_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+# Manifests live in bucket/, not at the repo root -- the path is load-bearing.
+BUCKET_DIR="$(cd "$SCRIPT_DIR/../bucket" && pwd)"
 MANIFEST_FILE="${MANIFEST_OVERRIDE:-$BUCKET_DIR/${TOOL}.json}"
 if [[ ! -f "$MANIFEST_FILE" ]]; then
   echo "Error: Manifest file not found: $MANIFEST_FILE" >&2

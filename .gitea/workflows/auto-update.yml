@@ -32,12 +32,15 @@ jobs:
     # host cannot run.
     runs-on: native
     env:
-      # Gitea-injected. Used to push the roll-up commit back via HTTPS.
-      GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
-      # Optional Gitea secret. Unauthenticated GitHub API is 60 req/h which the
-      # cron job will eat through in a single run with 13 manifests; supply a
-      # PAT to bump to 5000 req/h.
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Gitea's per-job token, auto-injected as secrets.GITEA_TOKEN. Env var
+      # names must avoid the reserved GITEA_/GITHUB_ prefixes, hence the
+      # neutral name -- do not rename it back.
+      OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
+      # Optional GitHub PAT to lift the 60 req/h unauthenticated limit. Must be
+      # a secret named GH_PAT: a GITHUB_TOKEN secret cannot be created (reserved
+      # prefix), and the auto-injected GITHUB_TOKEN is a Gitea token that
+      # api.github.com rejects with 401.
+      GH_API_TOKEN: ${{ secrets.GH_PAT }}
     steps:
       - name: Discover outdated manifests and update them
         id: discover
@@ -56,9 +59,15 @@ jobs:
 
           GH_API="https://api.github.com"
           declare -a GH_AUTH=()
-          if [[ -n "${GITHUB_TOKEN:-}" ]]; then
-            GH_AUTH=(-H "Authorization: token $GITHUB_TOKEN")
+          if [[ -n "${GH_API_TOKEN:-}" ]]; then
+            GH_AUTH=(-H "Authorization: token $GH_API_TOKEN")
           fi
+
+          # JSON is parsed with python3, not jq: the runner's host PATH is
+          # exactly nixos' hostPackages list (bash coreutils curl gawk
+          # gitMinimal gnused nodejs wget nix python3 cacert) and jq is not
+          # in it. Do not reintroduce jq -- the calls would fail with
+          # "command not found" and every manifest would be skipped.
 
           declare -a UPDATED=()
 
@@ -73,18 +82,18 @@ jobs:
                 ;;
             esac
 
-            repo="$(jq -er '.checkver.github // empty' "$manifest")" || {
+            repo="$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));v=(d.get("checkver") or {}).get("github") or "";sys.exit(1) if not v else print(v)' "$manifest")" || {
               echo "::notice::$tool: no checkver.github, skipping"
               continue
             }
             repo_path="${repo#https://github.com/}"
 
-            current="$(jq -r '.version' "$manifest")"
-            tag="$(curl -fsSL "${GH_AUTH[@]}" "$GH_API/repos/$repo_path/releases/latest" \
-                  | jq -r '.tag_name // empty')" || {
+            current="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "$manifest")"
+            if ! response="$(curl -fsSL "${GH_AUTH[@]}" "$GH_API/repos/$repo_path/releases/latest")"; then
               echo "::warning::$tool: GitHub API call failed for $repo_path, skipping"
               continue
-            }
+            fi
+            tag="$(printf '%s' "$response" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("tag_name") or "")')"
             [[ -n "$tag" ]] || {
               echo "::warning::$tool: no tag_name for $repo_path, skipping"
               continue
@@ -93,9 +102,12 @@ jobs:
             # Apply checkver.regex to the tag when present. Patterns are
             # author-supplied and may be loose; we strip a leading v after
             # match to normalise against manifest's bare version field.
-            regex="$(jq -r '.checkver.regex // empty' "$manifest")"
+            # checkver is a Scoop convention, so the patterns are .NET-flavoured
+            # (\d and friends) and POSIX ERE does not know \d -- hence python's
+            # re instead of grep -E.
+            regex="$(python3 -c 'import json,sys;print((json.load(open(sys.argv[1])).get("checkver") or {}).get("regex") or "")' "$manifest")"
             if [[ -n "$regex" ]]; then
-              latest="$(printf '%s' "$tag" | grep -Eo "$regex" | head -n1 || true)"
+              latest="$(printf '%s' "$tag" | python3 -c 'import re,sys;m=re.search(sys.argv[1],sys.stdin.read());print(m.group(0) if m else "")' "$regex" || true)"
               latest="${latest#v}"
             else
               latest="${tag#v}"
@@ -132,13 +144,18 @@ jobs:
       - name: Commit and push
         if: steps.discover.outputs.summary != 'none'
         env:
-          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+          # Reserved-prefix rule again: the value is the auto-injected Gitea
+          # job token, the env var name may not start with GITEA_/GITHUB_.
+          OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
         run: |
           set -eu
           cd "${GITEA_WORKSPACE:-$PWD}"
 
-          git remote set-url gitea \
-            "https://oauth2:${GITEA_TOKEN}@git.zeroq.su/oqyude/winos.git"
+          # `origin` is the only remote the runner's checkout creates; there
+          # is no remote named `gitea`, so `set-url gitea` would abort the step
+          # with "No such remote".
+          git remote set-url origin \
+            "https://oauth2:${OAUTH_TOKEN}@git.zeroq.su/oqyude/winos.git"
           git config user.name  "gitea-actions[bot]"
           git config user.email "gitea-actions[bot]@noreply.git.zeroq.su"
 
@@ -154,4 +171,4 @@ jobs:
             echo "$summary"
           } | git commit -F -
 
-          git push gitea HEAD
+          git push origin HEAD

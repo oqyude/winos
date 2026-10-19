@@ -40,15 +40,18 @@ jobs:
       - name: Commit and push
         if: steps.kvrt.outputs.changed == 'true'
         env:
-          # The Gitea workflow token is auto-injected; we trade SSH auth for an
-          # HTTPS URL so no runner-side ssh key setup is needed.
-          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+          # Reserved-prefix rule: the value is the auto-injected Gitea job
+          # token, the env var name may not start with GITEA_/GITHUB_.
+          OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
         run: |
           set -eu
-          git remote set-url gitea \
-            "https://oauth2:${GITEA_TOKEN}@git.zeroq.su/oqyude/winos.git"
+          # `origin` is the only remote the runner's checkout creates; there
+          # is no remote named `gitea`, so `set-url gitea` would abort the step
+          # with "No such remote".
+          git remote set-url origin \
+            "https://oauth2:${OAUTH_TOKEN}@git.zeroq.su/oqyude/winos.git"
           git config user.name  "gitea-actions[bot]"
           git config user.email "gitea-actions[bot]@noreply.git.zeroq.su"
           git add bucket/kvrt.json
           git commit -m "kvrt: Update to version ${{ steps.kvrt.outputs.version }}"
-          git push gitea HEAD
+          git push origin HEAD
