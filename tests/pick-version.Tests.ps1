@@ -91,6 +91,19 @@ Describe "pick-version.py" {
         Invoke-Pick -Regex '"tag_name":"([\d.]+)"' -Body $body -Text | Should -Be '1.4.2'
     }
 
+    It 'takes the highest version among several matches in --text mode' {
+        # A list of refs follows the git ref listing, not the version order:
+        # v0.1.9 comes before v0.1.10 there, and picking the first match
+        # would downgrade the manifest.
+        $body = '[{"name":"v0.1.9"},{"name":"v0.1.2"},{"name":"v0.1.10"}]'
+        Invoke-Pick -Regex '"name":\s*"v?([^"]+)"' -Body $body -Text | Should -Be '0.1.10'
+    }
+
+    It 'ignores matches that are not versions in --text mode' {
+        $body = '[{"name":"fork"},{"name":"v1.2.3"}]'
+        Invoke-Pick -Regex '"name":\s*"v?([^"]+)"' -Body $body -Text | Should -Be '1.2.3'
+    }
+
     It 'yields nothing in --text mode without a regex' {
         $body = '[{"tag_name":"1.4.2"}]'
         Invoke-Pick -Regex '' -Body $body -Text | Should -Be ''

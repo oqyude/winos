@@ -18,7 +18,10 @@ Modes:
             tag is skipped instead of becoming a version.
     --text  The stdin is a raw body (the response of checkver.url). The regex
             is applied to the body; the capture group is the version, the whole
-            match when the regex has no group.
+            match when the regex has no group. When the regex matches several
+            times, the HIGHEST version among the matches is taken: a list of
+            refs is not ordered by version, and the first one is not always
+            the newest (v0.1.9 sorts before v0.1.10).
 
 The regex follows the Scoop checkver convention: it is applied to the release
 TAG, its capture group holds the version, and it is .NET-flavoured (\d and
@@ -67,13 +70,25 @@ def pick_from_releases(releases, regex):
     return ""
 
 
+def _version_key(version):
+    """Sort key that compares version parts as numbers, not as text."""
+    parts = re.findall(r"\d+|\D+", version)
+    return tuple((1, int(part)) if part.isdigit() else (0, part) for part in parts)
+
+
 def pick_from_text(body, regex):
     if not regex:
         return ""
-    match = re.search(regex, body)
-    if not match:
+    found = [
+        _strip_v(match.group(1) if match.groups() else match.group(0))
+        for match in re.finditer(regex, body)
+    ]
+    versions = [version for version in found if VERSION_LIKE.match(version)]
+    if not versions:
         return ""
-    return _strip_v(match.group(1) if match.groups() else match.group(0))
+    # The highest version, not the first match: the order of a list of refs
+    # follows the git ref listing, not the version order.
+    return max(versions, key=_version_key)
 
 
 def main():

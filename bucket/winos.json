@@ -12,7 +12,8 @@
         "data/isolate"
     ],
     "checkver": {
-        "github": "https://github.com/oqyude/winos"
+        "url": "https://api.github.com/repos/oqyude/winos/tags",
+        "regex": "\"name\":\\s*\"v?([^\"]+)\""
     },
     "autoupdate": {
         "url": "https://github.com/oqyude/winos/archive/refs/tags/v$version.zip",
