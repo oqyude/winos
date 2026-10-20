@@ -1,0 +1,10 @@
+{
+  "Timestamp": "2026-10-18T13:02:52.5913202+03:00",
+  "MainPs1Exists": true,
+  "VarsExists": true,
+  "StateFileExists": true,
+  "CwdBefore": "S:\\Git\\winos",
+  "CwdAfter": "S:\\Git\\winos",
+  "ApplyExit": 0,
+  "ApplyOutput": "\r\n  Plugin Deployment :: apply\r\n  --------------------------------\r\n  ~ skipped    C:\\Program Files\\VSTPlugins\\Addictive Drums 2  (already correct)\r\n  ~ skipped    C:\\Program Files\\VSTPlugins\\Addictive Keys  (already correct)\r\n  ~ skipped    C:\\ProgramData\\XLN Audio\\VST32\\Addictive Drums 2.dll  (already correct)\r\n  ~ skipped    C:\\ProgramData\\XLN Audio\\VST32\\Addictive Keys.dll  (already correct)\r\n  ~ skipped    C:\\ProgramData\\XLN Audio\\VST64\\Addictive Drums 2.dll  (already correct)\r\n  ~ skipped    C:\\ProgramData\\XLN Audio\\VST64\\Addictive Keys.dll  (already correct)\r\n  ~ skipped    C:\\Users\\oqyude\\Documents\\Addictive Drums 2  (already correct)\r\n  ~ skipped    C:\\Users\\oqyude\\Documents\\Addictive Keys  (already correct)\r\n  ~ skipped    C:\\Program Files\\Common Files\\VST3\\NeuralNote.vst3  (already correct)\r\n  ~ skipped    C:\\Program Files\\NeuralNote  (already correct)\r\n  ~ skipped    C:\\Users\\oqyude\\AppData\\Roaming\\NeuralNote\\models  (already correct)\r\n\r\nCreated: 0  Replaced: 0  Resolved: 0  Removed: 0  Skipped: 11  Failed: 0\r\nSaved: S:\\Git\\winos\\state\\plugin-deployment-snapshot.json\r\n"
+}

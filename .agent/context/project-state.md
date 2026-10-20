@@ -14,7 +14,7 @@
 | Language | PowerShell 7 |
 | Entry point | `main.ps1` (CLI + интерактив) |
 | Branch | `dev` (active). `merge-powerlinks` сохранён локально как исторический marker; в `github/dev` уже история после rebase `bee5588 → e7acfab` |
-| Last commits | `49d3e9e` ci(gitea): log which secrets the runner injected; `fee78c1` ci(gitea): use the repository secrets that actually exist; `91a1272` fix(bucket): keep the 4-space indentation; `ec5d9a1` fix(bucket): tasks-org; `ebbb19d` ci(gitea): take jq and pwsh from the `ci` devshell; `c161b12` ci(gitea): check the repository out explicitly (W18) |
+| Last commits | `473d0e4` fix(bucket): winos.json -- checkver по тегам зеркала; `18f9687` chore(meta): W18 -- зафиксировать состояние CI/CD; `49d3e9e` ci(gitea): log which secrets the runner injected; `fee78c1` ci(gitea): use the repository secrets that actually exist; `c161b12` ci(gitea): check the repository out explicitly (W18). `master` смержен в `dev` (fast-forward, `473d0e4`) |
 | Previous session | `e41df406-4a8b-45b2-a38d-efd3c78f1859` закрыта 2026-10-17, HANDOFF phase |
 | Powerlinks source | `S:\Git\powerlinks` УДАЛЁН 2026-10-18 владельцем. Зеркало в gitea сохранено как архив |
 
@@ -88,6 +88,7 @@ winos/
 | Секреты репозитория | `GH_API_TOKEN` (GitHub, снимает лимит 60/час), `OAUTH_TOKEN` (Gitea, checkout + push), `JOB_TOKEN` — авто-инжектящийся job-токен, запасной вариант |
 | Логи прогонов | `/mnt/services/gitea/data/actions_log/oqyude/winos/…log.zst` на сапфире (zstd) |
 | Топология репозиториев | **Gitea (`git.zeroq.su/oqyude/winos`) — основной**, GitHub (`oqyude/winos`) — зеркало, которое тянет изменения с Gitea. CI живёт только на Gitea; коммиты `kvrt: Update to version …` в истории — из старого GitHub Actions, до переезда |
+| Ветки | `dev` — рабочая, `master` смержен в неё fast-forward'ом (`473d0e4`) по прямому указанию владельца 2026-10-20: расписание Gitea берёт workflow из дефолтной ветки, и до этого merge оно запускало версию до W18 |
 
 **Правила, которые стоит помнить** (найдены на живом раннере, W18):
 
@@ -117,26 +118,25 @@ winos/
 
 ## Сделано после HANDOFF 2026-10-17
 
-1. **W15** (4 фикса из отчёта `.temp/report.md`): `$serviceAliases` derivation от `$modules`, сужение Alias-ассерта до сервис-entries, `$ConfirmPreference='None'` в herdr-serve.Tests BeforeAll, исправление cross-reference в `bee5588` (commit 57276a1 → 7374f7e в сообщении и в W10 context) — rebase + force-push.
+1. **W15** (4 фикса из отчёта `.agent/archive/scratch-2026-10-17/report.md`): `$serviceAliases` derivation от `$modules`, сужение Alias-ассерта до сервис-entries, `$ConfirmPreference='None'` в herdr-serve.Tests BeforeAll, исправление cross-reference в `bee5588` (commit 57276a1 → 7374f7e в сообщении и в W10 context) — rebase + force-push.
 2. **W16** (пункт #5 отчёта): `$PSCmdlet.ShouldProcess` в opencode-serve setup/remove/start/stop по образцу herdr-serve, новый тест `setup -WhatIf writes nothing and registers nothing`, `$ConfirmPreference='None'` в opencode-serve.Tests BeforeAll. `herdr-serve.md` перестал врать про оба модуля.
 3. **W13** (этот коммит): физическое удаление `S:\Git\powerlinks` владельцем, правило в `project-rules.md` убрано, W13 → `completed`.
 
 ## Требует внимания
 
 1. **W14 открыта.** NeuralNote: манифест + adopt — это owner-work (загрузка файлов в `S:\Plugins\NeuralNote`, лицензионное решение по CC BY-NC для коммерческого использования).
-2. **`master` не смержен с `dev`.** Расписание Gitea берёт workflow из дефолтной ветки — на `master` лежит старая версия `auto-update.yml` (до W18), т.е. расписание продолжит падать. Правило проекта: в `master` только через PR.
-3. **Пуш от CI не проверен вживую.** Ни одного коммита `chore(bucket): auto-update` в истории нет: на момент фиксации все прогоны находили «всё up to date». Проверяется прогоном `Update KVRT` из `dev` — там манифест отстаёт (`20.0.14.0-202610170555` против текущей сборки `20.0.14.0-202610200320`).
-4. **`checkver` для `bucket/winos.json` читает зеркало.** Gitea — основной репозиторий, GitHub — зеркало; в зеркале нет релизов, только теги, поэтому checkver смотрит `/repos/oqyude/winos/tags` (публичный API, без токена) и берёт **наибольшую** версию из всех совпадений, а не первую (порядок в листе refs — не порядок версий: v0.1.9 идёт раньше v0.1.10). Побочный эффект: свежий тег виден в зеркале только после его пулла, т.е. checkver отстаёт на цикл зеркалирования.
-5. **`state/powerlinks.json` в репозитории.** Машинное состояние пользователя, но коммитится сознательно (см. `src/modules/plugins/vars.ps1`). При появлении второго пользователя — решить, оставлять или перенести в `.gitignore`.
-6. **Heritage-имена** в коде (после удаления powerlinks-репо): `state/powerlinks.json`, `Read/Write-PowerLinksState`, `$PowerLinksSandbox`, баннер `Plugin Deployment ::` (уже переименован с `powerlinks ::` в 57276a1), комментарии в `docs/roadmap.md` и `docs/symlink-manager.md`. Не блокирует, не правил в этом проходе.
-7. **`src/init.ps1` делает `Set-Location` глобально.** Уводит CWD в `src/`. Безвредно для одноразового CLI, рискованно для интерактивного сеанса и тестовой параллельности. Не правил.
-8. **Ctrl+C не проверен** в меню. Остальные выходные пути проверены вживую.
-9. **Нет README.md.** `AGENTS.md` — bootstrap MetaAgent, не пользовательская документация.
+2. **Пуш от CI не проверен вживую.** Ни одного коммита `chore(bucket): auto-update` в истории нет: на момент фиксации все прогоны находили «всё up to date». Проверяется прогоном `Update KVRT` из `dev` — там манифест отстаёт (`20.0.14.0-202610170555` против текущей сборки `20.0.14.0-202610200320`).
+3. **`checkver` для `bucket/winos.json` читает зеркало.** Gitea — основной репозиторий, GitHub — зеркало; в зеркале нет релизов, только теги, поэтому checkver смотрит `/repos/oqyude/winos/tags` (публичный API, без токена) и берёт **наибольшую** версию из всех совпадений, а не первую (порядок в листе refs — не порядок версий: v0.1.9 идёт раньше v0.1.10). Побочный эффект: свежий тег виден в зеркале только после его пулла, т.е. checkver отстаёт на цикл зеркалирования.
+4. **`state/powerlinks.json` в репозитории.** Машинное состояние пользователя, но коммитится сознательно (см. `src/modules/plugins/vars.ps1`). При появлении второго пользователя — решить, оставлять или перенести в `.gitignore`.
+5. **Heritage-имена** в коде (после удаления powerlinks-репо): `state/powerlinks.json`, `Read/Write-PowerLinksState`, `$PowerLinksSandbox`, баннер `Plugin Deployment ::` (уже переименован с `powerlinks ::` в 57276a1), комментарии в `docs/roadmap.md` и `docs/symlink-manager.md`. Не блокирует, не правил в этом проходе.
+6. **`src/init.ps1` делает `Set-Location` глобально.** Уводит CWD в `src/`. Безвредно для одноразового CLI, рискованно для интерактивного сеанса и тестовой параллельности. Не правил.
+7. **Ctrl+C не проверен** в меню. Остальные выходные пути проверены вживую.
+8. **Нет README.md.** `AGENTS.md` — bootstrap MetaAgent, не пользовательская документация.
 
 ## Ближайшие шаги
 
-- **merge `dev` → `master`** — без него расписание auto-update продолжит использовать старую версию workflow.
 - **Прогон `Update KVRT` из `dev`** — закрывает последний непроверенный участок цепочки (коммит + пуш с настоящим токеном).
+- **`nixos-rebuild switch` на сапфире** (по желанию) — тогда jq и pwsh попадут в PATH раннера нативно и шаг с devshell в workflow можно будет убрать.
 - **W14** — owner work (NeuralNote adopt + загрузка).
 - **Heritage-rename pass** — отдельной задачей: `state/powerlinks.json` → `state/plugin-deployment.json` + переименование функций + миграция. Бэклог, не блокер.
-- **PR** — ветка `dev` не открыта в PR (правило: `master` только через PR). Сейчас активная работа идёт в `dev`, PR пока не нужен.
+- **PR** — ветка `dev` не открыта в PR (правило: `master` только через PR). `master` смержен fast-forward'ом по прямому указанию владельца.
