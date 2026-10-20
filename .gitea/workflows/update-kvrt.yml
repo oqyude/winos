@@ -31,6 +31,11 @@ jobs:
         # ever changes. scripts/update-kvrt.ps1 writes outputs to either
         # $GITEA_OUTPUT or $GITHUB_OUTPUT depending on which the runner sets.
         run: |
+          set -eu
+          # Gitea puts the checkout at $GITEA_WORKSPACE for host runners; cd into
+          # the repo root in case the runner cloned into a subdirectory. The
+          # paths below are relative to it.
+          cd "${GITEA_WORKSPACE:-$PWD}"
           if command -v pwsh >/dev/null 2>&1; then
             pwsh -NoProfile -File ./scripts/update-kvrt.ps1
           else
@@ -45,6 +50,7 @@ jobs:
           OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
         run: |
           set -eu
+          cd "${GITEA_WORKSPACE:-$PWD}"
           # `origin` is the only remote the runner's checkout creates; there
           # is no remote named `gitea`, so `set-url gitea` would abort the step
           # with "No such remote".
