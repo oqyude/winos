@@ -1,6 +1,6 @@
 # Project State
 
-**Last updated:** 2026-10-18
+**Last updated:** 2026-10-20
 **MetaAgent version:** 3.0.0
 
 ---
@@ -14,7 +14,7 @@
 | Language | PowerShell 7 |
 | Entry point | `main.ps1` (CLI + интерактив) |
 | Branch | `dev` (active). `merge-powerlinks` сохранён локально как исторический marker; в `github/dev` уже история после rebase `bee5588 → e7acfab` |
-| Last commits | `6235565` chore(meta): add W16; `0727b67` fix(opencode-serve): honour -WhatIf; `a9d7888` chore(meta): add W15; `f596232` chore(review): apply post-merge findings; `e7acfab` (был `bee5588`) chore(tasks): close W10 with reference commit 7374f7e |
+| Last commits | `49d3e9e` ci(gitea): log which secrets the runner injected; `fee78c1` ci(gitea): use the repository secrets that actually exist; `91a1272` fix(bucket): keep the 4-space indentation; `ec5d9a1` fix(bucket): tasks-org; `ebbb19d` ci(gitea): take jq and pwsh from the `ci` devshell; `c161b12` ci(gitea): check the repository out explicitly (W18) |
 | Previous session | `e41df406-4a8b-45b2-a38d-efd3c78f1859` закрыта 2026-10-17, HANDOFF phase |
 | Powerlinks source | `S:\Git\powerlinks` УДАЛЁН 2026-10-18 владельцем. Зеркало в gitea сохранено как архив |
 
@@ -74,6 +74,31 @@ winos/
 - Lint: `.\scripts\lint.ps1` — src + tests + scripts, **0 замечаний, exit 0**
 - Audit: `.\scripts\audit-plugins.ps1` — 28 plugins, 166 live links, **orphans 0, blocking 0, warnings 4** (ожидаемые: 2× NO_LINKS, 2× TARGET_DIFFERS по Dear Reality)
 
+## CI/CD (Gitea Actions)
+
+Раннер: `act_runner v3.1.0` на сапфире, host-режим, метка `native:host`
+(`modules/server/gitea-runner.nix` в репозитории nixos, `S:\Git\nixos`).
+
+| Что | Значение |
+|---|---|
+| Workflow | `.gitea/workflows/auto-update.yml` (каждые 6 ч + вручную), `.gitea/workflows/update-kvrt.yml` (05:40/17:40) |
+| Воркспейс job'а | `/tmp/gitea-runner-work/<hash>/hostexecutor` (tmpfs, чистится раннером) |
+| PATH job'а | ровно `hostPackages` раннера, зашит в systemd-юнит при активации → изменить можно только `nixos-rebuild switch` |
+| jq и pwsh | в PATH раннера **нет**; берутся из devshell `ci` репозитория nixos: `nix develop path:/etc/nixos#ci` (общий список — `lib/ci-tools.nix`) |
+| Секреты репозитория | `GH_API_TOKEN` (GitHub, снимает лимит 60/час), `OAUTH_TOKEN` (Gitea, checkout + push), `JOB_TOKEN` — авто-инжектящийся job-токен, запасной вариант |
+| Логи прогонов | `/mnt/services/gitea/data/actions_log/oqyude/winos/…log.zst` на сапфире (zstd) |
+
+**Правила, которые стоит помнить** (найдены на живом раннере, W18):
+
+- Gitea **не чекаутит репозиторий сам** — без шага checkout workspace пустой.
+- `GITEA_WORKSPACE` act_runner не выставляет (только `GITHUB_WORKSPACE`), корень репозитория лучше определять по содержимому (`bucket/` + `scripts/`).
+- `nix-shell -p` на сапфире не работает: реестр nix пустой, каналов нет.
+- `nix develop` к чужому git-репозиторию не идёт (libgit2, ownership) — только `path:`.
+- Имена env-переменных в workflow не могут начинаться с `GITEA_`/`GITHUB_` (сервер режет), имена секретов — могут.
+- `actions/checkout@v4` на act_runner v3.x тянется с инстанса или GitHub и требует node — на этом раннере проще свой git-шаг.
+
+**Что ещё не проверено вживую:** пуш с настоящим токеном. Шаг commit+push отработал в репетишне против локального origin, но ни одного коммита от CI в истории репозитория пока нет — все прогоны на момент фиксации находили «всё up to date».
+
 ## Состояние задач
 
 | ID | Что | Статус |
@@ -87,6 +112,7 @@ winos/
 | W14 | NeuralNote: portable manifest | ⏸ ждёт owner-side решений (загрузка файлов, лицензия CC BY-NC) |
 | W15 | Post-merge review findings (`merge-powerlinks..dev`) | ✅ 2026-10-17 (`f596232`) |
 | W16 | opencode-serve -WhatIf alignment с herdr-serve | ✅ 2026-10-17 (`0727b67`) |
+| W18 | CI/CD на Gitea: auto-update и update-kvrt | ✅ 2026-10-20 (`c161b12`…`49d3e9e`) |
 
 ## Сделано после HANDOFF 2026-10-17
 
@@ -97,14 +123,19 @@ winos/
 ## Требует внимания
 
 1. **W14 открыта.** NeuralNote: манифест + adopt — это owner-work (загрузка файлов в `S:\Plugins\NeuralNote`, лицензионное решение по CC BY-NC для коммерческого использования).
-3. **`state/powerlinks.json` в репозитории.** Машинное состояние пользователя, но коммитится сознательно (см. `src/modules/plugins/vars.ps1`). При появлении второго пользователя — решить, оставлять или перенести в `.gitignore`.
-4. **Heritage-имена** в коде (после удаления powerlinks-репо): `state/powerlinks.json`, `Read/Write-PowerLinksState`, `$PowerLinksSandbox`, баннер `Plugin Deployment ::` (уже переименован с `powerlinks ::` в 57276a1), комментарии в `docs/roadmap.md` и `docs/symlink-manager.md`. Не блокирует, не правил в этом проходе.
-5. **`src/init.ps1` делает `Set-Location` глобально.** Уводит CWD в `src/`. Безвредно для одноразового CLI, рискованно для интерактивного сеанса и тестовой параллельности. Не правил.
-6. **Ctrl+C не проверен** в меню. Остальные выходные пути проверены вживую.
-7. **Нет README.md.** `AGENTS.md` — bootstrap MetaAgent, не пользовательская документация.
+2. **`master` не смержен с `dev`.** Расписание Gitea берёт workflow из дефолтной ветки — на `master` лежит старая версия `auto-update.yml` (до W18), т.е. расписание продолжит падать. Правило проекта: в `master` только через PR.
+3. **Пуш от CI не проверен вживую.** Ни одного коммита `chore(bucket): auto-update` в истории нет: на момент фиксации все прогоны находили «всё up to date». Проверяется прогоном `Update KVRT` из `dev` — там манифест отстаёт (`20.0.14.0-202610170555` против текущей сборки `20.0.14.0-202610200320`).
+4. **`checkver` для `bucket/winos.json` не работает** — у `oqyude/winos` на GitHub нет релизов, только теги. Автообновлением этот манифест не пойдёт. Чинить через API тегов опасно: порядок не гарантирован, манифест может откатиться на старый тег. Оставлено как есть, warning в логе.
+5. **`state/powerlinks.json` в репозитории.** Машинное состояние пользователя, но коммитится сознательно (см. `src/modules/plugins/vars.ps1`). При появлении второго пользователя — решить, оставлять или перенести в `.gitignore`.
+6. **Heritage-имена** в коде (после удаления powerlinks-репо): `state/powerlinks.json`, `Read/Write-PowerLinksState`, `$PowerLinksSandbox`, баннер `Plugin Deployment ::` (уже переименован с `powerlinks ::` в 57276a1), комментарии в `docs/roadmap.md` и `docs/symlink-manager.md`. Не блокирует, не правил в этом проходе.
+7. **`src/init.ps1` делает `Set-Location` глобально.** Уводит CWD в `src/`. Безвредно для одноразового CLI, рискованно для интерактивного сеанса и тестовой параллельности. Не правил.
+8. **Ctrl+C не проверен** в меню. Остальные выходные пути проверены вживую.
+9. **Нет README.md.** `AGENTS.md` — bootstrap MetaAgent, не пользовательская документация.
 
 ## Ближайшие шаги
 
+- **merge `dev` → `master`** — без него расписание auto-update продолжит использовать старую версию workflow.
+- **Прогон `Update KVRT` из `dev`** — закрывает последний непроверенный участок цепочки (коммит + пуш с настоящим токеном).
 - **W14** — owner work (NeuralNote adopt + загрузка).
 - **Heritage-rename pass** — отдельной задачей: `state/powerlinks.json` → `state/plugin-deployment.json` + переименование функций + миграция. Бэклог, не блокер.
 - **PR** — ветка `dev` не открыта в PR (правило: `master` только через PR). Сейчас активная работа идёт в `dev`, PR пока не нужен.

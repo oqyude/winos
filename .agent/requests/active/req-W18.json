@@ -1,0 +1,52 @@
+{
+  "request_id": "req-W18",
+  "task_id": "W18",
+  "title": "CI/CD на Gitea: auto-update и update-kvrt доведены до рабочего состояния",
+  "status": "ready_for_review",
+  "created_at": "2026-10-20T16:20:00Z",
+  "goal": "Довести workflow авто-обновления bucket и обновления kvrt до рабочего состояния на Gitea Actions: они падали с 'bucket/ not found', потому что Gitea не чекаутит репозиторий сам, а PATH раннера не содержит jq и pwsh.",
+
+  "changes": {
+    "summary": "Девять блокеров: (1) добавлен шаг checkout чистым git -- Gitea не чекаутит репозиторий сам; (2) корень репозитория определяется по содержимому (bucket/ + scripts/), а не по $GITEA_WORKSPACE, которого act_runner не выставляет; (3) jq и pwsh берутся из devshell 'ci' репозитория nixos (nix develop path:/etc/nixos#ci) -- PATH раннера равен hostPackages и зашит в systemd-юнит; (4) scripts/update-manifest.sh получил execute-бит в git и вызывается через bash; (5) шаг commit+push делает git add перед коммитом; (6) версия определяется по списку релизов с группой захвата regex вместо /releases/latest и group(0) -- новая scripts/pick-version.py с 10 тестами, плюс поддержка checkver.url; (7) workflow использует реально заведённые секреты GH_API_TOKEN и OAUTH_TOKEN (job-токен оставлен запасным); (8) исправлен bucket/tasks-org (тег 15.13 против ассета 15.13.0) и обновлены incy-desktop 3.9.0 и regex iridiumio-compactgui; (9) переписанные манифесты сохраняют отступ 4 (jq --indent 4).",
+    "commits": [
+      "c161b12",
+      "5f7d225",
+      "5e45b3d",
+      "388000e",
+      "ebbb19d",
+      "ec5d9a1",
+      "91a1272",
+      "fee78c1",
+      "49d3e9e"
+    ],
+    "files_changed": [
+      ".gitea/workflows/auto-update.yml",
+      ".gitea/workflows/update-kvrt.yml",
+      "scripts/pick-version.py",
+      "scripts/update-manifest.sh",
+      "tests/pick-version.Tests.ps1",
+      "bucket/incy-desktop.json",
+      "bucket/iridiumio-compactgui.json",
+      "bucket/tasks-org.json",
+      ".agent/tasks/manifest.json",
+      ".agent/context/project-state.md",
+      ".agent/checkpoints.json"
+    ]
+  },
+
+  "verification": {
+    "tests_passed": "254/0",
+    "lsp_clean": true
+  },
+
+  "fulfills_ac": [
+    "auto-update.yml чекаутит репозиторий сам (шаг 'Checkout repository', чистый git) и находит корень по содержимому (bucket/ + scripts/), а не по предположению о пути",
+    "Версия определяется по списку релизов, а не по /releases/latest; группа захвата regex -- версия (конвенция Scoop checkver); checkver.url поддержан",
+    "Шаг commit+push индексирует манифесты (git add) и пушит в ту же ветку, откуда был checkout",
+    "Раннер получает jq и pwsh без пересборки хоста: devshell 'ci' в репозитории nixos (lib/ci-tools.nix)",
+    "Секреты репозитория используются: GH_API_TOKEN (api.github.com), OAUTH_TOKEN (checkout и push), JOB_TOKEN как запасной",
+    "Манифесты пригодны к автообновлению: incy-desktop 3.9.0, iridiumio-compactgui regex исправлен, tasks-org 15.13 с пересчитанными хэшами",
+    "Полный набор тестов зелёный (254/0), PSScriptAnalyzer 0 замечаний",
+    "Все три шага workflow прогнаны на живом раннере против локального origin: checkout -> обновление -> commit -> push"
+  ]
+}

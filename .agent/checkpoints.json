@@ -129,7 +129,12 @@
       "id": "W13",
       "title": "Архивирование powerlinks: подтвердить готовность winos быть единственным источником",
       "status": "pending"
+    },
+    {
+      "id": "W18",
+      "title": "CI/CD на Gitea: auto-update и update-kvrt доведены до рабочего состояния",
+      "status": "completed"
     }
   ],
-  "last_updated": "2026-10-17T23:30:00.000Z"
+  "last_updated": "2026-10-20T16:20:00.000Z"
 }
