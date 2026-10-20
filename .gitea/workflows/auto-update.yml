@@ -235,6 +235,12 @@ jobs:
             exit 0
           fi
 
+          # Stage the manifests. scripts/update-manifest.sh rewrites the files
+          # in the working tree, and a commit without a staged change fails
+          # with "no changes added to commit" -- the update would never reach
+          # the remote.
+          git add bucket/
+
           trigger="${{ gitea.event_name }}"
           summary="${{ steps.discover.outputs.summary }}"
           {
