@@ -1,16 +1,16 @@
 {
-    "version": "15.12",
+    "version": "15.13",
     "description": "Tasks.org — open-source task manager (formerly Astrid Tasks). Syncs with CalDAV, Google Tasks, and more.",
     "homepage": "https://tasks.org",
     "license": "GPL-3.0",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/tasks/tasks/releases/download/15.12/tasks-org-15.12-windows-amd64.zip",
-            "hash": "6fffbb75ad1bd84a24ab1af470faba3a3d0c99bf9b68214de09e5e4b7e7923bc"
+            "url": "https://github.com/tasks/tasks/releases/download/15.13/tasks-org-15.13.0-windows-amd64.zip",
+            "hash": "c97b8d60863ef6f47ecbe51e20b72698744435f2c6c10f67add67be601ae6ae1"
         },
         "arm64": {
-            "url": "https://github.com/tasks/tasks/releases/download/15.12/tasks-org-15.12-windows-aarch64.zip",
-            "hash": "28a4c7b252d63d0b49e4b6a2fe40446df73cc683c0ef727df0e764a00a6031b8"
+            "url": "https://github.com/tasks/tasks/releases/download/15.13/tasks-org-15.13.0-windows-aarch64.zip",
+            "hash": "b2e92e9286f0f9de54e87caa8e9ff8f5a93bfb77083138080b4714e2ee187708"
         }
     },
     "bin": "bin/Tasks.org.exe",
@@ -21,15 +21,16 @@
         ]
     ],
     "checkver": {
-        "github": "https://github.com/tasks/tasks"
+        "url": "https://api.github.com/repos/tasks/tasks/releases/latest",
+        "regex": "\"tag_name\":\\s*\"([^\"]+)\""
     },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/tasks/tasks/releases/download/$version/tasks-org-$version-windows-amd64.zip"
+                "url": "https://github.com/tasks/tasks/releases/download/$version/tasks-org-$version.0-windows-amd64.zip"
             },
             "arm64": {
-                "url": "https://github.com/tasks/tasks/releases/download/$version/tasks-org-$version-windows-aarch64.zip"
+                "url": "https://github.com/tasks/tasks/releases/download/$version/tasks-org-$version.0-windows-aarch64.zip"
             }
         }
     }
