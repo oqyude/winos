@@ -17,7 +17,7 @@
     ],
     "checkver": {
         "github": "https://github.com/IridiumIO/CompactGUI",
-        "regex": "/releases/tag/v([\\d.]+-beta\\.\\d+)"
+        "regex": "v([\\d.]+-beta\\.\\d+)"
     },
     "autoupdate": {
         "url": "https://github.com/IridiumIO/CompactGUI/releases/download/v$version/CompactGUI.exe",

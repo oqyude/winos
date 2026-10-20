@@ -1,12 +1,12 @@
 {
-    "version": "3.8.10",
+    "version": "3.9.0",
     "description": "INCY Desktop — AI-powered platform",
     "homepage": "https://github.com/INCY-DEV/incy-platforms",
     "license": "Proprietary",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/INCY-DEV/incy-platforms/releases/download/desktop-v3.8.10/incy-windows-portable.zip",
-            "hash": "7f06ce051b30c1b3d278ef790074667b8d22ec1ea301aee1f34826cfd1d5170c"
+            "url": "https://github.com/INCY-DEV/incy-platforms/releases/download/desktop-v3.9.0/incy-windows-portable.zip",
+            "hash": "502be06176b49e246a692bf30f9add67f28a9434e248c40f6490a53ac643226d"
         }
     },
     "extract_dir": "incy",

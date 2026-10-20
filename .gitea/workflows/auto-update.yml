@@ -148,38 +148,40 @@ jobs:
                 ;;
             esac
 
-            repo="$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));v=(d.get("checkver") or {}).get("github") or "";sys.exit(1) if not v else print(v)' "$manifest")" || {
-              echo "::notice::$tool: no checkver.github, skipping"
-              continue
-            }
-            repo_path="${repo#https://github.com/}"
+            repo="$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));v=(d.get("checkver") or {}).get("github") or "";sys.exit(1) if not v else print(v)' "$manifest")" || true
+            check_url="$(python3 -c 'import json,sys;print((json.load(open(sys.argv[1])).get("checkver") or {}).get("url") or "")' "$manifest")"
+            regex="$(python3 -c 'import json,sys;print((json.load(open(sys.argv[1])).get("checkver") or {}).get("regex") or "")' "$manifest")"
 
             current="$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["version"])' "$manifest")"
-            if ! response="$(curl -fsSL "${GH_AUTH[@]}" "$GH_API/repos/$repo_path/releases/latest")"; then
-              echo "::warning::$tool: GitHub API call failed for $repo_path, skipping"
-              continue
-            fi
-            tag="$(printf '%s' "$response" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("tag_name") or "")')"
-            [[ -n "$tag" ]] || {
-              echo "::warning::$tool: no tag_name for $repo_path, skipping"
-              continue
-            }
 
-            # Apply checkver.regex to the tag when present. Patterns are
-            # author-supplied and may be loose; we strip a leading v after
-            # match to normalise against manifest's bare version field.
-            # checkver is a Scoop convention, so the patterns are .NET-flavoured
-            # (\d and friends) and POSIX ERE does not know \d -- hence python's
-            # re instead of grep -E.
-            regex="$(python3 -c 'import json,sys;print((json.load(open(sys.argv[1])).get("checkver") or {}).get("regex") or "")' "$manifest")"
-            if [[ -n "$regex" ]]; then
-              latest="$(printf '%s' "$tag" | python3 -c 'import re,sys;m=re.search(sys.argv[1],sys.stdin.read());print(m.group(0) if m else "")' "$regex" || true)"
-              latest="${latest#v}"
+            if [[ -n "$repo" ]]; then
+              # GitHub: the version is a release tag. The release LIST, not
+              # /releases/latest -- a repo may keep a rolling "latest" release
+              # on top (INCY-DEV/incy-platforms does) and the single-release
+              # endpoint then never exposes the versioned release. The list
+              # comes newest first; scripts/pick-version.py picks the first
+              # tag the regex matches.
+              repo_path="${repo#https://github.com/}"
+              if ! response="$(curl -fsSL "${GH_AUTH[@]}" "$GH_API/repos/$repo_path/releases?per_page=100")"; then
+                echo "::warning::$tool: GitHub API call failed for $repo_path, skipping"
+                continue
+              fi
+              latest="$(printf '%s' "$response" | python3 scripts/pick-version.py --tags "$regex" || true)"
+            elif [[ -n "$check_url" ]]; then
+              # Explicit source (e.g. a GitLab release API): the version is a
+              # regex match in the response body.
+              if ! response="$(curl -fsSL "${GH_AUTH[@]}" "$check_url")"; then
+                echo "::warning::$tool: checkver.url request failed for $check_url, skipping"
+                continue
+              fi
+              latest="$(printf '%s' "$response" | python3 scripts/pick-version.py --text "$regex" || true)"
             else
-              latest="${tag#v}"
+              echo "::notice::$tool: no checkver.github and no checkver.url, skipping"
+              continue
             fi
+
             [[ -n "$latest" ]] || {
-              echo "::warning::$tool: regex '$regex' did not match tag '$tag', skipping"
+              echo "::warning::$tool: no version matched regex '${regex:-<none>}' for ${repo:-$check_url}, skipping"
               continue
             }
 
