@@ -190,7 +190,10 @@ jobs:
               continue
             fi
 
-            if ./scripts/update-manifest.sh "$tool" "$latest"; then
+            # `bash` in front of the script, not a direct call: the file is
+            # checked out with the mode recorded in git, and a non-executable
+            # bit would end the step with "Permission denied".
+            if bash ./scripts/update-manifest.sh "$tool" "$latest"; then
               UPDATED+=("$tool $latest")
             else
               echo "::warning::$tool: update-manifest.sh failed; skipping"
