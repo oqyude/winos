@@ -129,6 +129,19 @@ jobs:
             GH_AUTH=(-H "Authorization: token $GH_API_TOKEN")
           fi
 
+          # jq is not in the runner's PATH: the runner's hostPackages are
+          # frozen into its systemd unit at activation time, and changing them
+          # needs a nixos-rebuild on the host. The `ci` devshell of the nixos
+          # repo carries the same tool set and can be entered without one --
+          # take its PATH for the rest of the step.
+          nixos_flake="${NIXOS_FLAKE:-/etc/nixos}"
+          if ci_path="$(nix develop "path:$nixos_flake"#ci --command bash -c 'printf %s "$PATH"')"; then
+            export PATH="$ci_path:$PATH"
+            echo "ci devshell: $nixos_flake#ci"
+          else
+            echo "::warning::could not enter $nixos_flake#ci -- jq may be missing"
+          fi
+
           # JSON is parsed with python3, not jq: the runner's host PATH is
           # exactly nixos' hostPackages list (bash coreutils curl gawk
           # gitMinimal gnused nodejs wget nix python3 cacert) and jq is not

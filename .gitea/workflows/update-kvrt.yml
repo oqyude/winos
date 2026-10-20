@@ -105,11 +105,25 @@ jobs:
           cd "$repo_root"
           # Hand the root to the commit step instead of re-deriving it there.
           echo "repo_root=$repo_root" >> "$GITEA_OUTPUT"
-          if command -v pwsh >/dev/null 2>&1; then
-            pwsh -NoProfile -File ./scripts/update-kvrt.ps1
+
+          # pwsh is not in the runner's PATH: the runner's hostPackages are
+          # frozen into its systemd unit at activation time, and changing them
+          # needs a nixos-rebuild on the host. The `ci` devshell of the nixos
+          # repo carries the same tool set and can be entered without one --
+          # take its PATH for the rest of the step.
+          nixos_flake="${NIXOS_FLAKE:-/etc/nixos}"
+          if ci_path="$(nix develop "path:$nixos_flake"#ci --command bash -c 'printf %s "$PATH"')"; then
+            export PATH="$ci_path:$PATH"
+            echo "ci devshell: $nixos_flake#ci"
           else
-            nix-shell -p powershell --run 'pwsh -NoProfile -File ./scripts/update-kvrt.ps1'
+            echo "::warning::could not enter $nixos_flake#ci -- pwsh may be missing"
           fi
+
+          command -v pwsh >/dev/null 2>&1 || {
+            echo "::error::pwsh not found in PATH"
+            exit 1
+          }
+          pwsh -NoProfile -File ./scripts/update-kvrt.ps1
 
       - name: Commit and push
         if: steps.kvrt.outputs.changed == 'true'
