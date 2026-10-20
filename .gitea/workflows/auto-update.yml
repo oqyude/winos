@@ -42,20 +42,86 @@ jobs:
       # api.github.com rejects with 401.
       GH_API_TOKEN: ${{ secrets.GH_PAT }}
     steps:
-      - name: Discover outdated manifests and update them
-        id: discover
-        # Gitea puts the checkout at $GITEA_WORKSPACE for host runners; cd into
-        # the repo root in case the runner cloned into a subdirectory.
+      - name: Checkout repository
+        # Gitea does NOT check the repository out on its own: the workspace
+        # starts empty. Without this step the job died with
+        # "bucket/ not found at /tmp/gitea-runner-work/<hash>" -- the script
+        # looked for the manifests in a directory that never had them.
+        #
+        # Plain git instead of actions/checkout: the runner would have to
+        # fetch the action from the instance (or from GitHub) and run it with
+        # its own node runtime, and neither is guaranteed on this host-only
+        # runner. git is on the runner's PATH (gitMinimal).
+        env:
+          # Same reserved-prefix rule as below: the value is the auto-injected
+          # Gitea job token, the env var name may not start with GITEA_/GITHUB_.
+          OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
         run: |
           set -eu
-          cd "${GITEA_WORKSPACE:-$PWD}"
-          if [[ ! -d bucket ]]; then
-            cd ..
+          workdir="${GITHUB_WORKSPACE:-$PWD}"
+          cd "$workdir"
+          repo_url="https://oauth2:${OAUTH_TOKEN}@git.zeroq.su/oqyude/winos.git"
+          if [[ -d .git ]]; then
+            git remote set-url origin "$repo_url"
+          else
+            git init -q
+            git remote add origin "$repo_url"
           fi
-          repo_root="$(pwd)"
+          ref="${GITHUB_REF:-}"
+          if [[ -z "$ref" ]]; then
+            # The runner always sets GITHUB_REF; this safety net resolves the
+            # remote's default branch instead of guessing its name.
+            default_ref="$(git ls-remote --symref origin HEAD 2>/dev/null \
+              | sed -n 's|^ref: \(refs/[^[:space:]]*\).*|\1|p' | head -n1 || true)"
+            ref="${default_ref:-refs/heads/master}"
+          fi
+          case "$ref" in
+            refs/heads/*) branch="${ref#refs/heads/}" ;;
+            *) branch="" ;;
+          esac
+          git fetch --depth=1 origin "$ref"
+          if [[ -n "$branch" ]]; then
+            git checkout -q -B "$branch" FETCH_HEAD
+          else
+            git checkout -q --detach FETCH_HEAD
+          fi
+          echo "checked out $ref ($(git rev-parse --short HEAD)) into $workdir"
+
+      - name: Discover outdated manifests and update them
+        id: discover
+        run: |
+          set -eu
+          # Locate the repository root. The checkout step above puts the tree
+          # in $GITHUB_WORKSPACE, but do not hard-code that: the runner's
+          # workspace layout differs between versions, and guessing wrong is
+          # exactly what broke this job. A repository root is recognised by
+          # its bucket/ and scripts/ directories.
+          find_repo_root() {
+            local base cand
+            for base in "${GITHUB_WORKSPACE:-}" "$PWD"; do
+              [[ -n "$base" && -d "$base" ]] || continue
+              for cand in "$base" "$base"/*/ "$base"/*/*/; do
+                [[ -d "$cand/bucket" && -d "$cand/scripts" ]] || continue
+                ( cd "$cand" && pwd )
+                return 0
+              done
+            done
+            return 1
+          }
+
+          if ! repo_root="$(find_repo_root)"; then
+            echo "::error::bucket/ not found: no repository root under the workspace"
+            echo "PWD=$PWD"
+            echo "GITHUB_WORKSPACE=${GITHUB_WORKSPACE:-<unset>}"
+            echo "GITHUB_REF=${GITHUB_REF:-<unset>}"
+            echo "--- workspace listing ---"
+            ls -la "${GITHUB_WORKSPACE:-$PWD}" || true
+            exit 1
+          fi
           cd "$repo_root"
+          # Hand the root to the commit step instead of re-deriving it there.
+          echo "repo_root=$repo_root" >> "$GITEA_OUTPUT"
           bucket_dir="$repo_root/bucket"
-          [[ -d "$bucket_dir" ]] || { echo "::error::bucket/ not found at $repo_root"; exit 1; }
 
           GH_API="https://api.github.com"
           declare -a GH_AUTH=()
@@ -147,9 +213,12 @@ jobs:
           # Reserved-prefix rule again: the value is the auto-injected Gitea
           # job token, the env var name may not start with GITEA_/GITHUB_.
           OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
+          # Root of the checkout, resolved by the previous step.
+          REPO_ROOT: ${{ steps.discover.outputs.repo_root }}
         run: |
           set -eu
-          cd "${GITEA_WORKSPACE:-$PWD}"
+          cd "${REPO_ROOT:-${GITHUB_WORKSPACE:-$PWD}}"
+          [[ -d bucket ]] || { echo "::error::bucket/ not found at $PWD"; exit 1; }
 
           # `origin` is the only remote the runner's checkout creates; there
           # is no remote named `gitea`, so `set-url gitea` would abort the step
