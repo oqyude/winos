@@ -19,8 +19,10 @@
 # ----------------------------------------------------------------------------
 # Adapted from https://github.com/Dicklesworthstone/scoop-bucket
 # (scripts/update-manifest.sh, MIT). Logic preserved verbatim; only header
-# comments were adjusted to credit the upstream source. See the upstream repo
-# for the original test suite.
+# comments were adjusted to credit the upstream source, and the rewritten
+# manifest is indented with 4 spaces instead of upstream's 2 so the CI commits
+# keep the indentation of the hand-written manifests in bucket/. See the
+# upstream repo for the original test suite.
 # ----------------------------------------------------------------------------
 set -euo pipefail
 
@@ -204,7 +206,7 @@ done < "$WORK_DIR/architectures"
 # Only reach here after EVERY declared architecture has verified. Preserve all
 # fields other than version and the verified download URLs/hashes.
 jq -s '.' "$WORK_DIR"/verified-*.json > "$WORK_DIR/verified.json"
-jq --indent 2 --arg version "$VERSION" --argjson keyed "$ARCH_KEYED" \
+jq --indent 4 --arg version "$VERSION" --argjson keyed "$ARCH_KEYED" \
   --slurpfile verified "$WORK_DIR/verified.json" '
   .version = $version |
   reduce $verified[0][] as $asset (.;
