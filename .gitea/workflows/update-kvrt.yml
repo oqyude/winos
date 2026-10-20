@@ -82,6 +82,11 @@ jobs:
         # $GITEA_OUTPUT or $GITHUB_OUTPUT depending on which the runner sets.
         run: |
           set -eu
+          # Which secrets did the runner actually inject? Names only -- the
+          # values never reach the log.
+          token_state() { [[ -n "${1:-}" ]] && echo set || echo empty; }
+          echo "tokens: gitea=$(token_state "${OAUTH_TOKEN:-}") job=$(token_state "${JOB_TOKEN:-}")"
+
           # Locate the repository root: the checkout step above puts the tree
           # in $GITHUB_WORKSPACE, but the runner's workspace layout differs
           # between versions, so do not hard-code it. A repository root is

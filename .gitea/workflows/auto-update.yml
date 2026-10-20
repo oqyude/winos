@@ -92,6 +92,11 @@ jobs:
         id: discover
         run: |
           set -eu
+          # Which secrets did the runner actually inject? Names only -- the
+          # values never reach the log.
+          token_state() { [[ -n "${1:-}" ]] && echo set || echo empty; }
+          echo "tokens: gitea=$(token_state "${OAUTH_TOKEN:-}") job=$(token_state "${JOB_TOKEN:-}") github=$(token_state "${GH_API_TOKEN:-}")"
+
           # Locate the repository root. The checkout step above puts the tree
           # in $GITHUB_WORKSPACE, but do not hard-code that: the runner's
           # workspace layout differs between versions, and guessing wrong is
