@@ -24,6 +24,15 @@ jobs:
     # `ci-sapphira` here matches nothing and falls back to a docker image this
     # host cannot run.
     runs-on: native
+    env:
+      # Repository secrets (Actions -> Settings -> Secrets):
+      #   OAUTH_TOKEN - Gitea token with write access to this repository.
+      #                Falls back to the auto-injected per-job token when the
+      #                secret is not set.
+      # The env var names must not start with GITEA_/GITHUB_ -- Gitea strips
+      # such names on the server -- hence the neutral names.
+      OAUTH_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+      JOB_TOKEN: ${{ secrets.GITEA_TOKEN }}
     steps:
       - name: Checkout repository
         # Gitea does NOT check the repository out on its own: the workspace
@@ -34,15 +43,12 @@ jobs:
         # fetch the action from the instance (or from GitHub) and run it with
         # its own node runtime, and neither is guaranteed on this host-only
         # runner. git is on the runner's PATH (gitMinimal).
-        env:
-          # Reserved-prefix rule: the value is the auto-injected Gitea job
-          # token, the env var name may not start with GITEA_/GITHUB_.
-          OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
         run: |
           set -eu
           workdir="${GITHUB_WORKSPACE:-$PWD}"
           cd "$workdir"
-          repo_url="https://oauth2:${OAUTH_TOKEN}@git.zeroq.su/oqyude/winos.git"
+          token="${OAUTH_TOKEN:-$JOB_TOKEN}"
+          repo_url="https://oauth2:${token}@git.zeroq.su/oqyude/winos.git"
           if [[ -d .git ]]; then
             git remote set-url origin "$repo_url"
           else
@@ -128,9 +134,6 @@ jobs:
       - name: Commit and push
         if: steps.kvrt.outputs.changed == 'true'
         env:
-          # Reserved-prefix rule: the value is the auto-injected Gitea job
-          # token, the env var name may not start with GITEA_/GITHUB_.
-          OAUTH_TOKEN: ${{ secrets.GITEA_TOKEN }}
           # Root of the checkout, resolved by the previous step.
           REPO_ROOT: ${{ steps.kvrt.outputs.repo_root }}
         run: |
@@ -140,8 +143,9 @@ jobs:
           # `origin` is the only remote the runner's checkout creates; there
           # is no remote named `gitea`, so `set-url gitea` would abort the step
           # with "No such remote".
+          token="${OAUTH_TOKEN:-$JOB_TOKEN}"
           git remote set-url origin \
-            "https://oauth2:${OAUTH_TOKEN}@git.zeroq.su/oqyude/winos.git"
+            "https://oauth2:${token}@git.zeroq.su/oqyude/winos.git"
           git config user.name  "gitea-actions[bot]"
           git config user.email "gitea-actions[bot]@noreply.git.zeroq.su"
           git add bucket/kvrt.json
