@@ -31,12 +31,29 @@ level=WARN message="failed to load OpenCode provider config"
 ```
 
 **Последствие, измеренное напрямую.** Провайдер `opencode-go` в реестре моделей
-отсутствует. Сравнение одной и той же команды в двух окружениях:
+отсутствует. Замер на одной и той же машине, один и тот же бинарь:
 
 | Окружение | `opencode models --standalone` | Строк `opencode-go/*` |
 |---|---|---|
-| с `HTTP(S)_PROXY` + `NO_PROXY` | отрабатывает | **30** (включая `opencode-go/deepseek-v4.1-flash`) |
-| без них | падает / не грузит реестр | **0** |
+| с `HTTP(S)_PROXY` + `NO_PROXY` | отрабатывает, 5 прогонов подряд | **30** (включая `opencode-go/deepseek-v4.1-flash`) |
+| без них | не отрабатывает либо 0 строк | **0** |
+
+**Уточнение механизма (важно для переустановки).** У провайдера `opencode-go`
+два независимых условия, и нужны оба:
+
+1. **Сеть.** `GET https://opencode.ai/console/api/v2/config` без прокси падает
+   с `ECONNRESET` — это и есть строка `failed to load OpenCode provider config`
+   в логе. Endpoint отвечает `401` без авторизации, то есть он в принципе
+   достижим, но обход прокси на этой машине рвёт соединение.
+2. **Учётная запись.** Провайдер `opencode-go` — это OpenCode Console, и его
+   учётка лежит в `~/.local/share/opencode` (таблица `credential`,
+   `integration_id='opencode'`, `label='Personal'`, `active=1`). Проверено:
+   в изолированном `HOME` с прокси, но без каталога данных, `opencode-go`
+   тоже даёт 0 строк.
+
+Без прокси ломается ещё и запуск: CLI часто обрывается на фазе активации
+плагинов — `ServiceUnavailableError: Location plugins did not finish activating`.
+Это тот же симптом (сеть), просто проявляется раньше и громче.
 
 **Почему это не «просто через прокси-алиас».** На машине прокси есть
 (`127.0.0.1:10808` слушает, PID 12968), и в `~/.bashrc` есть алиасы
@@ -53,6 +70,9 @@ level=WARN message="failed to load OpenCode provider config"
 
 Итог: процесс сервера стартует без прокси → `GET .../console/api/v2/config` → `ECONNRESET` →
 провайдер `opencode-go` не появляется → дефолтная модель не резолвится (см. 0.3).
+Живой сервер на :4096 это подтверждает: `opencode models` (через него) даёт
+0 строк `opencode-go/*` и 80 строк `opencode/*` — то есть провайдер Console
+в реестре отсутствует именно у работающего сервера.
 
 **Что делать при переустановке.** Прописать переменные в окружение, из которого
 запускается сервер opencode (в `~/opencode-serve.sh` до строки `exec`, либо как
@@ -61,6 +81,8 @@ level=WARN message="failed to load OpenCode provider config"
 внутренние домены `.local`, `.zeroq.su`, `.su` ходили напрямую, минуя прокси.
 Установщик **не** меняет системные переменные окружения (`setx` запрещён) — он только
 проверяет их наличие и печатает готовые строки для вставки.
+Учётную запись OpenCode Console (`opencode auth login`) нужно завести заново
+в любом случае — см. 0.2.
 
 ### 0.2. `auth.json` не переносится
 
@@ -109,6 +131,9 @@ level=ERROR message="Failed to drain Session"
 
 То есть авторизация модели есть (консольная учётка `Personal` в `opencode.db`),
 а ломается именно загрузка реестра провайдеров из-за отсутствия прокси в окружении сервера.
+Замечание для переустановки: обе части нужны одновременно — и сеть (прокси),
+и учётная запись Console. Перенос только `opencode.db` или только `auth.json`
+без прокси не поможет; перенос без учётной записи — тоже.
 
 **Что решить при переустановке (варианты, выбор владельца):**
 
@@ -175,13 +200,30 @@ level=ERROR message="Failed to drain Session"
 | Имя | Версия | Откуда ставится | Зачем | Что слокается без него | Команда установки |
 |---|---|---|---|---|---|
 | `oh-my-opencode-slim` | **3.0.5** | `plugins` в `~/.config/opencode/opencode.jsonc` **и** в `~/.config/opencode/cli.json`; кэш `~/.cache/opencode/npm/oh-my-opencode-slim@3.0.5` (285 МБ) | агентный слой: оркестратор, subagent-ы, task-manager | агентов (`orchestrator`, `explorer`, `oracle`, `designer`, `fixer`) не будет, команды агентов не сработают | прописать `"plugins": ["oh-my-opencode-slim@3.0.5"]` в `opencode.jsonc` и `cli.json` |
-| `oh-my-openagent` | `latest` | **расхождение**: указан в `~/.config/opencode/tui.json` (ключ `"plugin"`, единственное значение `oh-my-openagent@latest`), тогда как в `opencode.jsonc`/`cli.json` — `oh-my-opencode-slim@3.0.5` | не определено; в логе сервера ни одного события загрузки `oh-my-openagent` не найдено, но в npm-кэше лежит 134 МБ (`~/.cache/opencode/npm/oh-my-openagent@latest`) | ничего не ломает, но 134 МБ лишнего кэша и два разных плагина в конфигах | **не «чинить» молча** — см. примечание ниже |
+| `oh-my-openagent` | `latest` | **расхождение**: указан в `~/.config/opencode/tui.json` (ключ `"plugin"`, единственное значение `oh-my-openagent@latest`), тогда как в `opencode.jsonc`/`cli.json` — `oh-my-opencode-slim@3.0.5` | не определено: **ни одного** события загрузки `oh-my-openagent` в логе сервера нет; в npm-кэше лежит только каталог `.staging-…` от недокачанной установки 2026-10-24 (134 МБ) — то есть пакет **не установлен** | ничего не ломает, но 134 МБ мёртвого кэша и два разных плагина в конфигах | **не «чинить» молча** — см. примечание ниже |
 
 > **Расхождение названо прямо, а не исправлено.** `tui.json` и `opencode.jsonc`/`cli.json`
-> называют разные плагины. Оба присутствуют в конфигурации, оба скачаны в npm-кэш.
-> Ничего не «приводится к единому виду»: выбор — за владельцем. Установщик
-> воспроизводит текущее состояние как есть и в `-Verify` печатает предупреждение
-> о расхождении.
+> называют разные плагины. Оба присутствуют в конфигурации. Ничего не «приводится к
+> единому виду»: выбор — за владельцем. Установщик воспроизводит текущее состояние
+> как есть и в `-Verify` печатает предупреждение о расхождении.
+>
+> Факты по `tui.json`, установленные при разборе (важно для переустановки):
+>
+> * opencode v2 читает `opencode/opencode.json`, `opencode/cli.json`, `opencode/client.json`;
+>   `tui.json` в списке **нет** — это файл v1, из которого v2 умеет мигрировать
+>   (`migrated cli config` в коде бинаря). Миграция отрабатывает только при наличии
+>   `~/.local/share/opencode/kv.json` — такого файла нет, миграция не происходит.
+> * Плагин из `tui.json` (`oh-my-openagent@latest`) **не качается**: подставной
+>   `MARKER-PLUGIN-XYZ-9999` в `tui.json` не породил ни одной попытки загрузки.
+> * В npm-кэше `oh-my-openagent@latest` — только `.staging-…` (134 МБ) от прерванной
+>   установки 2026-10-24, без `package.json`; полноценной установки нет.
+> * Итог: `tui.json` сейчас **инертен**. Строка `oh-my-openagent@latest` в нём —
+>   остаток v1, а не рабочая зависимость.
+>
+> Риск для переустановки: если на новой машине opencode v2 всё-таки попытается
+> выполнить миграцию `tui.json` (появится `kv.json`), он попробует поставить
+> `oh-my-openagent@latest` — пакет большой (134 МБ) и качается долго; без прокси
+> (п. 0.1) это упадёт. Это ещё один аргумент решить вопрос с `tui.json` при сносе.
 
 ### 1.6. MCP-серверы (все из `~/.config/opencode/opencode.jsonc`)
 
@@ -216,7 +258,7 @@ level=ERROR message="Failed to drain Session"
 | `~/.config/opencode/lsp-install-decisions.json` | 181 байт | opencode | пометки «отклонено» для LSP `nixd`, `bash` | opencode заново предложит поставить LSP | копируется вручную при желании |
 | `~/.config/opencode/service.json` | 41 байт, содержит пароль | opencode service | пароль локального HTTP-сервера | сервер не поднимется с тем же паролем | **установщик не создаёт** (секрет) — владелец задаёт сам |
 | `~/.local/share/opencode/` | `opencode.db` 96 МБ + WAL 14 МБ, `logs/`, `storage/`, `snapshot/`, `shell/`, `tool-output/`, `repos/` | состояние opencode | база сессий и данных | история сессий теряется | переносится при желании; база хранит и консольную учётку (п. 0.2) |
-| `~/.cache/opencode/npm/` | 418 МБ (`oh-my-opencode-slim@3.0.5` — 285 МБ, `oh-my-openagent@latest` — 134 МБ) | npm-кэш opencode для плагинов | оффлайн-запуск плагинов | плагины качаются заново при первом старте | качается автоматически |
+| `~/.cache/opencode/npm/` | 418 МБ (`oh-my-opencode-slim@3.0.5` — 285 МБ, установлен; `oh-my-openagent@latest` — 134 МБ, **только `.staging-…`, не установлен**) | npm-кэш opencode для плагинов | оффлайн-запуск плагинов | плагины качаются заново при первом старте | качается автоматически |
 | `~/opencode-serve.sh` | 625 байт | скрипт запуска сервера | поднимает `opencode serve --hostname 0.0.0.0 --port 4096 --cors https://<host>.opencodes.zeroq.su`, лог в `%TEMP%\opencode-serve.log` | сервер на 4096 не поднимается | восстанавливается; **в нём же задаётся `HTTP(S)_PROXY`/`NO_PROXY`** |
 | `~/.bashrc` | ~4.4 КБ | dotfiles | `OPENCODE_SERVER_*`, ключи внешних провайдеров, алиасы прокси, `PATH`-фиксы для scoop | сервер без пароля; внешние провайдеры не авторизованы | восстанавливается из dotfiles (`~/.Storage/chezmoi`) владельцем |
 
@@ -243,9 +285,13 @@ level=ERROR message="Failed to drain Session"
 opencode --version                  # ожидается opencode v2.2.1
 scoop list                          # opencode2 2.2.1, nodejs, bun, git, python, python312, lazygit
 npm ls -g --depth=0                 # @opencode-ai/browser-control@0.8.4
-opencode models | grep -c opencode-go/   # ожидается 30 (0 = нет прокси в окружении сервера)
 opencode auth list                  # есть OpenCode Console и minimax-coding-plan
 opencode mcp list                   # webpage, browser-control, computer-use, genoffice — connected
+
+# проверка прокси (п. 0.1) — запускать В ТОМ ЖЕ окружении, что и сервер:
+echo "HTTP_PROXY=$HTTP_PROXY"; echo "NO_PROXY=$NO_PROXY"
+opencode models | grep -c opencode-go/   # ожидается 30
+# 0 = прокси не дошёл до процесса opencode (или нет учётной записи Console)
 ```
 
 Сверка «факт против реестра» целиком: `powershell -File scripts/install-opencode.ps1 -Verify`
