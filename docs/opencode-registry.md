@@ -7,6 +7,17 @@
 Проверка соответствия факта реестру: `powershell -File scripts/install-opencode.ps1 -Verify`
 (код 0 — всё на месте, 1 — есть расхождения).
 
+> **Обновлено 2026-10-31** (после переустановки lamet). Три правки в реестре и в
+> установщике:
+>
+> * **A.** Плагин не «объявляется», а **устанавливается**: `bun add` в
+>   `~/.config/opencode` + проверка лога плагина — п. 1.5.
+> * **B.** Конфиг обязан быть **валидным JSON** — п. 1.5.
+> * **C.** Форма объявления плагина: `{"package": "..."}`, а не голая строка — п. 1.5.
+> * плюс **пин против бакета** для `opencode2` (2.2.1 → 2.2.4) — п. 1.2.
+>
+> Репозиторий переехал в `C:\metaagent\work\winos` (клона в `C:\Git` больше нет).
+
 ---
 
 ## 0. Три пункта, без которых opencode на этой машине не работает
@@ -169,9 +180,39 @@ level=ERROR message="Failed to drain Session"
 
 | Имя | Версия | Откуда ставится | Зачем | Что сломается без него | Команда установки |
 |---|---|---|---|---|---|
-| `opencode2` | **2.2.1** | бакет `versions`; манифест тянет `@opencode/cli-windows-x64-<v>.tgz` с npm | сам агент | агента нет | `scoop install versions/opencode2` (даёт свежий 2.2.2; **точную 2.2.1** — `scoop install https://raw.githubusercontent.com/ScoopInstaller/Versions/f6c4dd4ea3/bucket/opencode2.json`) |
-| `opencode2` (рядом) | 2.2.0, 2.1.4 | предыдущие установки в `scoop/apps/opencode2/` | откат, если новая версия не работает | — | `scoop install versions/opencode2@2.2.0` |
-| shim `opencode` | 2.2.1 | `scoop/shims/opencode.exe` → `apps/opencode2/current` | команда `opencode` в PATH | `opencode` не находится | ставится вместе с `opencode2` |
+| `opencode2` | **2.2.4** | бакет `versions`; манифест тянет `@opencode/cli-windows-x64-<v>.tgz` с npm | сам агент | агента нет | `scoop install versions/opencode2` — ставит ровно то, что лежит в манифесте бакета (на 2026-10-31 это **2.2.4**) |
+| `opencode2` (пин) | 2.2.1 и старше | манифест в **истории** бакета `versions` (`git log -- bucket/opencode2.json`) | откат на конкретный бинарь, если свежий не работает | — | `scoop install https://raw.githubusercontent.com/ScoopInstaller/Versions/<commit>/bucket/opencode2.json` — коммит ищется по `git log` **в клоне бакета** |
+| shim `opencode` | 2.2.4 | `scoop/shims/opencode.exe` → `apps/opencode2/current` | команда `opencode` в PATH | `opencode` не находится | ставится вместе с `opencode2` |
+
+> **Пин против бакета (обновлено 2026-10-31).** Бакет `versions` держит в рабочем дереве
+> **только одну** — последнюю — версию каждого приложения; предыдущие версии остаются
+> в истории git. Поэтому «зафиксировать 2.2.1» и «поставить 2.2.1 из бакета» — разные
+> вещи: `scoop install versions/opencode2` всегда берёт текущий манифест, и именно
+> его версию показывает `scoop list`.
+>
+> Установщик проверяет **три** величины и печатает их рядом: что **установлено**
+> (факт), что **в бакете** (манифест) и что **ожидает реестр**:
+>
+> ```
+> [ OK ] app:opencode2 - opencode2 2.2.4 (bucket versions) | installed 2.2.4, bucket ships 2.2.4, registry expects 2.2.4
+> ```
+>
+> Расхождение версии — это `[WARN]` с обоими числами, а не `[ OK ]`:
+>
+> ```
+> [WARN] app:opencode2 - opencode2 2.2.4 (bucket versions) | installed 2.2.3, bucket ships 2.2.4, registry expects 2.2.4 | the installed version differs from the registry
+> ```
+>
+> Старый установщик печатал `[ OK ] opencode2 2.2.1` при фактических 2.2.4: версия
+> вообще не сверялась, ожидаемое значение выдавалось за факт. `-Verify` теперь
+> завершается кодом 1 и при расхождении версии, не только при отсутствии пакета.
+>
+> Если нужен именно старый бинарь, установщик ищет его манифест в истории бакета
+> (`git log` **внутри клона бакета** — в прежней версии команда выполнялась в
+> текущем каталоге, поэтому поиск всегда молча проваливался) и ставит его по
+> прямой ссылке на манифест. Если такого манифеста в истории нет — ставится версия
+> бакета, а расхождение с реестром печатается как `[WARN]`.
+
 
 ### 1.3. Инструменты (версии — с этой машины)
 
@@ -199,8 +240,88 @@ level=ERROR message="Failed to drain Session"
 
 | Имя | Версия | Откуда ставится | Зачем | Что слокается без него | Команда установки |
 |---|---|---|---|---|---|
-| `oh-my-opencode-slim` | **3.0.5** | `plugins` в `~/.config/opencode/opencode.jsonc` **и** в `~/.config/opencode/cli.json`; кэш `~/.cache/opencode/npm/oh-my-opencode-slim@3.0.5` (285 МБ) | агентный слой: оркестратор, subagent-ы, task-manager | агентов (`orchestrator`, `explorer`, `oracle`, `designer`, `fixer`) не будет, команды агентов не сработают | прописать `"plugins": ["oh-my-opencode-slim@3.0.5"]` в `opencode.jsonc` и `cli.json` |
-| `oh-my-openagent` | `latest` | **расхождение**: указан в `~/.config/opencode/tui.json` (ключ `"plugin"`, единственное значение `oh-my-openagent@latest`), тогда как в `opencode.jsonc`/`cli.json` — `oh-my-opencode-slim@3.0.5` | не определено: **ни одного** события загрузки `oh-my-openagent` в логе сервера нет; в npm-кэше лежит только каталог `.staging-…` от недокачанной установки 2026-10-24 (134 МБ) — то есть пакет **не установлен** | ничего не ломает, но 134 МБ мёртвого кэша и два разных плагина в конфигах | **не «чинить» молча** — см. примечание ниже |
+| `oh-my-opencode-slim` | **3.0.5** | `plugins` в `~/.config/opencode/opencode.jsonc` **и** в `~/.config/opencode/cli.json` (объект `{"package": "..."}`) + **зависимости в `~/.config/opencode/node_modules`** (bun, 143 верхнеуровневых пакета, ~330 МБ) | агентный слой: оркестратор, subagent-ы, task-manager | агентов (`orchestrator`, `explorer`, `oracle`, `designer`, `fixer`) не будет, команды агентов не сработают; opencode **молча** игнорирует плагин — ни строки в логе, ни ошибки | `cd ~/.config/opencode && bun add oh-my-opencode-slim@3.0.5` |
+| `oh-my-openagent` | `latest` | **расхождение**: указан в `~/.config/opencode/tui.json` (строка `oh-my-openagent@latest`), тогда как в `opencode.jsonc`/`cli.json` — `oh-my-opencode-slim@3.0.5` | не определено: **ни одного** события загрузки `oh-my-openagent` в логе сервера нет; в npm-кэше лежит только каталог `.staging-…` от недокачанной установки 2026-10-24 (134 МБ) — то есть пакет **не установлен** | ничего не ломает, но 134 МБ мёртвого кэша и два разных плагина в конфигах | **не «чинить» молча** — см. примечание ниже |
+
+#### A. Плагин не «объявляется», а **устанавливается**
+
+Конфиг объявляет плагин, но opencode грузит его из `node_modules` **каталога
+конфига**. Объявления в конфиге недостаточно: без `~/.config/opencode/node_modules`
+opencode не пишет в лог ни строки и не выдаёт ошибку — выглядит как «плагин есть,
+просто ничего не делает».
+
+Проверка «плагин живой» состоит из двух независимых частей, и обе обязательны:
+
+1. **каталог** `~/.config/opencode/node_modules/oh-my-opencode-slim` существует,
+   в нём `package.json` версии `3.0.5`;
+2. **лог плагина** `~/.local/share/opencode/log/oh-my-opencode-slim.<время>-<pid>.log`
+   содержит строки `tools registered {"count":11}`,
+   `agents registered {"count":5}` и `bundled skills registered in-process {"count":11}`.
+
+Второе — единственное доказательство, что расширение **живое**, а не объявленное.
+`-Verify` проверяет и каталог, и лог, и печатает факт:
+
+```
+[ OK ] plugin:oh-my-opencode-slim - bun add oh-my-opencode-slim@3.0.5 in C:\Users\oqyude\.config\opencode | node_modules present, version 3.0.5, declared in the config package.json: True
+[ OK ] plugin-live:oh-my-opencode-slim - the plugin log must contain "tools registered" | tools=11 agents=5 skills=11 (log oh-my-opencode-slim.20261030T235255-8512.log)
+```
+
+**Ловушка `bun add`.** `bun add` без `cd` в каталог конфига кладёт `node_modules`,
+`package.json` и `bun.lock` в **`$HOME`** — это мусор в домашнем каталоге
+(красная линия владельца). Установщик поэтому:
+
+* вызывает `bun add` с явным рабочим каталогом (`Push-Location $ConfigDir`);
+* после установки проверяет, что `node_modules\<пакет>` появился **именно** в
+  `~/.config/opencode`, а не в `$HOME`;
+* запоминает состояние `$HOME` до установки и **удаляет** всё, что появилось там
+  во время прогона (в том числе осиротевший `bun.lock` от ручной починки);
+* отдельной проверкой `home:hygiene` следит, чтобы в `$HOME` не появилось
+  `node_modules` / `package.json` / `bun.lock`.
+
+#### B. Конфиг обязан быть **валидным JSON**
+
+Windows-пути в JSON требуют удвоения обратного слэша. Строка
+
+```json
+"command": ["cmd", "/c", "C:\Users\oqyude\\scoop\\apps\\nodejs\\current\\npx.cmd"]
+```
+
+содержит `\U` — недопустимую escape-последовательность: `python -c "json.load(...)"`
+такой файл **не читает** (`Invalid control character` / битые escapes), а мягкий
+парсер opencode читает — и получает путь с искажёнными символами.
+
+Поэтому установщик больше не подставляет пути в текстовый шаблон:
+
+* конфиг собирается как объект (`[ordered]@{}`) и сериализуется `ConvertTo-Json`;
+* пути пишутся **прямыми слэшами** (`C:/Users/oqyude/scoop/...`) — Windows их
+  принимает, а экранировать нечего;
+* **перед записью** файл разбирается обратно `ConvertFrom-Json`: это Json.NET,
+  он отвергает недопустимые escape-последовательности. Конфиг, который не
+  прошёл разбор, на диск не попадает;
+* `-Verify` проверяет то же самое на **живом** файле и сверяет, что путь в
+  `mcp.servers.webpage.command` совпадает с ожидаемым (`.../npx.cmd`).
+
+#### C. Форма объявления плагина
+
+Схема `https://opencode.ai/config.json` (снята живьём 2026-10-31):
+
+* `plugins` — актуальный ключ; элемент — строка **или** `Config.Plugin.EntryEncoded`;
+* строка в `plugins` — это **enablement-директива** («включить уже установленное»),
+  а не «поставь пакет»;
+* внешний пакет объявляется объектом: `{"package": "oh-my-opencode-slim@3.0.5"}`
+  (поле `package` обязательно, `additionalProperties: false`);
+* `plugin` (единственное число) — **deprecated**.
+
+Рабочая форма (проверена живьём, плагин поднялся):
+
+```json
+"plugins": [ { "package": "oh-my-opencode-slim@3.0.5" } ]
+```
+
+Её и пишет установщик — в `opencode.jsonc` и в `cli.json` (в `cli.json` схема
+`https://opencode.ai/v2/cli.json` допускает ту же форму и не имеет ключа
+`plugin`). Устаревшая форма `"plugins": ["oh-my-opencode-slim@3.0.5"]` — это
+директива включения, а не установка пакета.
 
 > **Расхождение названо прямо, а не исправлено.** `tui.json` и `opencode.jsonc`/`cli.json`
 > называют разные плагины. Оба присутствуют в конфигурации. Ничего не «приводится к
@@ -219,6 +340,11 @@ level=ERROR message="Failed to drain Session"
 >   установки 2026-10-24, без `package.json`; полноценной установки нет.
 > * Итог: `tui.json` сейчас **инертен**. Строка `oh-my-openagent@latest` в нём —
 >   остаток v1, а не рабочая зависимость.
+>
+> Ключ в `tui.json` переведён в не-депрекейтованный вид (`plugins` со строкой
+> `oh-my-openagent@latest`): строка — это enablement-директива, поэтому она не
+> тянет пакет и не запускает загрузку. Переименование `plugin` → `plugins` в
+> живом `tui.json` делается `-Force`; в `-Verify` старый ключ виден как `[WARN]`.
 >
 > Риск для переустановки: если на новой машине opencode v2 всё-таки попытается
 > выполнить миграцию `tui.json` (появится `kv.json`), он попробует поставить
@@ -249,11 +375,12 @@ level=ERROR message="Failed to drain Session"
 
 | Имя | Версия / размер | Откуда ставится | Зачем | Что сломается без него | Команда установки |
 |---|---|---|---|---|---|
-| `~/.config/opencode/opencode.jsonc` | 1528 байт | файл конфига | основной конфиг: дефолтная модель, MCP-серверы, плагин | opencode стартует с дефолтами, MCP-серверы не поднимаются | восстанавливается установщиком из шаблона (пишется, только если файла нет) |
+| `~/.config/opencode/opencode.jsonc` | 1593 байта | файл конфига | основной конфиг: дефолтная модель, MCP-серверы, плагин | opencode стартует с дефолтами, MCP-серверы не поднимаются | восстанавливается установщиком (пишется, только если файла нет **или** он сломан) |
 | `~/.config/opencode/cli.json` | 94 байта | файл конфига | плагин для CLI-режима | CLI-режим без агентного слоя | то же |
-| `~/.config/opencode/tui.json` | 51 байт | файл конфига | TUI-конфиг; **содержит расхождение** (`oh-my-openagent@latest`) | TUI без плагина | то же (как есть) |
-| `~/.config/opencode/oh-my-opencode-slim.json` | 390 байт | файл конфига | привязка агентов (`orchestrator`, `explorer`, `oracle`, `designer`, `fixer`) к модели `opencode-go/deepseek-v4.1-flash` | агенты стартуют на дефолтной модели | восстанавливается установщиком |
-| `~/.config/opencode/package.json` + `package-lock.json` | `@opencode/plugin` 2.0.32 | npm, локально в каталоге конфига | типы и рантайм плагина | плагин может не собраться | `npm install` в `~/.config/opencode` |
+| `~/.config/opencode/tui.json` | 50 байт | файл конфига | TUI-конфиг; **содержит расхождение** (`oh-my-openagent@latest`) | TUI без плагина | то же (как есть) |
+| `~/.config/opencode/oh-my-opencode-slim.json` | 389 байт | файл конфига | привязка агентов (`orchestrator`, `explorer`, `oracle`, `designer`, `fixer`) к модели `opencode-go/deepseek-v4.1-flash` | агенты стартуют на дефолтной модели | восстанавливается установщиком |
+| `~/.config/opencode/node_modules/` + `package.json` + `bun.lock` | `oh-my-opencode-slim` 3.0.5, 143 верхнеуровневых пакета, ~330 МБ | `bun add` **в каталоге конфига** | рантайм плагина: без него opencode **молча** игнорирует объявленный плагин | плагин не грузится: ни tools, ни агентов, ни скиллов — и ни одной строки в логе | `cd ~/.config/opencode && bun add oh-my-opencode-slim@3.0.5` |
+| `~/.local/share/opencode/log/oh-my-opencode-slim.<время>-<pid>.log` | 7–8 КБ | пишет сам плагин при загрузке | доказательство, что плагин **живой** | — | появляется при первом старте opencode |
 | `~/.config/opencode/skills/` | `browser-control` (36 КБ), `genoffice` (80 КБ) | ставятся opencode при первой активации соответствующих MCP/плагинов | скиллы браузера и офисных документов | скиллы не появятся в списке | появляются сами; вручную — `opencode skill` |
 | `~/.config/opencode/lsp-install-decisions.json` | 181 байт | opencode | пометки «отклонено» для LSP `nixd`, `bash` | opencode заново предложит поставить LSP | копируется вручную при желании |
 | `~/.config/opencode/service.json` | 41 байт, содержит пароль | opencode service | пароль локального HTTP-сервера | сервер не поднимется с тем же паролем | **установщик не создаёт** (секрет) — владелец задаёт сам |
@@ -268,22 +395,27 @@ level=ERROR message="Failed to drain Session"
 
 1. `scoop` (если его нет) → 2. бакеты `main`, `extras`, `versions`, `winos`
 3. `git`, `nodejs`, `bun`, `python`, `python312`, `lazygit`, `uv`
-4. `opencode2` **2.2.1** (пин по манифесту, если нужен именно этот бинарь)
+4. `opencode2` **2.2.4** — то, что лежит в манифесте бакета `versions`
+   (пин по манифесту из истории бакета — только если нужен именно этот бинарь, см. п. 1.2)
 5. `npm install -g @opencode-ai/browser-control@0.8.4`
 6. восстановить конфиги opencode (`opencode.jsonc`, `cli.json`, `tui.json`, `oh-my-opencode-slim.json`)
-7. поднять окружение `computer-use` (`uv venv` + `uv pip install -e "…[all]"`)
-8. прописать `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` в окружение сервера
-9. `opencode auth login` (консоль + minimax) — **логины заново, `auth.json` не переносится**
-10. проверить: `opencode models | grep opencode-go` (должно быть 30 строк), `opencode auth list`, `opencode mcp list`
+7. **материализовать зависимости плагина**: `cd ~/.config/opencode && bun add oh-my-opencode-slim@3.0.5`
+   (шаг 6 без шага 7 = «плагин объявлен, но не установлен», см. п. 1.5 A)
+8. поднять окружение `computer-use` (`uv venv` + `uv pip install -e "…[all]"`)
+9. прописать `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` в окружение сервера
+10. `opencode auth login` (консоль + minimax) — **логины заново, `auth.json` не переносится**
+11. **запустить opencode хотя бы раз** — только тогда появляется лог плагина,
+    по которому `-Verify` доказывает, что плагин живой (п. 1.5 A)
+12. проверить: `opencode models | grep opencode-go` (должно быть 30 строк), `opencode auth list`, `opencode mcp list`
 
-Автоматизация шагов 1–7: `powershell -File scripts/install-opencode.ps1`.
-Шаги 8–10 — руками: прокси и логины требуют решения владельца.
+Автоматизация шагов 1–8: `powershell -File scripts/install-opencode.ps1`.
+Шаги 9–12 — руками: прокси и логины требуют решения владельца.
 
 ## 3. Проверка после установки
 
 ```
-opencode --version                  # ожидается opencode v2.2.1
-scoop list                          # opencode2 2.2.1, nodejs, bun, git, python, python312, lazygit
+opencode --version                  # ожидается opencode v2.2.4
+scoop list                          # opencode2 2.2.4, nodejs, bun, git, python, python312, lazygit
 npm ls -g --depth=0                 # @opencode-ai/browser-control@0.8.4
 opencode auth list                  # есть OpenCode Console и minimax-coding-plan
 opencode mcp list                   # webpage, browser-control, computer-use, genoffice — connected
@@ -292,17 +424,38 @@ opencode mcp list                   # webpage, browser-control, computer-use, ge
 echo "HTTP_PROXY=$HTTP_PROXY"; echo "NO_PROXY=$NO_PROXY"
 opencode models | grep -c opencode-go/   # ожидается 30
 # 0 = прокси не дошёл до процесса opencode (или нет учётной записи Console)
+
+# доказательство, что плагин живой:
+grep -E 'tools registered|agents registered|skills registered' \
+  ~/.local/share/opencode/log/oh-my-opencode-slim.*.log | tail -3
+# ожидается: tools registered {"count":11} / agents registered {"count":5}
+#            / bundled skills registered in-process {"count":11,"disabled":0}
 ```
 
 Сверка «факт против реестра» целиком: `powershell -File scripts/install-opencode.ps1 -Verify`
-(код возврата 0 — совпало, 1 — расхождения; список расхождений печатается в stdout).
+(код возврата 0 — совпало, 1 — расхождения или отсутствующие пункты; список расхождений
+печатается в stdout).
+
+`-Verify` печатает **факт рядом с ожидаемым** по каждому пункту:
+
+```
+[ OK ] app:opencode2 - opencode2 2.2.4 (bucket versions) | installed 2.2.4, bucket ships 2.2.4, registry expects 2.2.4
+[ OK ] plugin:oh-my-opencode-slim - bun add oh-my-opencode-slim@3.0.5 in C:\Users\oqyude\.config\opencode | node_modules present, version 3.0.5, declared in the config package.json: True
+[ OK ] plugin-live:oh-my-opencode-slim - the plugin log must contain "tools registered" | tools=11 agents=5 skills=11 (log oh-my-opencode-slim.20261031T003521-3556.log)
+```
+
+Расхождение версии — `[WARN]` с обоими числами (и код возврата 1), а не `[ OK ]`.
 
 ## 4. Что установщик принципиально не делает
 
 * не трогает `~/.config/opencode` и `~/.local/share/opencode` существующие файлы
-  (пишет только отсутствующие; перезапись — только с `-Force`);
+  (пишет только отсутствующие или **сломанные**; перезапись — только с `-Force`);
+  сломанный конфиг перед перезаписью копируется в `<имя>.bak-<yyyyMMdd-HHmmss>`;
 * не удаляет и не переустанавливает opencode «на живую» (уже установленную версию
   не понижает; расхождение версий — предупреждение, а не действие);
+* **не создаёт ничего в `%USERPROFILE%`** — ни `node_modules`, ни `package.json`,
+  ни `bun.lock`: зависимости плагина ставятся в `~/.config/opencode`, а всё, что
+  всё-таки появилось в домашнем каталоге, удаляется (проверка `home:hygiene`);
 * не меняет системные переменные окружения (`setx` не используется);
 * не хранит и не копирует секреты: `auth.json`, `service.json`, ключи провайдеров;
 * не останавливает и не перезапускает сервер opencode.
