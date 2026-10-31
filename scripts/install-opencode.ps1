@@ -30,7 +30,9 @@
         that differs from the registry is a WARN with both numbers, never a
         silent [ OK ]
 
-    Exit codes: 0 = ok, 1 = a required item is missing or mismatched.
+    Exit codes: 0 = ok, 1 = a required item is missing or differs from the
+    registry. Advisories (deprecated keys, missing auth.json) are warnings and
+    do not change the exit code.
 
 .NOTES
     Russian explanations live in docs/opencode-registry.md.
@@ -1148,6 +1150,7 @@ Ensure-ScoopOnPath
 $exitCode = 0
 $failures = New-Object System.Collections.ArrayList
 $mismatches = New-Object System.Collections.ArrayList
+$warnings = New-Object System.Collections.ArrayList
 
 if ($Verify) {
     Write-Head 'VERIFY (read only)'
@@ -1168,7 +1171,7 @@ if ($Verify) {
             'warn' {
                 $msg = if ($state.Message) { $state.Message } else { 'warning' }
                 Write-Warn2 "$label | $msg"
-                [void]$mismatches.Add("$($c.Name): $msg")
+                [void]$warnings.Add("$($c.Name): $msg")
             }
             default {
                 $msg = if ($state.Message) { $state.Message } else { 'missing' }
@@ -1225,6 +1228,9 @@ if ($Verify) {
     }
 
     Write-Head 'RESULT'
+    if ($warnings.Count -gt 0) {
+        Write-Warn2 ("warnings: " + ($warnings -join '; '))
+    }
     if ($mismatches.Count -gt 0) {
         Write-Warn2 ("mismatched: " + ($mismatches -join '; '))
     }
