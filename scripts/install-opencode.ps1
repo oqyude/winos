@@ -400,27 +400,210 @@ function Get-PluginLogFacts {
 }
 
 # --------------------------------------------------------------------------
+# Credentials, launcher environment, MCP servers
+# --------------------------------------------------------------------------
+function Get-ActiveIntegrations {
+    # opencode v2 keeps the credentials in opencode.db, table "credential".
+    # Only integration_id is read - the "value" column holds the secret and is
+    # never touched.
+    #
+    # The result is an object and not a bare array: PowerShell unrolls an
+    # empty array on return, and "no active integration" is exactly the case
+    # that has to survive.
+    param([string]$DataDir)
+    $result = [pscustomobject]@{ Found = $false; Count = 0; Names = @() }
+    $db = Join-Path $DataDir 'opencode.db'
+    if (-not (Test-Path -LiteralPath $db)) { return $result }
+    $r = Invoke-Native 'sqlite3' @($db, 'SELECT integration_id FROM credential WHERE active = 1;') -TimeoutSec 60
+    if ($r.ExitCode -ne 0) { return $result }
+    $names = @()
+    foreach ($line in ($r.Output -split "`r?`n")) {
+        $t = $line.Trim()
+        if ($t) { $names += $t }
+    }
+    $result.Found = $true
+    $result.Count = $names.Count
+    $result.Names = $names
+    return $result
+}
+
+function Get-AuthState {
+    # Where the machine is authorized. auth.json is only the v1 style
+    # fallback: in v2 it may be absent while the machine is logged in.
+    param([string]$DataDir)
+    $state = @{ Source = 'none'; Count = 0; Names = @() }
+    $db = Get-ActiveIntegrations -DataDir $DataDir
+    if ($db.Found) {
+        $state.Source = 'opencode.db (table credential)'
+        $state.Count = $db.Count
+        $state.Names = $db.Names
+        return $state
+    }
+    $r = Invoke-Native 'opencode' @('auth', 'list') -TimeoutSec 120
+    if ($r.ExitCode -eq 0) {
+        $stored = 0
+        foreach ($line in ($r.Output -split "`r?`n")) {
+            if ($line.Trim() -match '\s*stored\s*$') { $stored++ }
+        }
+        $state.Source = 'opencode auth list'
+        $state.Count = $stored
+        return $state
+    }
+    $p = Join-Path $DataDir 'auth.json'
+    if (Test-Path -LiteralPath $p) {
+        try {
+            $j = Get-Content -Raw -LiteralPath $p | ConvertFrom-Json -ErrorAction Stop
+            if ($j) {
+                $state.Source = 'auth.json'
+                $state.Count = @($j.PSObject.Properties).Count
+            }
+        } catch { }
+    }
+    return $state
+}
+
+function Get-BashrcSecretLength {
+    # The launcher starts the server through `bash -lc`, so the profile has to
+    # export the credentials - otherwise the server answers 401 and the log
+    # says nothing. Only the LENGTH is read: the value is a secret.
+    $r = Invoke-Native 'bash' @('-lc', 'echo ${#OPENCODE_SERVER_PASSWORD}') -TimeoutSec 60
+    if ($r.ExitCode -ne 0) { return $null }
+    $line = ($r.Output -split "`r?`n" | Where-Object { $_.Trim() } | Select-Object -First 1)
+    if (-not $line) { return $null }
+    $n = 0
+    if (-not [int]::TryParse($line.Trim(), [ref]$n)) { return $null }
+    return $n
+}
+
+function Get-McpServerState {
+    # One MCP server from the config:
+    #   * command[0] is an absolute path -> the file must exist
+    #   * command[0] is a name          -> it must resolve (where.exe)
+    #   * "cmd /c <path>"               -> the PATH behind cmd is the one that matters
+    #   * cwd, when set, must exist
+    param([string]$Name, $Server)
+    $cmd = @()
+    if ($Server -and $Server.PSObject.Properties['command']) {
+        $cmd = @($Server.command | Where-Object { $_ })
+    }
+    if ($cmd.Count -eq 0) {
+        return New-CheckState 'missing' 'the server has no command'
+    }
+    $exe = $cmd[0]
+    $target = $exe
+    if ($cmd.Count -ge 3 -and ($exe -eq 'cmd' -or $exe -eq 'cmd.exe') -and ($cmd[1] -eq '/c' -or $cmd[1] -eq '/k')) {
+        $target = $cmd[2]
+    }
+    if (Test-AbsolutePath -Path $target) {
+        if (-not (Test-Path -LiteralPath $target)) {
+            return New-CheckState 'missing' "the path does not exist: $target"
+        }
+    } else {
+        if (-not (Get-CommandPath -Name $target)) {
+            return New-CheckState 'missing' "'$target' is not on PATH"
+        }
+    }
+    if ($Server.PSObject.Properties['cwd'] -and $Server.cwd) {
+        if (-not (Test-Path -LiteralPath $Server.cwd)) {
+            return New-CheckState 'missing' "the working directory does not exist: $($Server.cwd)"
+        }
+    }
+    return New-CheckState 'ok'
+}
+
+function Get-McpServerCommand {
+    param($Server)
+    $cmd = @()
+    if ($Server -and $Server.PSObject.Properties['command']) {
+        $cmd = @($Server.command | Where-Object { $_ })
+    }
+    if ($cmd.Count -eq 0) { return '(no command)' }
+    if ($cmd.Count -ge 3 -and ($cmd[0] -eq 'cmd' -or $cmd[0] -eq 'cmd.exe')) {
+        return ("{0} {1} {2}" -f $cmd[0], $cmd[1], $cmd[2])
+    }
+    return ($cmd -join ' ')
+}
+
+function Get-ConfiguredMcpServers {
+    # The servers of the config that is on the machine. An object and not a
+    # bare array: an empty array would be unrolled to nothing on return.
+    $result = [pscustomobject]@{ Found = $false; Servers = @() }
+    $p = Join-Path $ConfigDir 'opencode.jsonc'
+    if (-not (Test-Path -LiteralPath $p)) { return $result }
+    try { $j = Get-Content -Raw -LiteralPath $p | ConvertFrom-Json -ErrorAction Stop } catch { return $result }
+    $result.Found = $true
+    if ($j.PSObject.Properties['mcp']) {
+        $servers = @()
+        foreach ($prop in $j.mcp.servers.PSObject.Properties) {
+            $servers += [pscustomobject]@{ Name = $prop.Name; Server = $prop.Value }
+        }
+        $result.Servers = $servers
+    }
+    return $result
+}
+
+# --------------------------------------------------------------------------
 # Config objects
 #
 # The configs are built as ordered hashtables and serialized with
 # ConvertTo-Json. That is the only way to guarantee a valid JSON document:
 # hand written templates with Windows paths produce invalid escape sequences
 # ("C:\Users\..." -> \U is not a legal JSON escape) and a lenient parser
-# silently mangles the path. Paths are written with forward slashes, which
-# Windows accepts and which need no escaping at all.
+# silently mangles the path. ConvertTo-Json escapes the backslashes itself,
+# so the paths are written the way Windows expects them.
+#
+# The paths are RESOLVED, not guessed: scoop does not always create the
+# "current" junction (on lamet apps\nodejs\current\npx.cmd does not exist,
+# the real file is apps\nodejs\<version>\npx.cmd), and the browser-control
+# shim lives in the npm global prefix, not in the nodejs bin directory.
+# A path that is not there is a dead MCP server.
 # --------------------------------------------------------------------------
-function ConvertTo-WinPath {
+function Test-AbsolutePath {
     param([string]$Path)
-    if (-not $Path) { return $Path }
-    return ($Path -replace '\\', '/')
+    if (-not $Path) { return $false }
+    return ($Path -match '^[A-Za-z]:[\\/]' -or $Path -match '^\\\\')
 }
 
-function Get-NodeBinDir {
-    return (Join-Path $env:USERPROFILE 'scoop\apps\nodejs\current')
+function Get-CommandPath {
+    # The real file behind a command name, resolved through where.exe.
+    param([string]$Name)
+    $r = Invoke-Native 'where.exe' @($Name) -TimeoutSec 60
+    if ($r.ExitCode -ne 0) { return $null }
+    foreach ($line in ($r.Output -split "`r?`n")) {
+        $t = $line.Trim()
+        if (-not $t) { continue }
+        if (Test-Path -LiteralPath $t) { return $t }
+    }
+    return $null
+}
+
+function Get-NpxPath {
+    # npx.cmd of the installed nodejs - not the "current" junction.
+    $p = Get-CommandPath -Name 'npx.cmd'
+    if ($p) { return $p }
+    $p = Get-CommandPath -Name 'npx'
+    if ($p -and $p -match '\.cmd$') { return $p }
+    return (Join-Path (Join-Path $env:USERPROFILE 'scoop\apps\nodejs') "$($Registry.NodeVersion)\npx.cmd")
+}
+
+function Get-BrowserControlPath {
+    # The shim of the global npm package lives in the npm prefix.
+    $p = Get-CommandPath -Name 'browser-control-mcp.cmd'
+    if ($p) { return $p }
+    $r = Invoke-Native 'npm' @('prefix', '-g') -TimeoutSec 120
+    if ($r.ExitCode -eq 0) {
+        $prefix = ($r.Output -split "`r?`n" | Where-Object { $_.Trim() } | Select-Object -First 1)
+        if ($prefix) {
+            $cand = Join-Path $prefix.Trim() 'browser-control-mcp.cmd'
+            if (Test-Path -LiteralPath $cand) { return $cand }
+        }
+    }
+    return (Join-Path (Join-Path $env:USERPROFILE 'scoop\persist\nodejs\bin') 'browser-control-mcp.cmd')
 }
 
 function New-OpenCodeConfigObject {
-    $nodeBin = Get-NodeBinDir
+    $npx = Get-NpxPath
+    $browserControl = Get-BrowserControlPath
     return [ordered]@{
         '$schema' = 'https://opencode.ai/config.json'
         'model'   = $Registry.DefaultModel
@@ -428,18 +611,17 @@ function New-OpenCodeConfigObject {
             'servers' = [ordered]@{
                 'webpage' = [ordered]@{
                     'type'    = 'local'
-                    'command' = @('cmd', '/c', (ConvertTo-WinPath (Join-Path $nodeBin 'npx.cmd')),
-                                  '-y', '-p', 'webpage-mcp@latest', 'webpage-mcp-stdio')
+                    'command' = @('cmd', '/c', $npx, '-y', '-p', 'webpage-mcp@latest', 'webpage-mcp-stdio')
                 }
                 'browser-control' = [ordered]@{
                     'type'    = 'local'
-                    'command' = @('cmd', '/c', (ConvertTo-WinPath (Join-Path $nodeBin 'bin\browser-control-mcp.cmd')))
+                    'command' = @('cmd', '/c', $browserControl)
                 }
                 'computer-use' = [ordered]@{
                     'type'    = 'local'
-                    'command' = @((ConvertTo-WinPath (Join-Path $ToolsDir 'opencode-computer-use\.venv\Scripts\python.exe')),
+                    'command' = @((Join-Path $ToolsDir 'opencode-computer-use\.venv\Scripts\python.exe'),
                                   '-m', 'opencode_computer_use')
-                    'cwd'     = (ConvertTo-WinPath (Join-Path $ToolsDir 'opencode-computer-use'))
+                    'cwd'     = (Join-Path $ToolsDir 'opencode-computer-use')
                     'enabled' = $true
                     'timeout' = 60000
                     'environment' = [ordered]@{
@@ -455,7 +637,7 @@ function New-OpenCodeConfigObject {
                 'genoffice' = [ordered]@{
                     'type'    = 'local'
                     'command' = @('cmd', '/c',
-                                  (ConvertTo-WinPath (Join-Path $env:LOCALAPPDATA 'Programs\GenOffice\resources\cli\genoffice.cmd')),
+                                  (Join-Path $env:LOCALAPPDATA 'Programs\GenOffice\resources\cli\genoffice.cmd'),
                                   'mcp')
                     'enabled' = $true
                     'timeout' = 120000
@@ -812,17 +994,30 @@ function Get-ConfigFileState {
     }
     if ($Kind -eq 'opencode') {
         $cmd = @($j.mcp.servers.webpage.command | Where-Object { $_ })
-        $npx = (ConvertTo-WinPath (Join-Path (Get-NodeBinDir) 'npx.cmd'))
-        # opencode itself rewrites this command (it normalizes the path to
-        # "npx"), so both the full path and the bare name are accepted.
-        if ($cmd.Count -lt 3 -or ($cmd[2] -ne $npx -and $cmd[2] -ne 'npx' -and $cmd[2] -ne 'npx.cmd')) {
-            return New-CheckState 'missing' "the webpage command does not start npx: $($cmd -join ' ')"
+        if ($cmd.Count -lt 3) { return New-CheckState 'missing' 'the webpage command is incomplete' }
+        $target = $cmd[2]
+        if (Test-AbsolutePath -Path $target) {
+            if (-not (Test-Path -LiteralPath $target)) {
+                return New-CheckState 'missing' "the webpage command path does not exist: $target"
+            }
+        } elseif (-not (Get-CommandPath -Name $target)) {
+            return New-CheckState 'missing' "the webpage command '$target' does not resolve"
         }
     }
     if ($Kind -eq 'tui') {
         $entries = @($j.plugins | Where-Object { $_ })
         if ($entries.Count -eq 0 -and $j.PSObject.Properties['plugin']) { $entries = @($j.plugin | Where-Object { $_ }) }
-        if (@($entries | Where-Object { $_ -eq 'oh-my-openagent@latest' }).Count -eq 0) {
+        # opencode rewrites this file itself and may use either form:
+        # a plain string (enablement directive) or { "package": "..." }.
+        $found = @()
+        foreach ($e in $entries) {
+            if ($e -is [string]) {
+                if ($e -eq 'oh-my-openagent@latest') { $found += $e }
+            } elseif ($e.PSObject.Properties['package'] -and $e.package -eq 'oh-my-openagent@latest') {
+                $found += $e
+            }
+        }
+        if ($found.Count -eq 0) {
             return New-CheckState 'missing' 'oh-my-openagent@latest is not declared'
         }
         if ($j.PSObject.Properties['plugin']) {
@@ -911,7 +1106,63 @@ foreach ($cf in $ConfigFiles) {
     }
 }
 
-# --- 7. plugin dependencies ----------------------------------------------
+# --- 7. MCP servers (taken from the config that is on the machine) ---------
+# A server whose command points at a file that is not there dies with
+# "MCP server process exited with code 1" and nothing else. The paths in the
+# config are therefore checked as paths, not as strings.
+$McpConfig = Get-ConfiguredMcpServers
+if (-not $McpConfig.Found) {
+    Add-Check -Name 'mcp:servers' -Detail "$ConfigDir\opencode.jsonc" -Context @{} -Required $true -Test {
+        param($d)
+        return New-CheckState 'missing' 'the config is missing or not valid JSON - the MCP servers are unknown'
+    } -Install {
+        param($d)
+        Write-Fail 'the opencode config is missing or broken - the MCP servers cannot be checked'
+        return $false
+    } -Fact {
+        param($d)
+        return 'the config is missing or broken'
+    }
+} elseif ($McpConfig.Servers.Count -eq 0) {
+    Add-Check -Name 'mcp:servers' -Detail "$ConfigDir\opencode.jsonc" -Context @{} -Required $true -Test {
+        param($d)
+        return New-CheckState 'missing' 'the config declares no MCP server'
+    } -Install {
+        param($d)
+        Write-Fail 'the config declares no MCP server'
+        return $false
+    } -Fact {
+        param($d)
+        return 'no MCP server is declared'
+    }
+} else {
+    foreach ($ms in $McpConfig.Servers) {
+        $msName = $ms.Name
+        $msCommand = Get-McpServerCommand -Server $ms.Server
+        Add-Check -Name "mcp:$msName" -Detail "MCP server '$msName' - $msCommand" `
+            -Context @{ Name = $msName; Server = $ms.Server } -Required $true -Test {
+            param($d)
+            $state = Get-McpServerState -Name $d.Name -Server $d.Server
+            if ($state.State -eq 'ok') { return $true }
+            return $state
+        } -Install {
+            param($d)
+            $state = Get-McpServerState -Name $d.Name -Server $d.Server
+            Write-Fail "the MCP server '$($d.Name)' cannot start: $($state.Message)"
+            Write-Fail 'the command in ~/.config/opencode/opencode.jsonc points at a file that is not there'
+            Write-Fail 'or at a name that is not on PATH - re-run the installer with -Force to'
+            Write-Fail 'rewrite the config from the resolved paths'
+            return $false
+        } -Fact {
+            param($d)
+            $cwd = ''
+            if ($d.Server.PSObject.Properties['cwd'] -and $d.Server.cwd) { $cwd = " | cwd $($d.Server.cwd)" }
+            return ((Get-McpServerCommand -Server $d.Server) + $cwd)
+        }
+    }
+}
+
+# --- 8. plugin dependencies ----------------------------------------------
 # The config only DECLARES the plugin. opencode loads a plugin from the
 # node_modules of the config directory, so the dependencies have to be
 # materialized there - otherwise the plugin is silently ignored.
@@ -978,7 +1229,7 @@ Add-Check -Name "plugin:$($Registry.PluginPackage)" `
     return "node_modules present, version $v, declared in the config package.json: $inPkg"
 }
 
-# --- 8. the plugin is alive (log proof) ----------------------------------
+# --- 9. the plugin is alive (log proof) ----------------------------------
 Add-Check -Name "plugin-live:$($Registry.PluginPackage)" `
     -Detail 'the plugin log must contain "tools registered"' `
     -Context @{ Dir = $LogDir } -Required $true -Test {
@@ -1000,7 +1251,7 @@ Add-Check -Name "plugin-live:$($Registry.PluginPackage)" `
     return "tools=$($facts.Tools) agents=$($facts.Agents) skills=$($facts.Skills) (log $($log.Name))"
 }
 
-# --- 9. the home directory stays clean -----------------------------------
+# --- 10. the home directory stays clean -----------------------------------
 Add-Check -Name 'home:hygiene' `
     -Detail "$HomeDir must not contain node_modules / package.json / bun.lock" `
     -Context @{} -Required $true -Test {
@@ -1030,7 +1281,7 @@ Add-Check -Name 'home:hygiene' `
     return ('stray: ' + (($stray | ForEach-Object { $_.Name }) -join ', '))
 }
 
-# --- 10. computer-use venv ------------------------------------------------
+# --- 11. computer-use venv ------------------------------------------------
 Add-Check -Name 'venv:computer-use' -Detail "$ComputerUseDir\.venv (python -m opencode_computer_use)" `
     -Context @{ Dir = $ComputerUseDir } -Required $true -Test {
     param($d)
@@ -1059,7 +1310,7 @@ Add-Check -Name 'venv:computer-use' -Detail "$ComputerUseDir\.venv (python -m op
     return "venv present, but the import fails (exit $($r.ExitCode))"
 }
 
-# --- 11. egress proxy (report only, never setx) ---------------------------
+# --- 12. egress proxy (report only, never setx) ---------------------------
 Add-Check -Name 'env:proxy' `
     -Detail "HTTP_PROXY / HTTPS_PROXY = $($Registry.ProxyUrl); NO_PROXY = $($Registry.NoProxyValue)" `
     -Context @{ Url = $Registry.ProxyUrl; NoProxy = $Registry.NoProxyValue; ServeSh = $ServeSh } -Required $true -Test {
@@ -1101,31 +1352,73 @@ Add-Check -Name 'env:proxy' `
     return 'not in the environment'
 }
 
-# --- 12. auth (report only) ------------------------------------------------
-Add-Check -Name 'auth:login' `
-    -Detail 'opencode auth list - logins are redone, auth.json is NOT migrated' `
-    -Context @{ DataDir = $DataDir } -Required $false -Test {
+# --- 13. launcher environment (bash -lc) ----------------------------------
+# The launcher starts the server through `bash -lc` exactly so that the
+# exports of the profile are picked up. Without them the server comes up and
+# answers 401, and the log says nothing at all.
+Add-Check -Name 'env:bashrc' `
+    -Detail 'bash -lc must export OPENCODE_SERVER_PASSWORD (the launcher runs through it)' `
+    -Context @{} -Required $true -Test {
     param($d)
-    $p = Join-Path $d.DataDir 'auth.json'
-    if (-not (Test-Path -LiteralPath $p)) { return $false }
-    $r = Invoke-Native 'opencode' @('auth', 'list') -TimeoutSec 120
-    return ($r.ExitCode -eq 0)
+    $len = Get-BashrcSecretLength
+    if ($null -eq $len) {
+        return New-CheckState 'missing' 'bash is not available - the launcher environment cannot be checked'
+    }
+    if ($len -le 0) {
+        return New-CheckState 'missing' 'bash -lc exports an empty OPENCODE_SERVER_PASSWORD - the launcher answers 401 without it'
+    }
+    return $true
 } -Install {
     param($d)
-    Write-Warn2 'no usable auth.json / opencode auth list failed.'
-    Write-Warn2 'auth.json is not migrated by design - run:  opencode auth login'
-    Write-Warn2 'The OpenCode Console account lives in opencode.db (table credential),'
-    Write-Warn2 'so either carry opencode.db over or log in again.'
+    Write-Fail 'the launcher environment does not export a usable OPENCODE_SERVER_PASSWORD.'
+    Write-Fail 'Without it opencode serve comes up, answers 401, and the log says nothing.'
+    Write-Fail 'The file ~/.bashrc holds a secret, not a style: do NOT rewrite it.'
+    Write-Fail 'Only append the missing lines and keep a backup:'
+    Write-Fail '  cp ~/.bashrc ~/.bashrc.bak-<stamp>'
+    Write-Fail '  export OPENCODE_SERVER_USERNAME=<user>'
+    Write-Fail '  export OPENCODE_SERVER_PASSWORD=<secret>'
+    Write-Fail 'Never store the secret in this script and never print its value.'
     return $false
 } -Fact {
     param($d)
-    $p = Join-Path $d.DataDir 'auth.json'
-    if (-not (Test-Path -LiteralPath $p)) { return 'auth.json missing' }
-    $r = Invoke-Native 'opencode' @('auth', 'list') -TimeoutSec 120
-    return "auth.json present, opencode auth list exit $($r.ExitCode)"
+    $len = Get-BashrcSecretLength
+    if ($null -eq $len) { return 'bash is not available' }
+    $inEnv = ([string]$env:OPENCODE_SERVER_PASSWORD).Length
+    if ($inEnv -gt 0) {
+        return ("OPENCODE_SERVER_PASSWORD length: {0} (the value is never printed); the process environment carries it too" -f $len)
+    }
+    return ("OPENCODE_SERVER_PASSWORD length: {0} (the value is never printed); it comes from the profile" -f $len)
 }
 
-# --- 13. serve launcher (report only) -------------------------------------
+# --- 14. auth (report only) ------------------------------------------------
+Add-Check -Name 'auth:login' `
+    -Detail 'opencode.db (table credential) - the active integrations of the machine' `
+    -Context @{ DataDir = $DataDir } -Required $false -Test {
+    param($d)
+    $state = Get-AuthState -DataDir $d.DataDir
+    if ($state.Count -gt 0) { return $true }
+    return New-CheckState 'warn' 'no active integration is found - the machine is not authorized'
+} -Install {
+    param($d)
+    $state = Get-AuthState -DataDir $d.DataDir
+    if ($state.Count -gt 0) { return $true }
+    Write-Warn2 'no active credential is found.'
+    Write-Warn2 'opencode v2 keeps the credentials in opencode.db (table credential);'
+    Write-Warn2 'auth.json may be absent - that alone does not mean "not logged in".'
+    Write-Warn2 'Log in with:  opencode auth login'
+    return $false
+} -Fact {
+    param($d)
+    $state = Get-AuthState -DataDir $d.DataDir
+    if ($state.Count -eq 0) { return "no active integration ($($state.Source))" }
+    $names = @($state.Names | Where-Object { $_ })
+    if ($names.Count -gt 0) {
+        return ("{0} active: {1} ({2})" -f $state.Count, ($names -join ', '), $state.Source)
+    }
+    return ("{0} active ({1})" -f $state.Count, $state.Source)
+}
+
+# --- 15. serve launcher (report only) -------------------------------------
 Add-Check -Name 'launcher:opencode-serve.sh' -Detail "$ServeSh (starts opencode serve on :4096)" `
     -Context @{ ServeSh = $ServeSh } -Required $false -Test {
     param($d)

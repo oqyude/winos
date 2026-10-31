@@ -16,6 +16,18 @@
 > * **C.** Форма объявления плагина: `{"package": "..."}`, а не голая строка — п. 1.5.
 > * плюс **пин против бакета** для `opencode2` (2.2.1 → 2.2.4) — п. 1.2.
 >
+> **Обновлено 2026-10-31 (вторая итерация).** Три проверки, которых не хватало:
+>
+> * `auth:login` читает **`opencode.db`, таблицу `credential`** (только
+>   `integration_id`, никогда `value`); `auth.json` — вторичный источник, и его
+>   отсутствие **не** значит «не залогинен» — п. 0.2.
+> * `env:bashrc`: launcher стартует через `bash -lc`, поэтому профиль обязан
+>   экспортировать `OPENCODE_SERVER_PASSWORD`; печатается **только длина**.
+>   `~/.bashrc` **не перезаписывается** — п. 1.7.
+> * `mcp:<server>` — по каждому серверу из живого конфига: абсолютный путь
+>   существует, имя резолвится, `cwd` существует; для `cmd /c <path>` проверяется
+>   именно `<path>` — п. 1.6.
+>
 > Репозиторий переехал в `C:\metaagent\work\winos` (клона в `C:\Git` больше нет).
 
 ---
@@ -95,7 +107,7 @@ level=WARN message="failed to load OpenCode provider config"
 Учётную запись OpenCode Console (`opencode auth login`) нужно завести заново
 в любом случае — см. 0.2.
 
-### 0.2. `auth.json` не переносится
+### 0.2. Учётки лежат в `opencode.db`, а не в `auth.json`
 
 `~/.local/share/opencode/auth.json` (192 байта) — **не** переносится при переустановке.
 Логины делаются заново:
@@ -107,17 +119,41 @@ opencode auth login
 На этой машине `auth.json` содержит одну запись — `minimax-coding-plan` (тип `api`).
 Ключ в реестр не попадает.
 
-Важное уточнение, которое видно только на живой машине: **консольный** провайдер
+**Важное уточнение, которое видно только на живой машине:** **консольный** провайдер
 (`OpenCode Console` → `Personal`) хранится не в `auth.json`, а в базе
 `~/.local/share/opencode/opencode.db` (таблица `credential`, `integration_id='opencode'`,
 `active=1`). `opencode auth list` показывает и его, и `minimax-coding-plan` (две записи),
 и четыре внешних провайдера, чьи ключи берутся из переменных окружения
 (`GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY` — лежат в `~/.bashrc`).
 
+Живой срез базы (2026-10-31), `sqlite3 ~/.local/share/opencode/opencode.db`:
+
+```
+sqlite> SELECT integration_id, label, active FROM credential;
+opencode-go|OpenCode Go|1
+minimax-coding-plan|MiniMax Token Plan (minimax.io)|0
+minimax-coding-plan|oqyude|1
+```
+
+То есть **активных интеграций две** (`opencode-go`, `minimax-coding-plan`), а
+`auth.json` на этой машине может отсутствовать вовсе — это **не** признак «не залогинен».
+
 Значит при переустановке: `auth.json` пересоздаётся через `opencode auth login`,
 а база `opencode.db` либо переносится целиком, либо консольная учётка заводится заново
 через тот же `opencode auth login`. Установщик ничего из этого не копирует и секретов
 не хранит.
+
+**Как это проверяется.** Проверка `auth:login` читает `opencode.db`, таблицу
+`credential`, и считает строки с `active = 1`. Печатаются **только имена
+`integration_id`** — колонка `value` (секрет) не читается вообще:
+
+```
+[ OK ] auth:login - opencode.db (table credential) - the active integrations of the machine | 2 active: opencode-go, minimax-coding-plan (opencode.db (table credential))
+```
+
+Пустая таблица — `[WARN]`, непустая — `[ OK ]`. Если `sqlite3` на машине нет,
+источником становится `opencode auth list` (считаются записи `stored`), а
+`auth.json` — последний резервный источник.
 
 ### 0.3. Дефолтная модель `opencode-go/deepseek-v4.1-flash` — решить явно
 
@@ -355,10 +391,48 @@ Windows-пути в JSON требуют удвоения обратного сл
 
 | Имя | Версия / источник | Откуда ставится | Зачем | Что сломается без него | Команда установки |
 |---|---|---|---|---|---|
-| `webpage` | `webpage-mcp@latest` (на npm сейчас 0.10.2) | локальный: `cmd /c <nodejs>\current\npx.cmd -y -p webpage-mcp@latest webpage-mcp-stdio` | чтение веб-страниц | агент не может читать веб | ставится самим `npx` при первом старте; нужен `nodejs` |
-| `browser-control` | `@opencode-ai/browser-control@0.8.4` | локальный: `cmd /c <nodejs>\current\bin\browser-control-mcp.cmd` (создаётся глобальным npm-пакетом) | управление браузером | агент не управляет браузером | `npm install -g @opencode-ai/browser-control@0.8.4` |
+| `webpage` | `webpage-mcp@latest` (на npm сейчас 0.10.2) | локальный: `cmd /c <nodejs>\<версия>\npx.cmd -y -p webpage-mcp@latest webpage-mcp-stdio` | чтение веб-страниц | агент не может читать веб | ставится самим `npx` при первом старте; нужен `nodejs` |
+| `browser-control` | `@opencode-ai/browser-control@0.8.4` | локальный: `cmd /c <npm prefix>\browser-control-mcp.cmd` (создаётся глобальным npm-пакетом; на lamet это `C:\Users\oqyude\scoop\persist\nodejs\bin\`) | управление браузером | агент не управляет браузером | `npm install -g @opencode-ai/browser-control@0.8.4` |
 | `computer-use` | `opencode-computer-use` 0.1.2 | локальный: `C:\Tools\opencode-computer-use\.venv\Scripts\python.exe -m opencode_computer_use`, cwd `C:\Tools\opencode-computer-use`; venv собран `uv` (0.13.5) на CPython 3.12.15 (`scoop/persist/uv/python/versions/cpython-3.12-windows-x86_64-none`), зависимости `mcp>=2.0`, `mss>=9.0`, `Pillow>=10.0` (+ `comtypes`, `pywinauto`, `rapidocr-onnxruntime` в `[all]`) | управление рабочим столом, скриншоты, OCR | агент не управляет десктопом | `uv venv C:\Tools\opencode-computer-use\.venv --python 3.12` + `uv pip install -e "C:\Tools\opencode-computer-use[all]"` |
 | `genoffice` | `genoffice` 0.12.29 (CLI-пакет 0.10.0) | локальный: `cmd /c %LOCALAPPDATA%\Programs\GenOffice\resources\cli\genoffice.cmd mcp` | работа с Office-документами | агент не создаёт/не читает docx/xlsx/pptx/pdf | ставится установщиком приложения GenOffice (вне scoop) |
+
+#### Пути в конфиге проверяются как пути, а не как строки
+
+Живой случай (2026-10-31): конфиг ссылался на
+`C:\Users\oqyude\scoop\apps\nodejs\current\npx.cmd` — **такого файла нет**
+(каталог `apps\nodejs\current` есть, но `npx.cmd` в нём нет; настоящий файл —
+в версионном каталоге `apps\nodejs\26.13.0\`). Второй: `browser-control-mcp.cmd`
+есть в `scoop\persist\nodejs\bin\`, но **не в PATH**, поэтому `where.exe` его не
+находил. Итог: два MCP-сервера падали с `MCP server process exited with code 1`.
+
+Поэтому:
+
+* установщик **разрешает** пути (`where.exe npx.cmd`, `npm prefix -g`), а не
+  угадывает их; в конфиг попадает файл, который существует;
+* проверка `mcp:<server>` создаётся **по каждому серверу из живого конфига**:
+  * `command[0]` — абсолютный путь → файл **должен существовать**;
+  * `command[0]` — имя (`npx`, `cmd`) → должно **резолвиться** (`where.exe`);
+  * для `cmd /c <path>` проверяется именно `<path>` (то, что запускает cmd);
+  * `cwd`, если задан, должен существовать;
+  * при провале — `[FAIL]` с именем сервера и путём.
+
+```
+[ OK ] mcp:webpage - MCP server 'webpage' - cmd /c npx | cmd /c npx
+[ OK ] mcp:browser-control - MCP server 'browser-control' - cmd /c C:\Users\oqyude\scoop\persist\nodejs\bin\browser-control-mcp.cmd | cmd /c C:\Users\oqyude\scoop\persist\nodejs\bin\browser-control-mcp.cmd
+[ OK ] mcp:computer-use - MCP server 'computer-use' - C:\Tools\opencode-computer-use\.venv\Scripts\python.exe -m opencode_computer_use | ... | cwd C:\Tools\opencode-computer-use
+[ OK ] mcp:genoffice - MCP server 'genoffice' - cmd /c C:\Users\oqyude\AppData\Local\Programs\GenOffice\resources\cli\genoffice.cmd | ...
+```
+
+Замечание про слэши: `cmd /c` понимает и прямые, и обратные слэши — если файл
+существует. Проверено на живой машине: `cmd /c "C:/Users/oqyude/scoop/apps/nodejs/26.13.0/npx.cmd --version"`
+→ `11.20.0`, exit 0. Ломается не слэш, а **отсутствующий файл**. В конфиг пишутся
+обратные слэши (их экранирует `ConvertTo-Json`), прямые тоже работают.
+
+> opencode **сам переписывает** `opencode.jsonc` и `tui.json` при старте: сводит
+> команду `webpage` к голому `npx`, а `browser-control` — к полному пути в npm-префиксе.
+> Проверки это принимают (имя резолвится, путь существует), а установщик не воюет
+> с opencode за файл: перезапись конфига делается только когда он **сломан**
+> (не парсится или плагин объявлен не в той форме) — с бэкапом `.bak-<метка>`.
 
 ### 1.7. Переменные окружения (НЕ меняются установщиком)
 
@@ -368,8 +442,46 @@ Windows-пути в JSON требуют удвоения обратного сл
 | `HTTPS_PROXY` | `http://127.0.0.1:10808` | то же | то же | то же | `export HTTPS_PROXY=http://127.0.0.1:10808` |
 | `NO_PROXY` | `localhost,127.0.0.1,::1,192.168.1.0/24,100.64.0.0/10,.local,.zeroq.su,.su` | то же | локальные адреса и внутренние домены — напрямую | часть внутренних адресов уходит в прокси и ломается | `export NO_PROXY=localhost,127.0.0.1,::1,192.168.1.0/24,100.64.0.0/10,.local,.zeroq.su,.su` |
 | `OPENCODE_CONFIG_CONTENT` | `{"agent":{"build":{"steps":200}}}` | пользовательские переменные окружения **и** `~/opencode-serve.sh` | лимит шагов сборки агента | агент упирается в дефолтный лимит шагов | задать в пользовательских переменных окружения |
-| `OPENCODE_SERVER_USERNAME` / `OPENCODE_SERVER_PASSWORD` | секрет | `~/.bashrc` (+ `~/.config/opencode/service.json`) | аутентификация HTTP-сервера opencode на 4096 | сервер не принимает подключения | владелец задаёт сам; секреты в реестр не попадают |
+| `OPENCODE_SERVER_USERNAME` / `OPENCODE_SERVER_PASSWORD` | секрет | `~/.bashrc` (+ `~/.config/opencode/service.json`; на lamet продублировано в пользовательских переменных окружения) | аутентификация HTTP-сервера opencode на 4096 | сервер не принимает подключения | владелец задаёт сам; секреты в реестр не попадают |
 | `GEMINI_API_KEY` / `GROQ_API_KEY` / `OPENROUTER_API_KEY` | секреты | `~/.bashrc` | внешние провайдеры моделей | эти провайдеры не авторизованы | владелец задаёт сам; в реестр не копируются |
+
+#### `~/.bashrc` — часть установки, и его не перезаписывают
+
+Launcher поднимает сервер через `bash -lc` **именно чтобы подхватились экспорты
+профиля**. На lamet и на vetymae:
+
+```
+~/.bash_profile:  test -f ~/.bashrc && . ~/.bashrc
+~/.bashrc:        OPENCODE_SERVER_USERNAME, OPENCODE_SERVER_PASSWORD,
+                  OPENCODE_ENABLE_EXA, OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS
+bash -lc 'echo ${#OPENCODE_SERVER_PASSWORD}' → 20
+```
+
+Без этих строк сервер **поднимется** и будет отдавать **401**, а в логе не будет
+ничего — самая неприятная картина из возможных.
+
+**Правило реестра: `~/.bashrc` не перезаписывается целиком.** Файл держит секрет,
+а не настройки стиля; на vetymae его однажды «починили» правкой и пришлось
+восстанавливать **побайтово**. Поэтому установщик:
+
+* **не трогает** `~/.bashrc` вообще (ни строки, ни бэкапа);
+* только **проверяет** окружение логера: `bash -lc 'echo ${#OPENCODE_SERVER_PASSWORD}'`
+  должен дать непустую длину; при пустом — `[FAIL]` с текстом, что launcher без
+  него не авторизуется;
+* печатает **только длину**, значение секрета не выводится никогда.
+
+```
+[ OK ] env:bashrc - bash -lc must export OPENCODE_SERVER_PASSWORD (the launcher runs through it) | OPENCODE_SERVER_PASSWORD length: 20 (the value is never printed); the process environment carries it too
+```
+
+Если проверка падает, правка делается **вручную и точечно**, с бэкапом:
+
+```
+cp ~/.bashrc ~/.bashrc.bak-<метка>
+# дописать в конец (не переписывая файл):
+export OPENCODE_SERVER_USERNAME=<user>
+export OPENCODE_SERVER_PASSWORD=<secret>
+```
 
 ### 1.8. Файлы конфигурации и данные
 
@@ -387,7 +499,7 @@ Windows-пути в JSON требуют удвоения обратного сл
 | `~/.local/share/opencode/` | `opencode.db` 96 МБ + WAL 14 МБ, `logs/`, `storage/`, `snapshot/`, `shell/`, `tool-output/`, `repos/` | состояние opencode | база сессий и данных | история сессий теряется | переносится при желании; база хранит и консольную учётку (п. 0.2) |
 | `~/.cache/opencode/npm/` | 418 МБ (`oh-my-opencode-slim@3.0.5` — 285 МБ, установлен; `oh-my-openagent@latest` — 134 МБ, **только `.staging-…`, не установлен**) | npm-кэш opencode для плагинов | оффлайн-запуск плагинов | плагины качаются заново при первом старте | качается автоматически |
 | `~/opencode-serve.sh` | 625 байт | скрипт запуска сервера | поднимает `opencode serve --hostname 0.0.0.0 --port 4096 --cors https://<host>.opencodes.zeroq.su`, лог в `%TEMP%\opencode-serve.log` | сервер на 4096 не поднимается | восстанавливается; **в нём же задаётся `HTTP(S)_PROXY`/`NO_PROXY`** |
-| `~/.bashrc` | ~4.4 КБ | dotfiles | `OPENCODE_SERVER_*`, ключи внешних провайдеров, алиасы прокси, `PATH`-фиксы для scoop | сервер без пароля; внешние провайдеры не авторизованы | восстанавливается из dotfiles (`~/.Storage/chezmoi`) владельцем |
+| `~/.bashrc` | ~4.4 КБ | dotfiles | `OPENCODE_SERVER_*`, ключи внешних провайдеров, алиасы прокси, `PATH`-фиксы для scoop | сервер без пароля; внешние провайдеры не авторизованы | восстанавливается из dotfiles (`~/.Storage/chezmoi`) владельцем; **установщик не перезаписывает файл целиком** — только точечная правка с бэкапом (п. 1.7) |
 
 ---
 
@@ -403,13 +515,16 @@ Windows-пути в JSON требуют удвоения обратного сл
    (шаг 6 без шага 7 = «плагин объявлен, но не установлен», см. п. 1.5 A)
 8. поднять окружение `computer-use` (`uv venv` + `uv pip install -e "…[all]"`)
 9. прописать `HTTP_PROXY`/`HTTPS_PROXY`/`NO_PROXY` в окружение сервера
-10. `opencode auth login` (консоль + minimax) — **логины заново, `auth.json` не переносится**
-11. **запустить opencode хотя бы раз** — только тогда появляется лог плагина,
+10. **проверить окружение логера**: `bash -lc 'echo ${#OPENCODE_SERVER_PASSWORD}'`
+    → непустая длина (п. 1.7). `~/.bashrc` при этом **не перезаписывается**
+11. `opencode auth login` (консоль + minimax) — **логины заново**; учётки лежат
+    в `opencode.db`, `auth.json` может отсутствовать и это нормально (п. 0.2)
+12. **запустить opencode хотя бы раз** — только тогда появляется лог плагина,
     по которому `-Verify` доказывает, что плагин живой (п. 1.5 A)
-12. проверить: `opencode models | grep opencode-go` (должно быть 30 строк), `opencode auth list`, `opencode mcp list`
+13. проверить: `opencode models | grep opencode-go` (должно быть 30 строк), `opencode auth list`, `opencode mcp list`
 
 Автоматизация шагов 1–8: `powershell -File scripts/install-opencode.ps1`.
-Шаги 9–12 — руками: прокси и логины требуют решения владельца.
+Шаги 9–13 — руками: прокси, логины и секрет требуют решения владельца.
 
 ## 3. Проверка после установки
 
@@ -430,6 +545,15 @@ grep -E 'tools registered|agents registered|skills registered' \
   ~/.local/share/opencode/log/oh-my-opencode-slim.*.log | tail -3
 # ожидается: tools registered {"count":11} / agents registered {"count":5}
 #            / bundled skills registered in-process {"count":11,"disabled":0}
+
+# активные интеграции (учётки лежат в opencode.db, auth.json может отсутствовать):
+sqlite3 ~/.local/share/opencode/opencode.db \
+  'SELECT integration_id, active FROM credential;'
+# ожидается: opencode-go|1, minimax-coding-plan|1 (+ может быть inactive)
+
+# окружение логера - печатается ТОЛЬКО длина секрета:
+bash -lc 'echo ${#OPENCODE_SERVER_PASSWORD}'
+# ожидается непустое число (на lamet 20)
 ```
 
 Сверка «факт против реестра» целиком: `powershell -File scripts/install-opencode.ps1 -Verify`
@@ -443,6 +567,9 @@ grep -E 'tools registered|agents registered|skills registered' \
 [ OK ] app:opencode2 - opencode2 2.2.4 (bucket versions) | installed 2.2.4, bucket ships 2.2.4, registry expects 2.2.4
 [ OK ] plugin:oh-my-opencode-slim - bun add oh-my-opencode-slim@3.0.5 in C:\Users\oqyude\.config\opencode | node_modules present, version 3.0.5, declared in the config package.json: True
 [ OK ] plugin-live:oh-my-opencode-slim - the plugin log must contain "tools registered" | tools=11 agents=5 skills=11 (log oh-my-opencode-slim.20261031T003521-3556.log)
+[ OK ] mcp:webpage - MCP server 'webpage' - cmd /c npx | cmd /c npx
+[ OK ] env:bashrc - bash -lc must export OPENCODE_SERVER_PASSWORD (the launcher runs through it) | OPENCODE_SERVER_PASSWORD length: 20 (the value is never printed)
+[ OK ] auth:login - opencode.db (table credential) - the active integrations of the machine | 2 active: opencode-go, minimax-coding-plan (opencode.db (table credential))
 ```
 
 Расхождение версии — `[WARN]` с обоими числами (и код возврата 1), а не `[ OK ]`.
@@ -452,11 +579,15 @@ grep -E 'tools registered|agents registered|skills registered' \
 * не трогает `~/.config/opencode` и `~/.local/share/opencode` существующие файлы
   (пишет только отсутствующие или **сломанные**; перезапись — только с `-Force`);
   сломанный конфиг перед перезаписью копируется в `<имя>.bak-<yyyyMMdd-HHmmss>`;
+* **не трогает `~/.bashrc`** — ни строки, ни бэкап: файл держит секрет, правка
+  делается вручную и точечно, с бэкапом (п. 1.7);
 * не удаляет и не переустанавливает opencode «на живую» (уже установленную версию
   не понижает; расхождение версий — предупреждение, а не действие);
 * **не создаёт ничего в `%USERPROFILE%`** — ни `node_modules`, ни `package.json`,
   ни `bun.lock`: зависимости плагина ставятся в `~/.config/opencode`, а всё, что
   всё-таки появилось в домашнем каталоге, удаляется (проверка `home:hygiene`);
 * не меняет системные переменные окружения (`setx` не используется);
-* не хранит и не копирует секреты: `auth.json`, `service.json`, ключи провайдеров;
+* не хранит и не копирует секреты: `auth.json`, `service.json`, `opencode.db`,
+  ключи провайдеров; из `opencode.db` читается только колонка `integration_id`,
+  значение секрета не выводится никогда;
 * не останавливает и не перезапускает сервер opencode.
