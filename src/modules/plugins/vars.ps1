@@ -10,16 +10,19 @@
 # it, so this file works from any working directory.
 
 # --- Plugin library -----------------------------------------------------------
-# Where the plugin library lives. Treated as read-only: the tool never writes
-# into it. Falls back to %USERPROFILE%\Plugins if the S: drive is absent, so the
-# module still resolves on a machine without the library.
-if (Test-Path "S:\Plugins") {
-    $pluginRoot = "S:\Plugins"
-} elseif (Test-Path (Join-Path $env:USERPROFILE "Plugins")) {
-    $pluginRoot = Join-Path $env:USERPROFILE "Plugins"
-} else {
-    # Neither exists -- keep the convention and let the probe report it.
-    $pluginRoot = "S:\Plugins"
+# Where the plugin library lives. DECLARED per host: src/vars.ps1 resolves it
+# from <data dir>\hosts\<COMPUTERNAME>.json (see src/host-paths.ps1) and falls
+# back to the built-in default when the host has not been declared.
+#
+# Treated as read-only: the tool never writes into it.
+#
+# The fallback below exists for the one case where src/vars.ps1 has not run --
+# this file dot-sourced on its own. Then the resolver is loaded here and asked
+# for the same value, so the answer comes from one place either way.
+if (-not $pluginRoot) {
+    . (Join-Path $PSScriptRoot "..\..\host-paths.ps1")
+    $hostPaths = Resolve-WinosHostPaths -RepoRoot $root
+    $pluginRoot = $hostPaths.pluginRoot
 }
 
 # --- State files --------------------------------------------------------------

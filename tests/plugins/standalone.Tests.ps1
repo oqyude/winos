@@ -36,7 +36,12 @@ Describe "Phase 0 scaffolding" {
 
         $proc.ExitCode | Should -Be 0
         (Get-Content $errPath -Raw) | Should -Not -Match "Cannot bind argument"
-        ((Get-Content $outPath -Raw).Trim()) | Should -Be $script:RepoRoot.Path
+        # The child prints the per-host banner before it echoes the variable
+        # (src/host-paths.ps1 reports which data dir and which declaration
+        # file it used), so the root path is the LAST line of stdout -- not
+        # the only one.
+        $stdoutLines = @(Get-Content $outPath | Where-Object { $_.Trim() })
+        $stdoutLines[-1].Trim() | Should -Be $script:RepoRoot.Path
 
         Remove-Item $outPath, $errPath -ErrorAction SilentlyContinue
     }

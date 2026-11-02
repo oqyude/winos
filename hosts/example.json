@@ -1,0 +1,12 @@
+{
+  "projectsDir": "D:\\Git",
+  "toolsDir": "D:\\Tools",
+  "pluginRoot": "D:\\Plugins",
+  "taskWorkingDirectory": "D:\\Git",
+  "tasks": {
+    "opencode-serve": {
+      "script": "D:\\Git\\oc-serve\\oc-serve-task.sh",
+      "errorLog": "D:\\Storage\\logs\\oc-serve.err.log"
+    }
+  }
+}
