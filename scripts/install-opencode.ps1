@@ -13,6 +13,13 @@
       -Verify    compare the machine against the registry, change nothing,
                  exit 0 when everything matches, exit 1 on any mismatch
 
+    Switches:
+      -WebpageMcp        keep the MCP server 'webpage' enabled (it needs the
+                         native better-sqlite3 build; off by default, see the
+                         comment above New-OpenCodeConfigObject)
+      -Force             overwrite existing opencode config files
+      -AllowLatestOpenCode  accept an opencode newer than the registry
+
     Guarantees:
       * no secret is stored in this file or written by it
       * no system environment variable is modified (no setx)
@@ -44,6 +51,7 @@ param(
     [switch]$DryRun,
     [switch]$Verify,
     [switch]$Force,
+    [switch]$WebpageMcp,
     [string]$OpenCodeVersion = '2.2.4',
     [switch]$AllowLatestOpenCode
 )
@@ -616,7 +624,8 @@ function Get-BrowserControlPath {
     return (Join-Path (Join-Path $env:USERPROFILE 'scoop\persist\nodejs\bin') 'browser-control-mcp.cmd')
 }
 
-# The MCP servers that are ON by default. `webpage` is OFF on purpose:
+# The MCP servers that are ON by default. `webpage` is OFF unless -WebpageMcp
+# asks for it:
 #
 #   webpage-mcp depends on better-sqlite3, a native module. Its prebuild is not
 #   available behind this host's proxy, and the source fallback needs
@@ -625,8 +634,11 @@ function Get-BrowserControlPath {
 #   died with "'prebuild-install' is not recognized"; opencode gives the MCP
 #   connect ~30 s, gives up, and repeats the whole attempt at every session boot
 #   (49 failures in one log - 1507 s of waiting for a server that never came up).
-#   A host that CAN build it flips this to $true: the command stays declared.
-$WebpageMcpEnabled = $false
+#   On vetymae the same server DOES connect, but at 13-27 s and after 700 failed
+#   attempts in the same log, so "off" is the safe default there too.
+#   A host with a build toolchain or a warm npm cache opts back in:
+#   `install-opencode.ps1 -WebpageMcp`.
+$WebpageMcpEnabled = [bool]$WebpageMcp
 
 function New-OpenCodeConfigObject {
     $npx = Get-NpxPath
