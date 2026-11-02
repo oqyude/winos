@@ -95,9 +95,24 @@ $ConfigDir = Join-Path $env:USERPROFILE '.config\opencode'
 $DataDir   = Join-Path $env:USERPROFILE '.local\share\opencode'
 $LogDir    = Join-Path $DataDir 'log'
 $ServeSh   = Join-Path $env:USERPROFILE 'opencode-serve.sh'
-$ComputerUseDir = 'C:\Tools\opencode-computer-use'
 $HomeDir   = $env:USERPROFILE
-$ToolsDir  = 'C:\Tools'
+
+# Where the tools live on THIS host. C:\Tools was hardcoded here and rotted
+# on every host whose layout differs; the path is DECLARED per host now
+# (<data dir>\hosts\<COMPUTERNAME>.json, read by src/host-paths.ps1).
+#
+# The fallback below is the resolver's own built-in default and is used ONLY
+# when the resolver is not next to this script -- a broken checkout. A host
+# that has no declaration gets the default AND a warning from the resolver.
+$WinosRepoRoot = Split-Path -Parent $PSScriptRoot
+$WinosHostPathsFile = Join-Path $WinosRepoRoot 'src\host-paths.ps1'
+$WinosHostPaths = $null
+if (Test-Path -LiteralPath $WinosHostPathsFile) {
+    . $WinosHostPathsFile
+    $WinosHostPaths = Resolve-WinosHostPaths -RepoRoot $WinosRepoRoot
+}
+$ToolsDir = if ($WinosHostPaths) { $WinosHostPaths.toolsDir } else { 'C:\Tools' }
+$ComputerUseDir = Join-Path $ToolsDir 'opencode-computer-use'
 
 # The plugin spec as it is written into the config files.
 $PluginSpec = "$($Registry.PluginPackage)@$($Registry.PluginVersion)"

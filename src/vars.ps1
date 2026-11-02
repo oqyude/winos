@@ -34,7 +34,7 @@ $modules = @{
         Path        = $pluginManagerModule
         Actions     = @("plan", "apply", "revert", "snapshot", "status", "adopt", "verify")
         Destructive = @("revert", "adopt")
-        Description = "Deploy audio plugins from S:\Plugins"
+        Description = "Deploy audio plugins from the declared plugin library"
     }
     "Essentials" = @{
         Alias       = "essentials"
@@ -63,7 +63,34 @@ $modules = @{
 $tempFolder = "$env:TEMP\winos"
 $storage = "$env:USERPROFILE\Storage"
 $persist = "$storage\persist"
-$data = if (Test-Path "$storage\winos\data") { "$storage\winos\data" } else { "$root\data" }
+
+# --- Per-host paths -----------------------------------------------------------
+# Two questions this file used to answer silently:
+#
+#   1. WHERE does the machine state live -- the synced store
+#      (%USERPROFILE%\Storage\winos\data) or the repository's own data\ dir?
+#      The precedence is UNCHANGED (store first, repository second); what
+#      changed is that the choice is returned and printed instead of being a
+#      silent `if`. Task T24 in .agent/tasks/manifest.md.
+#   2. WHICH absolute paths does THIS host use -- S:\Git, C:\Tools, S:\Plugins?
+#      They used to be hardcoded at their use sites and rotted there. They are
+#      declared per host now, in <data dir>\hosts\<COMPUTERNAME>.json.
+#
+# src/host-paths.ps1 owns both rules and the built-in defaults. A host without
+# a declaration still works, and says so out loud.
+. (Join-Path $PSScriptRoot "host-paths.ps1")
+$hostPathState = @{}
+$hostPaths = Resolve-WinosHostPaths -RepoRoot $root -State $hostPathState
+
+$data             = $hostPaths.dataDir
+$dataSource       = $hostPaths.dataSource
+$projectsDir      = $hostPaths.projectsDir
+$toolsDir         = $hostPaths.toolsDir
+$pluginRoot       = $hostPaths.pluginRoot
+$taskWorkingDirectory = $hostPaths.taskWorkingDirectory
+$hostDeclarationFile  = $hostPaths.declarationFile
+$hostDeclarationFound = $hostPaths.declarationFound
+
 $apps = "$data\isolate"
 $jsonConfig = "$data\data.json"
 $statePath = "$data\state\symlink-snapshot.json"

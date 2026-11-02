@@ -133,8 +133,43 @@ One file per plugin folder. Sections:
 | `Process` | scripts to run (before revert, after apply) |
 
 The plugin library itself is treated as **read-only** — `winos` never writes
-into it. It is expected at `S:\Plugins`, falling back to
-`%USERPROFILE%\Plugins`.
+into it. Its location is declared per host — see
+[Per-host paths](#per-host-paths).
+
+### Per-host paths
+
+Absolute paths rot. `S:\Git`, `C:\Tools` and `S:\Plugins` were hardcoded at
+their use sites, and on a host with a different layout they pointed at
+nothing without saying so. They are **declared per host** now, in one file:
+
+```
+<data dir>\hosts\<COMPUTERNAME>.json
+```
+
+`<data dir>` is the synced store (`%USERPROFILE%\Storage\winos\data`) when it
+exists and the repository's own `data\` directory otherwise. **That precedence
+is unchanged** — what changed is that the choice is printed on every run
+instead of being a silent `if`:
+
+```
+winos: data dir = C:\Users\me\Storage\winos\data (machine store); host declaration = ...\hosts\DESKTOP.json (read)
+```
+
+A host with no declaration file keeps working on the built-in defaults
+(`S:\Git`, `C:\Tools`, `S:\Plugins`), and the tool warns once, naming the
+file it looked for. It never fails silently.
+
+| Field | Meaning | Built-in default |
+|---|---|---|
+| `projectsDir` | the checkout root of this host | `S:\Git` |
+| `toolsDir` | where the tools live | `C:\Tools` |
+| `pluginRoot` | the plugin library (read-only) | `S:\Plugins`, else `%USERPROFILE%\Plugins` |
+| `taskWorkingDirectory` | where a scheduled task starts | follows `projectsDir` |
+| `tasks` | optional per-task overrides (`script`, `errorLog`) | none |
+
+`%VAR%` and `$env:VAR` are expanded in every path. `hosts/example.json` is a
+filled-in example; copy it next to the machine's own name. Full description:
+[`docs/host-paths.md`](docs/host-paths.md).
 
 ### Scoop bucket — `bucket/`
 

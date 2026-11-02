@@ -232,6 +232,10 @@ data/state/
 data/opencode-serve/.env
 data/herdr-serve/config.json
 
+# Per-host path declarations (machine-local). The EXAMPLE lives in the repo
+# root under hosts/ and IS tracked; the declarations themselves are not.
+data/hosts/
+
 # Probe snapshot — machine-local, regenerated on every run. Tracked plugin-deployment.json
 # right next to it is a deliberate positive; this one is not.
 state/plugin-deployment-snapshot.json
