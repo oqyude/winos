@@ -616,6 +616,18 @@ function Get-BrowserControlPath {
     return (Join-Path (Join-Path $env:USERPROFILE 'scoop\persist\nodejs\bin') 'browser-control-mcp.cmd')
 }
 
+# The MCP servers that are ON by default. `webpage` is OFF on purpose:
+#
+#   webpage-mcp depends on better-sqlite3, a native module. Its prebuild is not
+#   available behind this host's proxy, and the source fallback needs
+#   prebuild-install / node-gyp, which no host here installs. Measured on lamet
+#   2026-11-02: `npx -y -p webpage-mcp@latest webpage-mcp-stdio` ran 94 s and
+#   died with "'prebuild-install' is not recognized"; opencode gives the MCP
+#   connect ~30 s, gives up, and repeats the whole attempt at every session boot
+#   (49 failures in one log - 1507 s of waiting for a server that never came up).
+#   A host that CAN build it flips this to $true: the command stays declared.
+$WebpageMcpEnabled = $false
+
 function New-OpenCodeConfigObject {
     $npx = Get-NpxPath
     $browserControl = Get-BrowserControlPath
@@ -627,10 +639,15 @@ function New-OpenCodeConfigObject {
                 'webpage' = [ordered]@{
                     'type'    = 'local'
                     'command' = @('cmd', '/c', $npx, '-y', '-p', 'webpage-mcp@latest', 'webpage-mcp-stdio')
+                    'enabled' = $WebpageMcpEnabled
                 }
                 'browser-control' = [ordered]@{
                     'type'    = 'local'
                     'command' = @('cmd', '/c', $browserControl)
+                    # Without a timeout a wedged MCP call holds the turn for as
+                    # long as the server lives: the agent looks frozen with no
+                    # tool result and no error.
+                    'timeout' = 60000
                 }
                 'computer-use' = [ordered]@{
                     'type'    = 'local'
@@ -638,7 +655,11 @@ function New-OpenCodeConfigObject {
                                   '-m', 'opencode_computer_use')
                     'cwd'     = (Join-Path $ToolsDir 'opencode-computer-use')
                     'enabled' = $true
-                    'timeout' = 60000
+                    # 120 s, not 60: the bridge boot (python + venv + bridge
+                    # script) was measured at 65 s on a cold start, which is
+                    # above the old cap - the server was killed while it was
+                    # still starting.
+                    'timeout' = 120000
                     'environment' = [ordered]@{
                         'COMPUTER_USE_LOG_LEVEL'         = 'INFO'
                         'COMPUTER_USE_SINGLE_MONITOR'    = '0'
@@ -1008,7 +1029,11 @@ function Get-ConfigFileState {
         }
     }
     if ($Kind -eq 'opencode') {
-        $cmd = @($j.mcp.servers.webpage.command | Where-Object { $_ })
+        $webpage = $j.mcp.servers.webpage
+        if (-not $webpage) { return New-CheckState 'missing' 'the webpage server is not declared' }
+        # The command is checked even when the server is disabled: it documents
+        # what a host WITH a build toolchain would run.
+        $cmd = @($webpage.command | Where-Object { $_ })
         if ($cmd.Count -lt 3) { return New-CheckState 'missing' 'the webpage command is incomplete' }
         $target = $cmd[2]
         if (Test-AbsolutePath -Path $target) {
@@ -1017,6 +1042,15 @@ function Get-ConfigFileState {
             }
         } elseif (-not (Get-CommandPath -Name $target)) {
             return New-CheckState 'missing' "the webpage command '$target' does not resolve"
+        }
+        # enabled is written from $WebpageMcpEnabled. opencode REWRITES this file
+        # on start, so a silently dropped flag would bring the 30-second connect
+        # timeout back; a mismatch is reported here, never repaired.
+        $declared = $webpage.PSObject.Properties['enabled']
+        $actual = if ($declared) { [bool]$declared.Value } else { $true }
+        if ($actual -ne [bool]$WebpageMcpEnabled) {
+            return New-CheckState 'mismatch' 'mcp.servers.webpage.enabled differs from the installer' `
+                ([string][bool]$WebpageMcpEnabled) ([string]$actual)
         }
     }
     if ($Kind -eq 'tui') {

@@ -391,7 +391,7 @@ Windows-пути в JSON требуют удвоения обратного сл
 
 | Имя | Версия / источник | Откуда ставится | Зачем | Что сломается без него | Команда установки |
 |---|---|---|---|---|---|
-| `webpage` | `webpage-mcp@latest` (на npm сейчас 0.10.2) | локальный: `cmd /c <nodejs>\<версия>\npx.cmd -y -p webpage-mcp@latest webpage-mcp-stdio` | чтение веб-страниц | агент не может читать веб | ставится самим `npx` при первом старте; нужен `nodejs` |
+| `webpage` | `webpage-mcp@latest` (на npm сейчас 0.10.2) | локальный: `cmd /c <nodejs>\<версия>\npx.cmd -y -p webpage-mcp@latest webpage-mcp-stdio`, **`enabled: false`** (`$WebpageMcpEnabled`) | чтение веб-страниц | агент не может читать веб через этот MCP — на lamet его роль играет `browser-control` | ставится самим `npx` при первом старте; **но** `webpage-mcp` тянет нативную `better-sqlite3`: prebuild за прокси не скачивается, а fallback требует `prebuild-install`/`node-gyp` (их нет ни на одном хосте). Замер 2026-11-02 на lamet: `npx -y -p webpage-mcp@latest` — 94 с и падение; opencode отводит на коннект ~30 с, сдаётся и повторяет попытку при каждом старте сессии (49 провалов в одном логе = 1507 с ожидания). Включать обратно — только на хосте с тулчейном: `$WebpageMcpEnabled = $true` |
 | `browser-control` | `@opencode-ai/browser-control@0.8.4` | локальный: `cmd /c <npm prefix>\browser-control-mcp.cmd` (создаётся глобальным npm-пакетом; на lamet это `C:\Users\oqyude\scoop\persist\nodejs\bin\`) | управление браузером | агент не управляет браузером | `npm install -g @opencode-ai/browser-control@0.8.4` |
 | `computer-use` | `opencode-computer-use` 0.1.2 | локальный: `C:\Tools\opencode-computer-use\.venv\Scripts\python.exe -m opencode_computer_use`, cwd `C:\Tools\opencode-computer-use`; venv собран `uv` (0.13.5) на CPython 3.12.15 (`scoop/persist/uv/python/versions/cpython-3.12-windows-x86_64-none`), зависимости `mcp>=2.0`, `mss>=9.0`, `Pillow>=10.0` (+ `comtypes`, `pywinauto`, `rapidocr-onnxruntime` в `[all]`) | управление рабочим столом, скриншоты, OCR | агент не управляет десктопом | `uv venv C:\Tools\opencode-computer-use\.venv --python 3.12` + `uv pip install -e "C:\Tools\opencode-computer-use[all]"` |
 | `genoffice` | `genoffice` 0.12.29 (CLI-пакет 0.10.0) | локальный: `cmd /c %LOCALAPPDATA%\Programs\GenOffice\resources\cli\genoffice.cmd mcp` | работа с Office-документами | агент не создаёт/не читает docx/xlsx/pptx/pdf | ставится установщиком приложения GenOffice (вне scoop) |
@@ -415,6 +415,12 @@ Windows-пути в JSON требуют удвоения обратного сл
   * для `cmd /c <path>` проверяется именно `<path>` (то, что запускает cmd);
   * `cwd`, если задан, должен существовать;
   * при провале — `[FAIL]` с именем сервера и путём.
+
+`mcp.servers.webpage.enabled` сверяется с `$WebpageMcpEnabled` установщика
+(`mismatch`, если разошлось): opencode переписывает этот файл сам, и тихо
+потерянный флаг вернул бы 30-секундные таймауты коннекта. Проверяется и
+**команда** выключенного сервера — она документирует, что запустит хост,
+у которого есть тулчейн для сборки.
 
 ```
 [ OK ] mcp:webpage - MCP server 'webpage' - cmd /c npx | cmd /c npx
