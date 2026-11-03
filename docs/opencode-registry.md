@@ -531,6 +531,59 @@ export OPENCODE_SERVER_PASSWORD=<secret>
 > необъявленные задачи (`OpenCodeCaptureScreen`, `OpenCodeLaunchBrave`,
 > `OpenCodeAdvegoWatch` — не его дело).
 
+### 1.9. Что должно лежать в конфиг-папке и почему
+
+`~/.config/opencode` — это не свалка. В ней лежит **ровно семь** файлов, и
+все остальное — дрейф:
+
+| Файл | Кто пишет | Зачем он там |
+|---|---|---|
+| `opencode.jsonc` | установщик | основной конфиг: дефолтная модель, MCP-серверы, плагин |
+| `cli.json` | установщик | объявление плагина для CLI-режима |
+| `tui.json` | установщик | TUI-конфиг; **содержит расхождение** (`oh-my-openagent@latest`, п. 1.5) |
+| `oh-my-opencode-slim.json` | установщик | привязка агентов (`orchestrator`, `explorer`, `oracle`, `designer`, `fixer`) к модели |
+| `package.json` | `bun add` | манифест зависимостей плагина |
+| `package-lock.json` | `bun add` / npm | зафиксированное дерево зависимостей |
+| `service.json` | **сам opencode** | пароль локального HTTP-сервера; установщик его **не создаёт и не читает** |
+
+Каталоги `node_modules/` (рантайм плагина) и `skills/` (пишет opencode при
+активации MCP-сервера) — **не** дрейф: это файлы, а не каталоги, и
+установщик их не перечисляет.
+
+**Как это проверяется.** В `-Verify` появилась отдельная проверка
+`config-dir` — она смотрит на каталог целиком, а не на отдельные файлы:
+
+```
+[FAIL] config-dir - C:\Users\oqyude\.config\opencode (the canon: 7 files) | 6/7 of the canon | missing: tui.json | extra: cli.json.bak, lsp-install-decisions.json | missing from the canon: tui.json
+[WARN] config-dir - C:\Users\oqyude\.config\opencode (the canon: 7 files) | 7/7 of the canon | extra: cli.json.bak | files outside the canon: cli.json.bak
+```
+
+* **недостающий файл канона — `FAIL`** (код возврата 1): машина не та, которую
+  описывает реестр. Именно так было поймано отсутствие `tui.json` у vetymae —
+  на него не смотрели, потому что `tui.json` не входит в четыре конфига,
+  которые пишет установщик;
+* **лишний файл — `WARN`**, и на код возврата он **не влияет**: установщик не
+  удаляет то, чего не писал.
+
+Факт на 2026-11-03: у lamet в папке 13 файлов (7 канона + 5 бэкапов
+`opencode.jsonc.bak-*` + `cli.json.bak`), у vetymae — 19 (`oh-my-openagent.json*`
+с июля, `.gitignore`, `lsp-install-decisions.json`, `tui.json.v1-legacy.bak`),
+и там **нет** `tui.json`.
+
+**Чистка бэкапов — отдельной командой.** Ничего в папке не удаляется молча:
+
+```
+powershell -File scripts/install-opencode.ps1 -PruneBackups -DryRun   # что будет удалено
+powershell -File scripts/install-opencode.ps1 -PruneBackups             # удалить
+```
+
+`-PruneBackups` удаляет **только** `*.bak-*` и `*.backup-*` **старше 14 дней**
+(`-PruneOlderThanDays` меняет порог) и **только** в верхнем уровне
+`~/.config/opencode`. Файл `cli.json.bak` (без метки времени) под это правило
+не подпадает: он сделан руками, и смотреть на него должен владелец. Сухой
+прогон — через `-DryRun`; `-WhatIf` здесь нет и не нужен: команда, которая
+удаляет, названа по имени.
+
 ---
 
 ## 2. Порядок установки (порядок важен)
@@ -609,6 +662,8 @@ bash -lc 'echo ${#OPENCODE_SERVER_PASSWORD}'
 * не трогает `~/.config/opencode` и `~/.local/share/opencode` существующие файлы
   (пишет только отсутствующие или **сломанные**; перезапись — только с `-Force`);
   сломанный конфиг перед перезаписью копируется в `<имя>.bak-<yyyyMMdd-HHmmss>`;
+  **единственное исключение** — явная команда `-PruneBackups`, которая удаляет
+  только старые бэкапы установщика (п. 1.9);
 * **не трогает `~/.bashrc`** — ни строки, ни бэкап: файл держит секрет, правка
   делается вручную и точечно, с бэкапом (п. 1.7);
 * не удаляет и не переустанавливает opencode «на живую» (уже установленную версию

@@ -19,6 +19,11 @@
                          comment above New-OpenCodeConfigObject)
       -Force             overwrite existing opencode config files
       -AllowLatestOpenCode  accept an opencode newer than the registry
+      -PruneBackups      remove the stale backups of the config directory
+                         (only *.bak-* / *.backup-* older than
+                         -PruneOlderThanDays days, only inside
+                         ~/.config/opencode) and stop there
+      -PruneOlderThanDays  the age limit of -PruneBackups (default 14 days)
 
     Guarantees:
       * no secret is stored in this file or written by it
@@ -36,6 +41,12 @@
       * -Verify prints the measured fact next to the expected value; a version
         that differs from the registry is a WARN with both numbers, never a
         silent [ OK ]
+      * the config directory is checked against the canon (7 files, see
+        scripts/opencode-config-dir.ps1): a file of the canon that is missing
+        is a FAIL, a file outside the canon is a WARN and never changes the
+        exit code
+      * nothing in the config directory is deleted except by the explicit
+        -PruneBackups, and even then only the stale backup files
 
     Exit codes: 0 = ok, 1 = a required item is missing or differs from the
     registry. Advisories (deprecated keys, missing auth.json) are warnings and
@@ -53,10 +64,17 @@ param(
     [switch]$Force,
     [switch]$WebpageMcp,
     [string]$OpenCodeVersion = '2.2.4',
-    [switch]$AllowLatestOpenCode
+    [switch]$AllowLatestOpenCode,
+    [switch]$PruneBackups,
+    [int]$PruneOlderThanDays = 14
 )
 
 $ErrorActionPreference = 'Stop'
+
+# The canon of the config directory and the drift report around it live in
+# their own file: they are a contract of their own, they are pure functions
+# of a directory, and the tests need them without running the installer.
+. (Join-Path $PSScriptRoot 'opencode-config-dir.ps1')
 
 # --------------------------------------------------------------------------
 # Registry (mirrors docs/opencode-registry.md)
@@ -97,13 +115,23 @@ $ScoopApps = [ordered]@{
     'uv'        = @{ Bucket = 'main';     Version = $Registry.UvVersion }
 }
 
-$ScoopRoot = Join-Path $env:USERPROFILE 'scoop'
+# The user's profile directory. %USERPROFILE% on Windows, %HOME% elsewhere.
+#
+# The fallback matters: Join-Path refuses a null base ("cannot bind argument
+# to parameter 'Path' because it is null"), and the installer has to be
+# runnable off Windows (CI, a container) -- otherwise the checks it makes
+# about the config directory cannot be tested at all.
+$UserProfileDir = if ($env:USERPROFILE) { $env:USERPROFILE }
+                  elseif ($env:HOME) { $env:HOME }
+                  else { 'C:\Users\winos' }
+
+$ScoopRoot = Join-Path $UserProfileDir 'scoop'
 $ShimsDir  = Join-Path $ScoopRoot 'shims'
-$ConfigDir = Join-Path $env:USERPROFILE '.config\opencode'
-$DataDir   = Join-Path $env:USERPROFILE '.local\share\opencode'
+$ConfigDir = Join-Path $UserProfileDir '.config\opencode'
+$DataDir   = Join-Path $UserProfileDir '.local\share\opencode'
 $LogDir    = Join-Path $DataDir 'log'
-$ServeSh   = Join-Path $env:USERPROFILE 'opencode-serve.sh'
-$HomeDir   = $env:USERPROFILE
+$ServeSh   = Join-Path $UserProfileDir 'opencode-serve.sh'
+$HomeDir   = $UserProfileDir
 
 # Where the tools live on THIS host. C:\Tools was hardcoded here and rotted
 # on every host whose layout differs; the path is DECLARED per host now
@@ -120,7 +148,18 @@ if (Test-Path -LiteralPath $WinosHostPathsFile) {
     $WinosHostPaths = Resolve-WinosHostPaths -RepoRoot $WinosRepoRoot
 }
 $ToolsDir = if ($WinosHostPaths) { $WinosHostPaths.toolsDir } else { 'C:\Tools' }
-$ComputerUseDir = Join-Path $ToolsDir 'opencode-computer-use'
+
+# Join a Windows-style path. Join-Path refuses a drive-qualified base off
+# Windows ("cannot find drive: A drive with the name 'C' does not exist"),
+# and $ToolsDir is exactly such a base. The joining is therefore plain string
+# work, and it produces the same path as Join-Path on Windows.
+function Join-ToolPath {
+    param([string]$Base, [string]$Child)
+    if (-not $Base) { return $Child }
+    return ($Base.TrimEnd('\', '/') + '\' + $Child)
+}
+
+$ComputerUseDir = Join-ToolPath -Base $ToolsDir -Child 'opencode-computer-use'
 
 # The plugin spec as it is written into the config files.
 $PluginSpec = "$($Registry.PluginPackage)@$($Registry.PluginVersion)"
@@ -606,7 +645,7 @@ function Get-NpxPath {
     if ($p) { return $p }
     $p = Get-CommandPath -Name 'npx'
     if ($p -and $p -match '\.cmd$') { return $p }
-    return (Join-Path (Join-Path $env:USERPROFILE 'scoop\apps\nodejs') "$($Registry.NodeVersion)\npx.cmd")
+    return (Join-Path (Join-Path $UserProfileDir 'scoop\apps\nodejs') "$($Registry.NodeVersion)\npx.cmd")
 }
 
 function Get-BrowserControlPath {
@@ -621,7 +660,7 @@ function Get-BrowserControlPath {
             if (Test-Path -LiteralPath $cand) { return $cand }
         }
     }
-    return (Join-Path (Join-Path $env:USERPROFILE 'scoop\persist\nodejs\bin') 'browser-control-mcp.cmd')
+    return (Join-Path (Join-Path $UserProfileDir 'scoop\persist\nodejs\bin') 'browser-control-mcp.cmd')
 }
 
 # The MCP servers that are ON by default. `webpage` is OFF unless -WebpageMcp
@@ -674,9 +713,9 @@ function New-OpenCodeConfigObject {
                 }
                 'computer-use' = [ordered]@{
                     'type'    = 'local'
-                    'command' = @((Join-Path $ToolsDir 'opencode-computer-use\.venv\Scripts\python.exe'),
+                    'command' = @((Join-ToolPath -Base $ToolsDir -Child 'opencode-computer-use\.venv\Scripts\python.exe'),
                                   '-m', 'opencode_computer_use')
-                    'cwd'     = (Join-Path $ToolsDir 'opencode-computer-use')
+                    'cwd'     = (Join-ToolPath -Base $ToolsDir -Child 'opencode-computer-use')
                     # 120 s startup, not 30: the venv boot was measured at 65 s on
                     # a cold start, so a shorter cap kills the server while it is
                     # still starting.
@@ -697,8 +736,12 @@ function New-OpenCodeConfigObject {
                 }
                 'genoffice' = [ordered]@{
                     'type'    = 'local'
+                    # %LOCALAPPDATA% is a Windows variable. Off Windows the
+                    # path is a name and nothing more: the MCP server is
+                    # declared, and the check below reports it as missing
+                    # rather than crashing the installer on a null base.
                     'command' = @('cmd', '/c',
-                                  (Join-Path $env:LOCALAPPDATA 'Programs\GenOffice\resources\cli\genoffice.cmd'),
+                                  (Join-Path ($(if ($env:LOCALAPPDATA) { $env:LOCALAPPDATA } else { $UserProfileDir })) 'Programs\GenOffice\resources\cli\genoffice.cmd'),
                                   'mcp')
                     'timeout' = [ordered]@{
                         'startup'   = 60000
@@ -708,6 +751,20 @@ function New-OpenCodeConfigObject {
                 }
             }
         }
+        # Auto-approval of tool permissions. Same ruleset as sapphira's
+        # home-manager config: without it every path outside the session's
+        # working directory raises `external_directory` and the turn waits for
+        # a human click - an agent that works on the host cannot run unattended.
+        # The ruleset is ordered {action, resource, effect}; `enabled`-style
+        # per-tool objects (the deprecated `permission` key) are not used.
+        'permissions' = @(
+            [ordered]@{ 'action' = 'external_directory'; 'resource' = '*'; 'effect' = 'allow' }
+            [ordered]@{ 'action' = 'read';               'resource' = '*'; 'effect' = 'allow' }
+            [ordered]@{ 'action' = 'edit';               'resource' = '*'; 'effect' = 'allow' }
+            [ordered]@{ 'action' = 'bash';               'resource' = '*'; 'effect' = 'allow' }
+            [ordered]@{ 'action' = 'webfetch';           'resource' = '*'; 'effect' = 'allow' }
+            [ordered]@{ 'action' = 'websearch';          'resource' = '*'; 'effect' = 'allow' }
+        )
         # A bare string in "plugins" is an enablement directive for an already
         # installed plugin. An external package is declared as an object with a
         # "package" field (https://opencode.ai/config.json).
@@ -1209,6 +1266,54 @@ foreach ($cf in $ConfigFiles) {
     }
 }
 
+# --- 6b. the config directory against the canon ----------------------------
+# The four config:<file> checks above look at the files the installer owns.
+# This one looks at the DIRECTORY: which files are in it, and which of the
+# canon are missing.
+#
+# It exists because the per-file checks cannot see the drift. Two hosts ended
+# up with 13 and 19 files in the same directory, and one of them was missing
+# tui.json -- a fact no per-file check reported, because the file that was
+# missing was not one of the four the installer writes.
+#
+# The canon is a contract, not a wish list: a file of the canon that is
+# absent is a FAIL (the machine is not the one the registry describes), and a
+# file outside the canon is a WARN that never changes the exit code -- the
+# installer does not delete files it did not write.
+Add-Check -Name 'config-dir' -Detail "$ConfigDir (the canon: 7 files)" `
+    -Context @{ Dir = $ConfigDir } -Required $true -Test {
+    param($d)
+    $state = Get-OpenCodeConfigDirCheckState -Path $d.Dir
+    if ($state.State -eq 'ok') { return $true }
+    return (New-CheckState -State $state.State -Message $state.Message `
+                          -Expected $state.Expected -Actual $state.Actual)
+} -Install {
+    param($d)
+    # Report only. The four config files the installer owns are written by
+    # their own checks; service.json and the dependency manifests are written
+    # by opencode and by `bun add`; and nothing is ever deleted here.
+    $state = Get-OpenCodeConfigDirState -Path $d.Dir
+    if (-not $state.Exists) {
+        Write-Warn2 "the config directory $($d.Dir) does not exist yet"
+        return $true
+    }
+    if ($state.Missing.Count -gt 0) {
+        Write-Warn2 ("missing from the canon: " + ($state.Missing -join ', '))
+    }
+    if ($state.Extra.Count -gt 0) {
+        Write-Warn2 ("files outside the canon (not touched by the installer): " + ($state.Extra -join ', '))
+    }
+    return $true
+} -Fact {
+    param($d)
+    $state = Get-OpenCodeConfigDirState -Path $d.Dir
+    if (-not $state.Exists) { return 'the config directory does not exist' }
+    $bits = @("$($state.Present.Count)/$($state.Canonical.Count) of the canon")
+    if ($state.Missing.Count -gt 0) { $bits += ('missing: ' + ($state.Missing -join ', ')) }
+    if ($state.Extra.Count -gt 0) { $bits += ('extra: ' + ($state.Extra -join ', ')) }
+    return ($bits -join ' | ')
+}
+
 # --- 7. MCP servers (taken from the config that is on the machine) ---------
 # A server whose command points at a file that is not there dies with
 # "MCP server process exited with code 1" and nothing else. The paths in the
@@ -1537,6 +1642,52 @@ Add-Check -Name 'launcher:opencode-serve.sh' -Detail "$ServeSh (starts opencode 
     if (-not (Test-Path -LiteralPath $d.ServeSh)) { return 'missing' }
     if ((Get-Content -Raw -LiteralPath $d.ServeSh) -match 'opencode(.exe)?\s+serve') { return 'starts opencode serve' }
     return 'does not start opencode serve'
+}
+
+# --------------------------------------------------------------------------
+# Prune the stale backups of the config directory
+#
+# The ONLY thing in this script that deletes a file in ~/.config/opencode,
+# and it is asked for by name: -PruneBackups. There is no ShouldProcess here
+# on purpose -- the dry run of this step is -DryRun, one switch, one meaning.
+# A -WhatIf that silently does nothing is worse than no -WhatIf at all.
+#
+# What it removes: the backup files the installer itself writes, older than
+# -PruneOlderThanDays days, in the config directory and nowhere else. What it
+# never touches: a file that is not a backup, a backup that is still young, a
+# file in a subdirectory (node_modules belongs to the plugin).
+# --------------------------------------------------------------------------
+if ($PruneBackups) {
+    Write-Head 'PRUNE BACKUPS'
+    $prune = Invoke-OpenCodeBackupPrune -Path $ConfigDir -OlderThanDays $PruneOlderThanDays -DryRun:$DryRun
+    if (-not (Test-Path -LiteralPath $ConfigDir -PathType Container)) {
+        Write-Warn2 "the config directory $ConfigDir does not exist - nothing to prune"
+    }
+    elseif ($prune.Removed.Count -eq 0) {
+        Write-Note "no backup older than $PruneOlderThanDays days in $ConfigDir"
+    }
+    foreach ($file in $prune.Removed) {
+        if ($DryRun) {
+            Write-Plan "would remove: $($file.Name) ($($file.FullName))"
+        } else {
+            Write-Ok "removed: $($file.Name)"
+        }
+    }
+    foreach ($file in $prune.Fresh) {
+        Write-Note "kept: $($file.Name) (younger than $PruneOlderThanDays days)"
+    }
+    foreach ($failed in $prune.Failed) {
+        Write-Warn2 "could not remove $($failed.File.FullName): $($failed.Error)"
+    }
+
+    # -PruneBackups on its own is a complete command: it prunes and stops.
+    # Running the whole installer after it would be a surprise, and the
+    # installer writes files.
+    if (-not $Verify -and -not $DryRun) {
+        Write-Head 'RESULT'
+        Write-Ok ("pruned $($prune.Removed.Count) stale backup(s) in $ConfigDir")
+        exit 0
+    }
 }
 
 # --------------------------------------------------------------------------
