@@ -5,8 +5,8 @@
   "taskWorkingDirectory": "D:\\Git",
   "tasks": {
     "opencode-serve": {
-      "script": "D:\\Git\\oc-serve\\oc-serve-task.sh",
-      "errorLog": "D:\\Storage\\logs\\oc-serve.err.log"
+      "script": "D:\\Storage\\winos\\data\\tools\\host-scripts\\opencode-serve.sh",
+      "errorLog": "D:\\Storage\\winos\\data\\tools\\cache\\opencode-serve.log"
     }
   }
 }

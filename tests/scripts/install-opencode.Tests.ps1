@@ -240,4 +240,18 @@ Describe "install-opencode.ps1 -Verify" {
         # other checks, never by a file the installer did not write.
         $result.Output | Should -Not -Match '\[FAIL\] config-dir'
     }
+
+    It "reports the launcher of the server and the second one in the profile" {
+        # The launcher belongs to the machine state now: the report has to
+        # name the new path, and it has to name the leftover in the profile.
+        $profileRoot = Join-Path $TestDrive 'profile-launcher'
+        $config  = New-ConfigDir -Path (Join-Path $profileRoot '.config/opencode')
+        Set-Content -LiteralPath (Join-Path $profileRoot 'opencode-serve.sh') -Value 'x'
+
+        $result = Invoke-Verify -ProfileRoot $profileRoot
+
+        $result.Output | Should -Match 'launcher:opencode-serve\.sh'
+        $result.Output | Should -Match 'host-scripts'
+        $result.Output | Should -Match 'stray in the profile: opencode-serve\.sh'
+    }
 }

@@ -47,6 +47,9 @@
         exit code
       * nothing in the config directory is deleted except by the explicit
         -PruneBackups, and even then only the stale backup files
+      * the launcher of the server is installed from the template in
+        src/host-scripts/ into <data root>\tools\host-scripts\; a second
+        launcher left in the profile of the user is reported, never deleted
 
     Exit codes: 0 = ok, 1 = a required item is missing or differs from the
     registry. Advisories (deprecated keys, missing auth.json) are warnings and
@@ -75,6 +78,10 @@ $ErrorActionPreference = 'Stop'
 # their own file: they are a contract of their own, they are pure functions
 # of a directory, and the tests need them without running the installer.
 . (Join-Path $PSScriptRoot 'opencode-config-dir.ps1')
+
+# The launcher of the server: where it lives and how it is installed. Same
+# reason as the file above -- the rules are testable on their own.
+. (Join-Path $PSScriptRoot 'opencode-launcher.ps1')
 
 # --------------------------------------------------------------------------
 # Registry (mirrors docs/opencode-registry.md)
@@ -130,7 +137,6 @@ $ShimsDir  = Join-Path $ScoopRoot 'shims'
 $ConfigDir = Join-Path $UserProfileDir '.config\opencode'
 $DataDir   = Join-Path $UserProfileDir '.local\share\opencode'
 $LogDir    = Join-Path $DataDir 'log'
-$ServeSh   = Join-Path $UserProfileDir 'opencode-serve.sh'
 $HomeDir   = $UserProfileDir
 
 # Where the tools live on THIS host. C:\Tools was hardcoded here and rotted
@@ -160,6 +166,25 @@ function Join-ToolPath {
 }
 
 $ComputerUseDir = Join-ToolPath -Base $ToolsDir -Child 'opencode-computer-use'
+
+# Where the launcher of the server lives.
+#
+# It used to live in the profile of the user (~/opencode-serve.sh on one
+# host, ~/.local/bin/oc-serve-task.sh on another), and each host had its
+# own mechanism. Now it is part of the machine state, next to the task
+# declaration that starts it:
+#
+#   <data root>\tools\host-scripts\opencode-serve.sh
+#   <data root>\tools\host-scripts\opencode-serve.cmd
+#
+# The data root is the one the host declaration names (the synced store,
+# or the data directory of the repository) -- the same root the scheduled
+# task declaration points at.
+$WinosDataRoot = if ($WinosHostPaths) { $WinosHostPaths.dataDir } else { (Join-Path $WinosRepoRoot 'data') }
+$HostScriptsDir = Join-ToolPath -Base (Join-ToolPath -Base $WinosDataRoot -Child 'tools') -Child 'host-scripts'
+$ServeSh   = Join-ToolPath -Base $HostScriptsDir -Child 'opencode-serve.sh'
+$ServeCmd  = Join-ToolPath -Base $HostScriptsDir -Child 'opencode-serve.cmd'
+$LauncherTemplateDir = Join-ToolPath -Base $WinosRepoRoot -Child 'src\host-scripts'
 
 # The plugin spec as it is written into the config files.
 $PluginSpec = "$($Registry.PluginPackage)@$($Registry.PluginVersion)"
@@ -1628,20 +1653,40 @@ Add-Check -Name 'auth:login' `
 
 # --- 15. serve launcher (report only) -------------------------------------
 Add-Check -Name 'launcher:opencode-serve.sh' -Detail "$ServeSh (starts opencode serve on :4096)" `
-    -Context @{ ServeSh = $ServeSh } -Required $false -Test {
+    -Context @{ ServeSh = $ServeSh; ProfileDir = $UserProfileDir;
+                TemplateDir = $LauncherTemplateDir; TargetDir = $HostScriptsDir } -Required $false -Test {
     param($d)
-    (Test-Path -LiteralPath $d.ServeSh) -and
-    ((Get-Content -Raw -LiteralPath $d.ServeSh) -match 'opencode(.exe)?\s+serve')
+    $state = Get-OpenCodeLauncherState -ScriptPath $d.ServeSh -ProfileDir $d.ProfileDir
+    if (-not $state.Present) {
+        return New-CheckState 'missing' "the launcher is not installed at $($d.ServeSh)"
+    }
+    if (@($state.Stray).Count -gt 0) {
+        return New-CheckState 'warn' ("a second launcher lies in the profile: " + ($state.Stray -join ', ') +
+                                      ' - two launchers, two behaviours; remove it by hand')
+    }
+    return $true
 } -Install {
     param($d)
-    Write-Warn2 "$($d.ServeSh) is missing or does not start 'opencode serve'."
-    Write-Warn2 'Without it the server on port 4096 does not come up.'
-    return $false
+    $result = Install-OpenCodeLauncher -TemplateDir $d.TemplateDir -TargetDir $d.TargetDir
+    foreach ($written in $result.Written) {
+        Write-Ok "launcher installed: $written"
+    }
+    foreach ($missing in $result.Missing) {
+        Write-Fail "the template $missing is not in $($d.TemplateDir)"
+    }
+    $state = Get-OpenCodeLauncherState -ScriptPath $d.ServeSh -ProfileDir $d.ProfileDir
+    if (@($state.Stray).Count -gt 0) {
+        Write-Warn2 ("a second launcher lies in the profile: " + ($state.Stray -join ', '))
+        Write-Warn2 'the installer does not delete it - look at the file and remove it by hand'
+    }
+    return ($result.Missing.Count -eq 0)
 } -Fact {
     param($d)
-    if (-not (Test-Path -LiteralPath $d.ServeSh)) { return 'missing' }
-    if ((Get-Content -Raw -LiteralPath $d.ServeSh) -match 'opencode(.exe)?\s+serve') { return 'starts opencode serve' }
-    return 'does not start opencode serve'
+    $state = Get-OpenCodeLauncherState -ScriptPath $d.ServeSh -ProfileDir $d.ProfileDir
+    $bits = @()
+    if ($state.Present) { $bits += 'in place' } else { $bits += 'missing' }
+    if (@($state.Stray).Count -gt 0) { $bits += ('stray in the profile: ' + ($state.Stray -join ', ')) }
+    return ($bits -join ' | ')
 }
 
 # --------------------------------------------------------------------------
