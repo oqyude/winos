@@ -1090,6 +1090,8 @@ function Get-ConfigFileState {
                 return New-CheckState 'mismatch' ("mcp.servers." + $srv.Name + ".enabled is not a schema key - use 'disabled'") `
                     'no enabled key' 'enabled present'
             }
+            # a disabled server is never started, so it needs no timeout
+            if ($s.PSObject.Properties['disabled'] -and [bool]$s.disabled) { continue }
             $t = $s.PSObject.Properties['timeout']
             if (-not $t) {
                 return New-CheckState 'missing' ("mcp.servers." + $srv.Name + ".timeout is absent - a wedged call has no cap")
