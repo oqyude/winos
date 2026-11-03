@@ -649,29 +649,42 @@ function New-OpenCodeConfigObject {
         'mcp'     = [ordered]@{
             'servers' = [ordered]@{
                 'webpage' = [ordered]@{
-                    'type'    = 'local'
-                    'command' = @('cmd', '/c', $npx, '-y', '-p', 'webpage-mcp@latest', 'webpage-mcp-stdio')
-                    'enabled' = $WebpageMcpEnabled
+                    'type'     = 'local'
+                    'command'  = @('cmd', '/c', $npx, '-y', '-p', 'webpage-mcp@latest', 'webpage-mcp-stdio')
+                    # 'disabled', not 'enabled': the schema (Mcp.LocalConfigEncoded,
+                    # https://opencode.ai/config.json) has no 'enabled' key, so an
+                    # 'enabled: false' is silently ignored and opencode keeps
+                    # booting the server. Measured 2026-11-03: with 'enabled:false'
+                    # lamet still spent 30 s per boot on a server that never came
+                    # up; with 'disabled:true' the attempt disappears (0 log lines).
+                    'disabled' = -not $WebpageMcpEnabled
                 }
                 'browser-control' = [ordered]@{
                     'type'    = 'local'
                     'command' = @('cmd', '/c', $browserControl)
-                    # Without a timeout a wedged MCP call holds the turn for as
-                    # long as the server lives: the agent looks frozen with no
-                    # tool result and no error.
-                    'timeout' = 60000
+                    # timeout is an OBJECT {startup, catalog, execution} in v2, not
+                    # a number. Without it a wedged MCP call holds the turn for as
+                    # long as the server lives: the agent looks frozen with no tool
+                    # result and no error.
+                    'timeout' = [ordered]@{
+                        'startup'   = 30000
+                        'catalog'   = 30000
+                        'execution' = 180000
+                    }
                 }
                 'computer-use' = [ordered]@{
                     'type'    = 'local'
                     'command' = @((Join-Path $ToolsDir 'opencode-computer-use\.venv\Scripts\python.exe'),
                                   '-m', 'opencode_computer_use')
                     'cwd'     = (Join-Path $ToolsDir 'opencode-computer-use')
-                    'enabled' = $true
-                    # 120 s, not 60: the bridge boot (python + venv + bridge
-                    # script) was measured at 65 s on a cold start, which is
-                    # above the old cap - the server was killed while it was
+                    # 120 s startup, not 30: the venv boot was measured at 65 s on
+                    # a cold start, so a shorter cap kills the server while it is
                     # still starting.
-                    'timeout' = 120000
+                    'timeout' = [ordered]@{
+                        'startup'   = 120000
+                        'catalog'   = 60000
+                        'execution' = 180000
+                    }
                     'environment' = [ordered]@{
                         'COMPUTER_USE_LOG_LEVEL'         = 'INFO'
                         'COMPUTER_USE_SINGLE_MONITOR'    = '0'
@@ -687,8 +700,11 @@ function New-OpenCodeConfigObject {
                     'command' = @('cmd', '/c',
                                   (Join-Path $env:LOCALAPPDATA 'Programs\GenOffice\resources\cli\genoffice.cmd'),
                                   'mcp')
-                    'enabled' = $true
-                    'timeout' = 120000
+                    'timeout' = [ordered]@{
+                        'startup'   = 60000
+                        'catalog'   = 60000
+                        'execution' = 300000
+                    }
                 }
             }
         }
@@ -1055,14 +1071,38 @@ function Get-ConfigFileState {
         } elseif (-not (Get-CommandPath -Name $target)) {
             return New-CheckState 'missing' "the webpage command '$target' does not resolve"
         }
-        # enabled is written from $WebpageMcpEnabled. opencode REWRITES this file
-        # on start, so a silently dropped flag would bring the 30-second connect
-        # timeout back; a mismatch is reported here, never repaired.
-        $declared = $webpage.PSObject.Properties['enabled']
-        $actual = if ($declared) { [bool]$declared.Value } else { $true }
-        if ($actual -ne [bool]$WebpageMcpEnabled) {
-            return New-CheckState 'mismatch' 'mcp.servers.webpage.enabled differs from the installer' `
-                ([string][bool]$WebpageMcpEnabled) ([string]$actual)
+        # 'disabled' is written from $WebpageMcpEnabled (the schema has no
+        # 'enabled' key, so an 'enabled:false' would be silently ignored and the
+        # server would keep booting). opencode rewrites this file itself, so a
+        # dropped flag is reported here and never repaired silently.
+        $declared = $webpage.PSObject.Properties['disabled']
+        $actual = if ($declared) { [bool]$declared.Value } else { $false }
+        if ($actual -ne (-not [bool]$WebpageMcpEnabled)) {
+            return New-CheckState 'mismatch' 'mcp.servers.webpage.disabled differs from the installer' `
+                ([string](-not [bool]$WebpageMcpEnabled)) ([string]$actual)
+        }
+        # Two schema rules that cost real time when broken, so both are checked:
+        #   * 'timeout' is {startup, catalog, execution}, not a number;
+        #   * 'enabled' does not exist for an MCP server ('disabled' does).
+        foreach ($srv in $j.mcp.servers.PSObject.Properties) {
+            $s = $srv.Value
+            if ($s.PSObject.Properties['enabled']) {
+                return New-CheckState 'mismatch' ("mcp.servers." + $srv.Name + ".enabled is not a schema key - use 'disabled'") `
+                    'no enabled key' 'enabled present'
+            }
+            $t = $s.PSObject.Properties['timeout']
+            if (-not $t) {
+                return New-CheckState 'missing' ("mcp.servers." + $srv.Name + ".timeout is absent - a wedged call has no cap")
+            }
+            if ($t.Value -is [int] -or $t.Value -is [long] -or $t.Value -is [double]) {
+                return New-CheckState 'mismatch' ("mcp.servers." + $srv.Name + ".timeout is a number - schema wants {startup,catalog,execution}") `
+                    'object' ([string]$t.Value)
+            }
+            foreach ($k in @('startup', 'catalog', 'execution')) {
+                if (-not $t.Value.PSObject.Properties[$k]) {
+                    return New-CheckState 'missing' ("mcp.servers." + $srv.Name + ".timeout." + $k + " is absent")
+                }
+            }
         }
     }
     if ($Kind -eq 'tui') {
