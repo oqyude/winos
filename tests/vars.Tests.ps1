@@ -7,8 +7,16 @@ Describe "vars.ps1 loads" {
         $modules | Should -Not -BeNullOrEmpty
     }
 
-    It "has 5 module entries" {
-        $modules.Count | Should -Be 5
+    It "has 6 module entries" {
+        $modules.Count | Should -Be 6
+    }
+
+    It "registers the scheduler with its three verbs" {
+        # The scheduler declares the Windows tasks; it is reached under the
+        # same two grammars as the services, because it is one.
+        $modules["Scheduled Tasks"].Alias | Should -Be "scheduler"
+        $modules["Scheduled Tasks"].Actions | Should -Be @("plan", "apply", "status")
+        $modules["Scheduled Tasks"].Path | Should -BeLike "*modules\scheduler.ps1"
     }
 
     It "contains Config Persistence" {

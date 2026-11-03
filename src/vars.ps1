@@ -20,6 +20,7 @@ $essentialsModule     = "$PSScriptRoot\modules\essentials.ps1"
 $opencodeServeModule  = "$PSScriptRoot\modules\opencode-serve.ps1"
 $pluginManagerModule  = "$PSScriptRoot\modules\plugins\plugin-manager.ps1"
 $herdrServeModule     = "$PSScriptRoot\modules\herdr-serve.ps1"
+$schedulerModule      = "$PSScriptRoot\modules\scheduler.ps1"
 
 $modules = @{
     "Config Persistence" = @{
@@ -56,6 +57,13 @@ $modules = @{
         Actions     = @("setup", "remove", "status", "start", "stop")
         Destructive = @("remove")
         Description = "Scheduled-task lifecycle for `herdr server` on logon"
+    }
+    "Scheduled Tasks" = @{
+        Alias       = "scheduler"
+        Path        = $schedulerModule
+        Actions     = @("plan", "apply", "status")
+        Destructive = @()
+        Description = "Declared Windows tasks: compare with the machine, apply"
     }
 }
 

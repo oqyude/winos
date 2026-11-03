@@ -5,9 +5,10 @@
     Manages application config persistence via symlinks, cursor themes,
     and background services.
 .PARAMETER Module
-    Module: symlink-manager, essentials, service.
+    Module: symlink-manager, essentials, plugin-manager, scheduler, service.
 .PARAMETER Name
-    For modules: the action (plan, apply, snapshot, install, uninstall).
+    For modules: the action (plan, apply, snapshot, install, uninstall,
+    status).
     For service: the service name (e.g. opencode-serve).
 .PARAMETER SubAction
     For service: the action (setup, remove, status, start, stop).
@@ -17,6 +18,7 @@
     Show version.
 .EXAMPLE
     winos symlink-manager plan
+    winos scheduler plan
     winos service opencode-serve status
     winos --help
 #>

@@ -521,6 +521,16 @@ export OPENCODE_SERVER_PASSWORD=<secret>
 | `~/opencode-serve.sh` | 625 байт | скрипт запуска сервера | поднимает `opencode serve --hostname 0.0.0.0 --port 4096 --cors https://<host>.opencodes.zeroq.su`, лог в `%TEMP%\opencode-serve.log` | сервер на 4096 не поднимается | восстанавливается; **в нём же задаётся `HTTP(S)_PROXY`/`NO_PROXY`** |
 | `~/.bashrc` | ~4.4 КБ | dotfiles | `OPENCODE_SERVER_*`, ключи внешних провайдеров, алиасы прокси, `PATH`-фиксы для scoop | сервер без пароля; внешние провайдеры не авторизованы | восстанавливается из dotfiles (`~/.Storage/chezmoi`) владельцем; **установщик не перезаписывает файл целиком** — только точечная правка с бэкапом (п. 1.7) |
 
+> **Задача Windows объявлена в репозитории, а не создана руками.**
+> [`src/modules/scheduler/tasks/OpenCodeServe.xml`](../src/modules/scheduler/tasks/OpenCodeServe.xml)
+> — это объявление задачи, которая поднимает лаунчер; что оно значит и как
+> читать diff, написано в [`docs/scheduler.md`](scheduler.md). Именно здесь
+> хосты разошлись: имя задачи (`OpenCode Serve` против `opencode-serve`),
+> logon-тип (Interactive против S4U) и триггеры (AtLogon против Boot+Logon).
+> Модуль `scheduler` сверяет объявление с живой задачей и **не трогает**
+> необъявленные задачи (`OpenCodeCaptureScreen`, `OpenCodeLaunchBrave`,
+> `OpenCodeAdvegoWatch` — не его дело).
+
 ---
 
 ## 2. Порядок установки (порядок важен)
