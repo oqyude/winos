@@ -3,23 +3,70 @@
   The declaration of the "opencode serve" task.
 
   This file is the SOURCE OF TRUTH for the task: what runs it, when it runs,
-  as whom, and in which folder. The scheduler module compares it with the
-  live task and reports the difference; it never invents a task of its own.
+  as whom, and how it has to survive. The scheduler module compares it with
+  the live task and reports the difference; it never invents a task of its
+  own.
 
-  The file name is the task name. Task Scheduler addresses a task by the name
-  of the file it was imported from, so the two have to agree.
+  THE NAME. The file is OpenCodeServe.xml; the task on the hosts is called
+  "OpenCode Serve" (lamet) and "opencode-serve" (vetymae). The file base name
+  is the DECLARATION ID and the only source of truth for the name: the module
+  matches a live task by the name's KEY (the name with case, spaces, dashes
+  and underscores removed; Get-TaskNameKey in State.ps1) so all three
+  spellings are one task. An alias table was the alternative and was
+  rejected: it needs an entry per host and goes stale the day a third host
+  spells it "opencode_serve". A live task that is NOT the same key but could
+  still be this task (it runs the same launcher, or its name merely extends
+  ours: OpenCodeServeOld) is reported as UNDECLARED by plan and status, never
+  ignored. The URI below is the canonical spelling; Task Scheduler takes the
+  registered name from the module, not from here.
+
+  WHAT THE DIFF COMPARES: one dimension per field, each named in the
+  report: UserId, LogonType, RunLevel, the trigger set, Command+Arguments,
+  WorkingDirectory, MultipleInstances, DisallowStartIfOnBatteries,
+  StopIfGoingOnBatteries, ExecutionTimeLimit, RestartOnFailure,
+  StartWhenAvailable, Enabled. Everything else in a task document is noise;
+  the list of ignored fields and the reasons are in
+  src/modules/scheduler/State.ps1 and docs/scheduler.md.
+
+  THE FOUR SETTINGS BELOW ARE THE ONES THAT BIT THE OWNER (2026-11-04). A
+  laptop dropped off AC and its server died in the middle of the week: the
+  live task said DisallowStartIfOnBatteries=True, StopIfGoingOnBatteries=True,
+  ExecutionTimeLimit=PT72H, RestartCount=0, while this file said
+  false/false/PT0S/5. A server meant to run for weeks must not be killed by
+  the power state, must not be killed after three days, and must come back
+  when it dies. StartWhenAvailable=true is the same story from the other
+  side: a start missed while the machine was off is picked up when it is
+  next available. If the machine disagrees, plan names the field.
+
+  THE ACTION IS WHAT REALLY RUNS, NOT THE CANON. On the Windows hosts the
+  server is started by Git Bash in LOGIN mode:
+
+    bash -lc "bash <profile>/.local/share/metaagent/tools/host-scripts/opencode-serve.sh"
+
+  `-lc` is load-bearing: a login shell sources ~/.bashrc, and that is where
+  OPENCODE_SERVER_USERNAME / OPENCODE_SERVER_PASSWORD are exported. The
+  opencode process does not read service.json when its launcher was started
+  from a profile-sourced shell, so without the password in the profile the
+  server answers 401. A plain `-c` (the vetymae spelling) does not source the
+  profile; that is DRIFT, and the diff reports it; the declaration does not
+  imitate it.
+
+  The launcher under src/host-scripts/ is the winos canon (self-sufficient,
+  reads no profile) and is NOT what the task runs: on Windows the owner keeps
+  the bashrc-based launcher, because that is where the password lives. See
+  docs/opencode-registry.md, "the launcher decision".
 
   Placeholders (resolved per host by the scheduler module):
 
-    __USER__       the account the task runs as, in Task Scheduler's
-                   DOMAIN\user form
-    __DATA_ROOT__  the winos data root; the launcher lives under it
-    __TOOLS_DIR__  the host's tools directory
-    __HOME__       the user's profile directory
-
-  What the diff compares, and what it ignores, is documented in
-  src/modules/scheduler/State.ps1. In short: who runs it, when it runs, what
-  it runs and where. Everything else in the document is noise.
+    __USER__        the account the task runs as, in Task Scheduler's
+                    DOMAIN\user form
+    __HOME_POSIX__  the user's profile in Git Bash form (/c/Users/oqyude),
+                    which is how bash spells a Windows path in an argument
+    __GIT_BASH__    bash.exe of Git for Windows; Program Files first, the
+                    same order src/host-scripts/opencode-serve.cmd uses
+    __DATA_ROOT__   the winos data root
+    __TOOLS_DIR__   the host's tools directory
+    __HOME__        the user's profile directory
 
   THE LOGON TYPE is the field that drifted between the two hosts:
   InteractiveToken (this file) against S4U on the other one. InteractiveToken
@@ -30,9 +77,19 @@
 <Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <RegistrationInfo>
     <Description>opencode serve on 0.0.0.0:4096, started from the winos task declaration.</Description>
-    <URI>\OpenCodeServe</URI>
+    <URI>\OpenCode Serve</URI>
   </RegistrationInfo>
   <Triggers>
+    <!--
+      Both triggers on purpose. At logon is what actually starts the server
+      under an InteractiveToken principal (there is no stored credential, so
+      there is no session before somebody logs in); the boot trigger is what
+      makes the intent explicit on a machine that has one, and it costs
+      nothing: it simply cannot fire earlier than the logon.
+    -->
+    <BootTrigger>
+      <Enabled>true</Enabled>
+    </BootTrigger>
     <LogonTrigger>
       <Enabled>true</Enabled>
       <UserId>__USER__</UserId>
@@ -56,20 +113,9 @@
     <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
     <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
     <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
-    <AllowHardTerminate>true</AllowHardTerminate>
-    <StartWhenAvailable>false</StartWhenAvailable>
-    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
-    <IdleSettings>
-      <StopOnIdleEnd>true</StopOnIdleEnd>
-      <RestartOnIdle>false</RestartOnIdle>
-    </IdleSettings>
-    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <StartWhenAvailable>true</StartWhenAvailable>
     <Enabled>true</Enabled>
-    <Hidden>false</Hidden>
-    <RunOnlyIfIdle>false</RunOnlyIfIdle>
-    <WakeToRun>false</WakeToRun>
     <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
-    <Priority>7</Priority>
     <RestartOnFailure>
       <Interval>PT1M</Interval>
       <Count>5</Count>
@@ -77,9 +123,8 @@
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>bash</Command>
-      <Arguments>"__DATA_ROOT__\tools\host-scripts\opencode-serve.sh"</Arguments>
-      <WorkingDirectory>__DATA_ROOT__</WorkingDirectory>
+      <Command>__GIT_BASH__</Command>
+      <Arguments>-lc "bash __HOME_POSIX__/.local/share/metaagent/tools/host-scripts/opencode-serve.sh"</Arguments>
     </Exec>
   </Actions>
 </Task>
