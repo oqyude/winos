@@ -178,6 +178,18 @@ Scoop manifests, including `bucket/winos.json` for installing `winos` itself.
 (`.gitea/workflows/auto-update.yml`); `manifests/*.json` are plugin manifests
 and are maintained by hand.
 
+**A re-uploaded asset under an unchanged tag is invisible to that CI**
+(2026-11-04). `checkver` compares VERSIONS, so a vendor that replaces the
+release file for an existing tag leaves the manifest's `hash` stale while the
+version stays correct — every install then fails on the hash check, and no
+scheduled update will ever notice. `incy-desktop` 3.9.0 was exactly this: the
+asset was re-uploaded 2026-11-02 under the tag published 2026-10-18.
+When a hash mismatch appears on a version that has not changed, the
+authoritative value is `assets[].digest` from
+`https://api.github.com/repos/<owner>/<repo>/releases/tags/<tag>` (sha256
+computed by GitHub) — check it against the downloaded bytes before editing the
+manifest.
+
 ## State
 
 | File | Tracked? | Meaning |
