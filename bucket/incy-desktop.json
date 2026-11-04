@@ -6,7 +6,7 @@
     "architecture": {
         "64bit": {
             "url": "https://github.com/INCY-DEV/incy-platforms/releases/download/desktop-v3.9.0/incy-windows-portable.zip",
-            "hash": "502be06176b49e246a692bf30f9add67f28a9434e248c40f6490a53ac643226d"
+            "hash": "758dc8a498339573749a3e004bcfc9c344cd695b77701bd847d0c626f3cce61a"
         }
     },
     "extract_dir": "incy",
